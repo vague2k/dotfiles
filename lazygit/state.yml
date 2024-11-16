@@ -1,0 +1,27 @@
+lastupdatecheck: 0
+recentrepos:
+    - /Users/albert/documents/github/dotfiles
+    - /Users/albert/documents/github/smv-web
+    - /Users/albert/documents/github/huez.nvim
+    - /Users/albert/Documents/GitHub/rippy
+    - /Users/albert/documents/github/rippy
+    - /Users/albert/documents/github/detune
+    - /Users/albert/documents/github/portfolio
+    - /Users/albert/documents/github/rummage
+    - /Users/albert/documents/github/vague.nvim
+    - /Users/albert/Documents/GitHub/rummage
+    - /Users/albert/documents/github/smv
+    - /Users/albert/Documents/GitHub/smv
+    - /Users/albert/Documents/GitHub/huez.nvim
+startuppopupversion: 5
+lastversion: 0.44.1
+customcommandshistory:
+    - wqa
+hidecommandlog: false
+ignorewhitespaceindiffview: false
+diffcontextsize: 1
+renamesimilaritythreshold: 50
+localbranchsortorder: recency
+remotebranchsortorder: alphabetical
+gitlogorder: topo-order
+gitlogshowgraph: always

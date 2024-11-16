@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+echo "Sym-linking dotfiles..."
+echo
+
+# a function creates symlinks for any directories that don't already have a symlink declared
+# this avoids already existing links to point back to themselves in the case this script is ran again
+mklink() {
+    local target=$1
+    local link=$2
+    local name=$(basename "$link")
+
+    if [ -L "$link" ]; then
+        echo "."
+    elif [ -e "$link" ]; then
+        echo "Dir or file for $name already exists."
+    else
+        echo "making symlink for $name"
+        ln -s "$target" "$link"
+    fi
+}
+
+
+DOTDIR=~/Documents/Github/dotfiles
+CONF=${XDG_CONFIG_HOME:-~/.config} # if xdg var doesn't exist, default to ~/.config
+BIN=~/.local/bin
+
+# ensure ~/.local/bin exists
+if [ ! -d "$BIN" ]; then
+    mkdir -p "$BIN"
+fi
+
+mklink "$DOTDIR/nvim" "$CONF/nvim"
+mklink "$DOTDIR/zsh" "$CONF/zsh"
+mklink "$DOTDIR/lf" "$CONF/lf"
+mklink "$DOTDIR/tmux" "$CONF/tmux"
+mklink "$DOTDIR/gh" "$CONF/gh"
+mklink "$DOTDIR/git" "$CONF/git"
+mklink "$DOTDIR/glow" "$CONF/glow"
+mklink "$DOTDIR/lazygit" "$CONF/lazygit"
+mklink "$DOTDIR/wezterm" "$CONF/wezterm"
+
+for script in "$DOTDIR/bin/scripts/"*; do
+    if [ -f "$script" ]; then
+        script_name=$(basename "$script")
+        mklink "$script" "$BIN/$script_name"
+    fi
+done
+
+unset DOTDIR
+unset CONF 
+unset BIN 
+
+echo
+echo "All done!"
