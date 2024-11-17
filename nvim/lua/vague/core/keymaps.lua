@@ -6,6 +6,7 @@ keymap("n", "<C-h>", "<C-w>h", opts) -- Navigate left window
 keymap("n", "<C-j>", "<C-w>j", opts) -- Navigate down window
 keymap("n", "<C-k>", "<C-w>k", opts) -- Navigate up window
 keymap("n", "<C-l>", "<C-w>l", opts) -- Navigate right window
+keymap("n", "<C-f>", ":silent !tmux neww tmux-sessionizer<CR>", opts) -- Start a new tmux session in a different terminal tab
 
 -- Insert mode
 keymap("i", "jk", "<ESC>", opts) -- Pressing "jk" in insert mode escapes quickly

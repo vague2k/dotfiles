@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+sessions=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (active: #{window_name})" 2> /dev/null)
+
+if [ -z "$sessions" ]; then
+  echo "No tmux sessions found."
+  exit 1
+fi
+
+selected=$(echo "$sessions" | fzf)
+
+selected_session=$(echo "$selected" | awk -F: '{print $1}')
+
+tmux attach-session -t "$selected_session"

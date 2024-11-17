@@ -29,6 +29,13 @@ config.keys = {
 			args = { "zsh", "-c", "tmux-sessionizer" },
 		}),
 	},
+	{
+		key = "a",
+		mods = "ALT",
+		action = action.SpawnCommandInNewTab({
+			args = { "zsh", "-c", "tmux-attacher" },
+		}),
+	},
 }
 
 return config
