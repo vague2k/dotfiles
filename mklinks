@@ -37,7 +37,6 @@ mklink "$DOTDIR/tmux" "$CONF/tmux"
 mklink "$DOTDIR/gh" "$CONF/gh"
 mklink "$DOTDIR/git" "$CONF/git"
 mklink "$DOTDIR/glow" "$CONF/glow"
-mklink "$DOTDIR/lazygit" "$CONF/lazygit"
 mklink "$DOTDIR/wezterm" "$CONF/wezterm"
 
 for script in "$DOTDIR/bin/scripts/"*; do

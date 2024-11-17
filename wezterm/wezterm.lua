@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
-local actions = wezterm.actions
+local action = wezterm.action
 
 config.font = wezterm.font("IosevkaTerm Nerd Font Mono")
 config.font_size = 16
@@ -25,7 +25,7 @@ config.keys = {
 	{
 		key = "f",
 		mods = "CTRL",
-		action = wezterm.action.SpawnCommandInNewTab({
+		action = action.SpawnCommandInNewTab({
 			args = { "zsh", "-c", "tmux-sessionizer" },
 		}),
 	},
