@@ -3,11 +3,14 @@
 sessions=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (active: #{window_name})" 2> /dev/null)
 
 if [ -z "$sessions" ]; then
-  echo "No tmux sessions found."
-  exit 1
+  exit 0
 fi
 
 selected=$(echo "$sessions" | fzf)
+
+if [ -z "$selected" ]; then
+  exit 0
+fi
 
 selected_session=$(echo "$selected" | awk -F: '{print $1}')
 
