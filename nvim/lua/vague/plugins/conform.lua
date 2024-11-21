@@ -5,7 +5,6 @@ return {
     require("conform").setup({
       formatters_by_ft = {
         lua = { "stylua" },
-        python = { "isort", "black" },
         go = { "gofumpt" },
         javascript = { "prettier" },
         typecript = { "prettier" },
@@ -14,7 +13,8 @@ return {
         css = { "prettier" },
         html = { "prettier" },
         markdown = { "prettier" },
-        csharp = { "csharpier" },
+        sh = { "beautysh" },
+        zsh = { "beautysh" },
       },
 
       format_on_save = {
