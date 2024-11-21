@@ -1,4 +1,5 @@
 .zsh_plugins/
 .zsh_sessions/
 .zsh_history
+ohmyzsh/
 .zcompdump*
