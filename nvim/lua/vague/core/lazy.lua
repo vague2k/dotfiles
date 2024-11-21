@@ -14,6 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   { import = "vague.plugins" },
+  { import = "vague.plugins.themes" },
   { import = "vague.plugins.lsp" },
   { import = "vague.plugins.lang.go" },
   { import = "vague.plugins.lang.css" },
