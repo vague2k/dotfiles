@@ -1,10 +1,9 @@
-# This is a script to bootsrap omz with some custom plugins,
-# ideally this script should only execute in its entirety once.
+#!/usr/bin/env bash
 
-# no need to keep executing this script if the dir exists
-if [[ -d ${ZSH_CUSTOM}/plugins ]]; then
-    return
-fi
+# bootstrapping oh-my-zsh with custom plugins
+# this script should ideally only execute in its entirety once.
+
+ZSH_CUSTOM=${ZSH_CUSTOM:-$ZSH/custom}
 
 github_plugins=(
     zsh-users/zsh-autosuggestions
@@ -12,20 +11,20 @@ github_plugins=(
 )
 
 for plugin in "${github_plugins[@]}"; do
-  repo_name=${plugin#*/}
+    repo_name=${plugin##*/}
 
-  if [[ ! -d ${ZSH_CUSTOM}/plugins/$repo_name ]]; then
-    mkdir -p ${ZSH_CUSTOM}/plugins
-    git clone --depth 1 --recursive https://github.com/$plugin.git ${ZSH_CUSTOM}/plugins/$repo_name
-  fi
-
-  # loads plugin after cloning
-  for initscript in "$repo_name.zsh" "$repo_name.plugin.zsh" "$repo_name.sh"; do
-    if [[ -f ${ZSH_CUSTOM}/plugins/$repo_name/$initscript ]]; then
-      source "${ZSH_CUSTOM}/plugins/$repo_name/$initscript"
-      break
+    if [[ ! -d $ZSH_CUSTOM/plugins/$repo_name ]]; then
+        mkdir -p $ZSH_CUSTOM/plugins
+        git clone --depth 1 --recursive "https://github.com/$plugin.git" "$ZSH_CUSTOM/plugins/$repo_name"
     fi
-  done
+
+    # try loading plugin after cloning
+    for initscript in "$repo_name.zsh" "$repo_name.plugin.zsh" "$repo_name.sh"; do
+        if [[ -f "$ZSH_CUSTOM/plugins/$repo_name/$initscript" ]]; then
+            source "$ZSH_CUSTOM/plugins/$repo_name/$initscript"
+            break
+        fi
+    done
 done
 
 # cleanup
