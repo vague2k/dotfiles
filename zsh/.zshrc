@@ -14,6 +14,7 @@ alias ll="eza --icons -alF"
 alias tree="eza --tree"
 alias rum="rummage get"
 alias pull="git pull --rebase"
+alias brewu="brew update && brew upgrade"
 
 ###------- OPTS --------###
 setopt INTERACTIVE_COMMENTS
