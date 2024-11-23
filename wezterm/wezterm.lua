@@ -3,9 +3,15 @@ local config = wezterm.config_builder()
 local action = wezterm.action
 
 config.font = wezterm.font("IosevkaTerm Nerd Font Mono")
-config.font_size = 16
+config.font_size = 14
 config.initial_rows = 500
 config.initial_cols = 500
+config.window_padding = {
+	left = 30,
+	right = 30,
+	top = 30,
+	bottom = 30,
+}
 
 -- this is how you override a wezterm colorscheme, simple lua table overriding :)
 local my_afterglow = wezterm.color.get_builtin_schemes()["Afterglow"]
