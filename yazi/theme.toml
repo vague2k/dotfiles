@@ -1,0 +1,17 @@
+[filetype]
+rules = [
+	{ mime = "image/*", fg = "yellow" },
+	{ mime = "video/*", fg = "magenta" },
+	{ mime = "audio/*", fg = "magenta" },
+	{ mime = "inode/x-empty", fg = "cyan" }, # empty files (example: .hushlogin)
+    
+	{ name = "*", is = "link", fg = "magenta" },  # directory symlinks
+	{ name = "*/", is = "link", fg = "magenta" },  # file symlinks
+	{ name = "*", is = "orphan", fg = "red" },  # orphan symlinks
+	{ name = "*/", is = "orphan", fg = "red" },  # orphan symlinks
+
+	{ name = "*", is = "exec", fg = "green" }, # is executable
+
+    # fallback just in case
+	{ name = "*/", fg = "blue" } # fallback
+]

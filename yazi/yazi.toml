@@ -1,0 +1,9 @@
+[manager]
+linemode = "size_and_mtime"
+sort_by = "mtime"
+sort_reverse = true # puts most recently modified items at the top
+show_hidden = true
+show_symllink = true
+
+[preview] # images
+cache_dir = "~/.cache/yazi" # cache goes away on reboot, unless you specify an absolute path

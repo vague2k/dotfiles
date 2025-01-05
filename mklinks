@@ -33,6 +33,7 @@ fi
 mklink "$DOTDIR/nvim" "$CONF/nvim"
 mklink "$DOTDIR/zsh" "$CONF/zsh"
 mklink "$DOTDIR/lf" "$CONF/lf"
+mklink "$DOTDIR/yazi" "$CONF/yazi"
 mklink "$DOTDIR/tmux" "$CONF/tmux"
 mklink "$DOTDIR/gh" "$CONF/gh"
 mklink "$DOTDIR/git" "$CONF/git"
@@ -47,8 +48,8 @@ for script in "$DOTDIR/bin/scripts/"*; do
 done
 
 unset DOTDIR
-unset CONF 
-unset BIN 
+unset CONF
+unset BIN
 
 echo
 echo "All done!"
