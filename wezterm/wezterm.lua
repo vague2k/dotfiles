@@ -4,8 +4,8 @@ local action = wezterm.action
 
 config.font = wezterm.font("IosevkaTerm Nerd Font Mono")
 config.font_size = 14
-config.initial_rows = 500
-config.initial_cols = 500
+config.initial_rows = 100
+config.initial_cols = 220
 config.window_padding = {
 	left = 30,
 	right = 30,
