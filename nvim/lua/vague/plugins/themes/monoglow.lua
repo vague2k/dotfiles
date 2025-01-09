@@ -1,6 +1,5 @@
 return {
   "wnkz/monoglow.nvim",
-  lazy = false,
   config = function()
     require("monoglow").setup({
       -- Change the "glow" color

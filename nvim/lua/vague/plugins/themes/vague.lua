@@ -1,7 +1,6 @@
 return {
   "vague2k/vague.nvim",
   dev = true,
-  priority = 1000,
   config = function()
     require("vague").setup({
       style = {
