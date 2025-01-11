@@ -11,6 +11,5 @@ return {
         builtin_types = "bold",
       },
     })
-    vim.cmd.colorscheme("vague")
   end,
 }
