@@ -7,7 +7,6 @@ return {
       typescript = { "biomejs" },
       javascriptreact = { "biomejs" },
       typescriptreact = { "biomejs" },
-      python = { "pylint" },
       go = { "golangcilint" },
     }
   end,

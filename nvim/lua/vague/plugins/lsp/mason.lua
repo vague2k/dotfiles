@@ -13,8 +13,6 @@ return {
         "stylua",
         "biome",
         "prettier",
-        "isort",
-        "black",
         "gofumpt",
         "jq",
       },

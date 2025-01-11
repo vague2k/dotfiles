@@ -37,7 +37,6 @@ return {
         "biome",
         "astro",
         "gopls",
-        "pyright",
         "cssls",
         "tailwindcss",
         "jsonls",
