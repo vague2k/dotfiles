@@ -1,0 +1,3 @@
+# macos specific
+macos-option-as-alt = true
+macos-titlebar-style = tabs

@@ -1,0 +1,16 @@
+theme = Afterglow
+background = 0e0e0e
+font-family = IosevkaTerm Nerd Font Mono
+font-size = 14
+window-width = 220
+window-height = 100
+window-padding-x = 20
+window-padding-y = 20
+window-padding-balance = true
+cursor-style = block 
+cursor-style-blink = true
+
+shell-integration = zsh
+
+config-file = ?./macos
+
