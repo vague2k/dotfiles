@@ -9,11 +9,15 @@ return {
         preset = "enter",
         cmdline = { preset = "default" },
       },
-
       -- completion menu behavior
       completion = {
         list = { selection = "auto_insert" }, -- inserts potential selection when scrolling through list
-        documentation = { window = { border = "rounded" } },
+        documentation = {
+          auto_show = true,
+          window = {
+            border = "rounded",
+          },
+        },
         menu = {
           border = "rounded",
           -- how the items are drawn (shown) in the menu, example below
