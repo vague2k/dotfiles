@@ -40,7 +40,7 @@ return {
         "cssls",
         "tailwindcss",
         "jsonls",
-        "textlab",
+        "texlab",
         "bashls",
         "jsonls",
         "sqlls",
