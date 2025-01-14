@@ -23,7 +23,7 @@ require("lazy").setup({
   { import = "vague.plugins.lang.latex" },
 }, {
   -- dir where local plugins are stored
-  dev = { path = "~/Documents/Github" },
+  dev = { path = "~/Documents/GitHub" },
   -- how the Lazy ui looks
   ui = {
     backdrop = 100, -- backdrop opacity, 100 is transparent

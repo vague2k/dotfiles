@@ -41,17 +41,12 @@ mklink "$DOTDIR/glow" "$CONF/glow"
 mklink "$DOTDIR/wezterm" "$CONF/wezterm"
 mklink "$DOTDIR/ghostty" "$CONF/ghostty"
 
-
 for script in "$DOTDIR/bin/scripts/"*; do
     if [ -f "$script" ]; then
         script_name=$(basename "$script")
         mklink "$script" "$BIN/$script_name"
     fi
 done
-
-if [ "$(uname -s)" = "Linux" ]; then
-    mklink "$DOTDIR/.zshenv" "$HOME/.zshenv"
-fi
 
 unset DOTDIR
 unset CONF
