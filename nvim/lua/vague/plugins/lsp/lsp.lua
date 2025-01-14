@@ -40,6 +40,13 @@ return {
         "cssls",
         "tailwindcss",
         "jsonls",
+        "textlab",
+        "bashls",
+        "jsonls",
+        "sqlls",
+        "marksman",
+        "dockerls",
+        "yamlls",
       },
 
       -- handlers for specific languages

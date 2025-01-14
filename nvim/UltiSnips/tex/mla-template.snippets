@@ -1,0 +1,21 @@
+snippet mla "A paper/essay template in MLA format" b
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{ifpdf}
+\usepackage{mla}
+\usepackage{graphicx,array,xurl,fancyvrb,hyperref}
+
+\begin{document}
+\begin{mla}{Alberto}{Hernandez}{${1:Professor}}{${2:Course}}{\today}{${3:Paper Title}}
+
+Body goes here
+
+\begin{workscited}
+
+Booth, Harry. “How China Is Advancing in AI despite U.S. Chip Restrictions.”
+Time, Time, 8 Jan. 2025, time.com/7204164/china-ai-advances-chips/.
+
+\end{workscited}
+\end{mla}
+\end{document}
+endsnippet

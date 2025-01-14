@@ -1,0 +1,38 @@
+snippet mathnotes "A paper/essay template in MLA format" b
+\documentclass[14pt,openany]{book}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[margin=4cm]{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\pgfplotsset{width=10cm,compat=1.9}
+\geometry{a4paper, margin=1in}
+\setlength{\parindent}{0pt}
+
+% uncomment if needed
+% \graphicspath{ {./} }
+% \usepgfplotslibrary{external}
+% \tikzexternalize
+
+% The heading with lesson name n stuff
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\lhead{${1:Lesson Name}}
+\chead{Alberto Hernandez}
+\rhead{Page \thepage}
+\newenvironment{dedication}
+{\vspace{6ex}\begin{quotation}\begin{center}\begin{em}}
+{\par\end{em}\end{center}\end{quotation}}
+
+\begin{document}
+
+\section{${2:Topic}}
+
+\end{document}
+endsnippet

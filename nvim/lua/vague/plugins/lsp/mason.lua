@@ -15,6 +15,7 @@ return {
         "prettier",
         "gofumpt",
         "jq",
+        "beautysh",
       },
     })
   end,
