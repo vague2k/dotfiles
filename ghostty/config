@@ -10,7 +10,5 @@ window-padding-balance = true
 cursor-style = block 
 cursor-style-blink = true
 
-shell-integration = zsh
-
 config-file = ?./macos
 

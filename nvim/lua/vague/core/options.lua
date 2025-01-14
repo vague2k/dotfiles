@@ -16,3 +16,4 @@ vim.opt.shadafile = "NONE" -- Do not save and restore the shada file
 vim.o.updatetime = 250 -- faster completion (4000ms default)
 vim.o.cursorline = true -- highlight line where the cursor is
 vim.o.numberwidth = 2 -- set number column width to 2 (default is 4)
+vim.o.clipboard = "unnamedplus"
