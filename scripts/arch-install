@@ -77,6 +77,7 @@ cd ~/Documents/Github/dotfiles/zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 # move the omz dir and clean up
+# FIXME: scripts kinda falls flat here.
 zsh -c "mv ~/.oh-my-zsh ./ohmyzsh; rm -rf ~/.oh-my-zsh; cp .zshenv ~/.zshenv; source ~/.zshenv; source ./.zshrc; rm ~/.bash*; rm ~/.shell*; rm ~/.z*"
 
 # set git creds
