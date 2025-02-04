@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+PACKAGES=(
+"arch-install-scripts"
+"base"
+"base-devel"
+"eza"
+"fakeroot-tcp"
+"git"
+"github-cli"
+"glow"
+"go"
+"lazygit"
+"less"
+"lf"
+"lua"
+"nano"
+"neovim"
+"npm"
+"python"
+"python-pynvim"
+"rust"
+"stylua"
+"sudo"
+"unzip"
+"vim"
+"yay-bin"
+"yay-bin-debug"
+"zoxide"
+"zsh"
+)
+
+echo "Setting up dotfiles"
+mkdir -p ~/Documents/Github
+cd ~/Documents/Github
+
+echo "Installing yay..."
+if command -v "yay" &>/dev/null; then
+    echo "yay is installed..."
+else
+    sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+fi
+
+installed_packages=$(pacman -Qe | awk '{print $1}')
+to_install=()
+
+echo "Installing pkgs..."
+for package in "${PACKAGES[@]}"; do
+    if ! echo "$installed_packages" | grep -q "^$package$"; then
+        to_install+=("$package")
+    else
+        echo "Installed... skipping: $package"
+    fi
+done
+yay -S ${to_install[@]}
+
+echo "Log Into Git via the CLI please..."
+gh auth login
+git config --global user.name "vague2k"
+git config --global user.email "ilovedrawing056@gmail.com"
+
+echo "Cloning repos..."
+gh repo clone vague2k/huez.nvim
+gh repo clone vague2k/vague.nvim
+gh repo clone vague2k/rummage
+gh repo clone vague2k/smv
+gh repo clone vague2k/dotfiles
+
+
+echo "Setting up zsh"
+cd ~/Documents/Github/dotfiles/zsh
+cp .zshenv ~/.zshenv
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+mv ~/.oh-my-zsh ./ohmyzsh
+
+source ~/.zshenv
+source ./.zshrc
