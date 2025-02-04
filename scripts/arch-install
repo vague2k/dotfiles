@@ -56,8 +56,6 @@ rm -rf ~/yay
 
 ### Setup git
 echo "Log Into Git via the CLI please..."
-git config --global user.name "vague2k"
-git config --global user.email "ilovedrawing056@gmail.com"
 gh auth login
 
 echo "Cloning repos..."
@@ -69,6 +67,10 @@ gh repo clone vague2k/vague.nvim
 gh repo clone vague2k/rummage
 gh repo clone vague2k/smv
 gh repo clone vague2k/dotfiles
+# needa do this
+git config --global user.name "vague2k"
+git config --global user.email "ilovedrawing056@gmail.com"
+
 
 echo "Creating dotfile links..."
 cd ~/Documents/Github/dotfiles
@@ -80,14 +82,20 @@ cd ~/Documents/Github/dotfiles/zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 ###################################### HELLO THIS IS IMPORTANT ######################################
-### After omz installs, it'll kick you out of this script, all you have to do is copy the following lines to continue
-### im too lazy to figure out how to make it not kick me out the script, and to be hoenst it's fine to me how it is currently
+### Immediately after OMZ installs... DO NOT EXIT ZSH, first, copy/paste and run the following lines
 
 mv ~/.oh-my-zsh ./ohmyzsh
 rm -rf ~/.oh-my-zsh
-rm ~/.shell*
-rm ~/.z*
 
 cp .zshenv ~/.zshenv
 source ~/.zshenv
 source ./.zshrc
+
+rm ~/.bash*
+rm ~/.shell*
+rm ~/.z*
+
+echo ""
+echo "Everything is setup! Make sure to fully restart the terminal just in case."
+echo "You may or may not need to relogin/reset git credentials into git"
+echo ""

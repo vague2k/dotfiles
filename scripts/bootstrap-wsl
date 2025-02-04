@@ -1,4 +1,6 @@
-passwd && echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel && useradd -m -G wheel -s /bin/bash albert && passwd albert
+# Exec Arch.exe, and after it installs the wsl registery... launch arch-wsl in the terminal, it should put you in root
+# At which then you copy/paste and run this.
+echo "Setup passwd for root" && passwd && echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel && useradd -m -G wheel -s /bin/bash albert && echo "Setup passwd for user: albert" && passwd albert
 
 # At this point... exit the wsl instance, spin up powershell and run this
 cd .\Desktop\; if ($?) { ./Arch.exe config --default-user albert }
