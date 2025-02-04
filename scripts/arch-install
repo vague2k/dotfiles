@@ -34,6 +34,7 @@ PACKAGES=(
 "zsh"
 )
 
+### install yay first
 cd ~ # make sure we're in home dir
 if command -v "yay" &>/dev/null; then
     echo "yay is installed..."
@@ -43,7 +44,6 @@ fi
 
 ### compare PACKAGES with what's been installed so far, 
 ### only install what hasn't been installed yet
-echo "Installing pkgs..."
 installed_packages=$(pacman -Qe | awk '{print $1}')
 to_install=()
 for package in "${PACKAGES[@]}"; do
@@ -56,28 +56,43 @@ done
 yay -S ${to_install[@]}
 rm -rf ~/yay
 
-echo "Log Into Git via the CLI please..."
-gh auth login
-
-echo "Cloning repos..."
+### start cloning some repos
 mkdir -p ~/Documents/Github
 cd ~/Documents/Github
 
-gh repo clone vague2k/huez.nvim
-gh repo clone vague2k/vague.nvim
-gh repo clone vague2k/rummage
-gh repo clone vague2k/smv
-gh repo clone vague2k/dotfiles
+# these repos are all public, we set git creds later
+git clone vague2k/huez.nvim
+git repo clone vague2k/vague.nvim
+git repo clone vague2k/rummage
+git repo clone vague2k/smv
+git repo clone vague2k/dotfiles
 
-
-echo "Creating dotfile links..."
+# make dotfile symlinks
 cd ~/Documents/Github/dotfiles
 chmod +x ./mklinks && ./mklinks
 
-echo "Setting up zsh..."
+# setup zsh
 cd ~/Documents/Github/dotfiles/zsh
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
+
+# move the omz dir and clean up
+mv ~/.oh-my-zsh ./ohmyzsh
+rm -rf ~/.oh-my-zsh
+
+cp .zshenv ~/.zshenv
+source ~/.zshenv
+source ./.zshrc
+
+rm ~/.bash*
+rm ~/.shell*
+rm ~/.z*
+
+# set git creds
+gh auth login
+
+git config --global user.name "vague2k"
+git config --global user.email "ilovedrawing056@gmail.com"
 
 echo ""
 echo "Everything is setup! Make sure to fully restart the terminal just in case."
