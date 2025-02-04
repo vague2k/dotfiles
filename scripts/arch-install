@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+###################################### HELLO THIS IS IMPORTANT ######################################
+### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH. 
+### Please run the post install script
+#####################################################################################################
+
 PACKAGES=(
 "arch-install-scripts"
 "base"
@@ -29,9 +34,6 @@ PACKAGES=(
 "zsh"
 )
 
-echo "Setting up dotfiles"
-
-echo "Installing yay..."
 cd ~ # make sure we're in home dir
 if command -v "yay" &>/dev/null; then
     echo "yay is installed..."
@@ -54,7 +56,6 @@ done
 yay -S ${to_install[@]}
 rm -rf ~/yay
 
-### Setup git
 echo "Log Into Git via the CLI please..."
 gh auth login
 
@@ -67,9 +68,6 @@ gh repo clone vague2k/vague.nvim
 gh repo clone vague2k/rummage
 gh repo clone vague2k/smv
 gh repo clone vague2k/dotfiles
-# needa do this
-git config --global user.name "vague2k"
-git config --global user.email "ilovedrawing056@gmail.com"
 
 
 echo "Creating dotfile links..."
@@ -80,20 +78,6 @@ echo "Setting up zsh..."
 cd ~/Documents/Github/dotfiles/zsh
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-###################################### HELLO THIS IS IMPORTANT ######################################
-### Immediately after OMZ installs... DO NOT EXIT ZSH, first, copy/paste and run the following lines
-
-mv ~/.oh-my-zsh ./ohmyzsh
-rm -rf ~/.oh-my-zsh
-
-cp .zshenv ~/.zshenv
-source ~/.zshenv
-source ./.zshrc
-
-rm ~/.bash*
-rm ~/.shell*
-rm ~/.z*
 
 echo ""
 echo "Everything is setup! Make sure to fully restart the terminal just in case."
