@@ -24,8 +24,7 @@ PACKAGES=(
 "sudo"
 "unzip"
 "vim"
-"yay-bin"
-"yay-bin-debug"
+"rust"
 "zoxide"
 "zsh"
 )
@@ -57,9 +56,9 @@ rm -rf ~/yay
 
 ### Setup git
 echo "Log Into Git via the CLI please..."
-gh auth login
 git config --global user.name "vague2k"
 git config --global user.email "ilovedrawing056@gmail.com"
+gh auth login
 
 echo "Cloning repos..."
 mkdir -p ~/Documents/Github
@@ -79,6 +78,11 @@ echo "Setting up zsh..."
 cd ~/Documents/Github/dotfiles/zsh
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+###################################### HELLO THIS IS IMPORTANT ######################################
+### After omz installs, it'll kick you out of this script, all you have to do is copy the following lines to continue
+### im too lazy to figure out how to make it not kick me out the script, and to be hoenst it's fine to me how it is currently
+
 mv ~/.oh-my-zsh ./ohmyzsh
 rm -rf ~/.oh-my-zsh
 rm ~/.shell*

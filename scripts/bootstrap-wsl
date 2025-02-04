@@ -1,16 +1,9 @@
-passwd \
-echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel \
-useradd -m -G wheel -s /bin/bash albert \
-passwd albert \
+passwd && echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel && useradd -m -G wheel -s /bin/bash albert && passwd albert
 
 # At this point... exit the wsl instance, spin up powershell and run this
-cd .\Desktop\
-Arch.exe config --default-user albert
+cd .\Desktop\; if ($?) { ./Arch.exe config --default-user albert }
 
 # Launch arch-wsl again and you should be as user... then run
-sudo pacman-key --init \
-sudo pacman-key --populate \
-sudo pacman -Sy archlinux-keyring \
-sudo pacman -Su
+sudo pacman-key --init && sudo pacman-key --populate && sudo pacman -Sy archlinux-keyring && sudo pacman -Su
 
 # All done!
