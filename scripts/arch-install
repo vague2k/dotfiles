@@ -61,11 +61,11 @@ mkdir -p ~/Documents/Github
 cd ~/Documents/Github
 
 # these repos are all public, we set git creds later
-git clone vague2k/huez.nvim
-git repo clone vague2k/vague.nvim
-git repo clone vague2k/rummage
-git repo clone vague2k/smv
-git repo clone vague2k/dotfiles
+git clone https://github.com/vague2k/huez.nvim.git
+git clone https://github.com/vague2k/vague.nvim.git
+git clone https://github.com/vague2k/rummage.git
+git clone https://github.com/vague2k/smv.git
+git clone https://github.com/vague2k/dotfiles.git
 
 # make dotfile symlinks
 cd ~/Documents/Github/dotfiles
@@ -74,7 +74,7 @@ chmod +x ./mklinks && ./mklinks
 # setup zsh
 cd ~/Documents/Github/dotfiles/zsh
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 # move the omz dir and clean up
 mv ~/.oh-my-zsh ./ohmyzsh
