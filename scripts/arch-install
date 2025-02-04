@@ -31,20 +31,20 @@ PACKAGES=(
 )
 
 echo "Setting up dotfiles"
-mkdir -p ~/Documents/Github
-cd ~/Documents/Github
 
 echo "Installing yay..."
+cd ~ # make sure we're in home dir
 if command -v "yay" &>/dev/null; then
     echo "yay is installed..."
 else
     sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 fi
 
+### compare PACKAGES with what's been installed so far, 
+### only install what hasn't been installed yet
+echo "Installing pkgs..."
 installed_packages=$(pacman -Qe | awk '{print $1}')
 to_install=()
-
-echo "Installing pkgs..."
 for package in "${PACKAGES[@]}"; do
     if ! echo "$installed_packages" | grep -q "^$package$"; then
         to_install+=("$package")
@@ -53,13 +53,18 @@ for package in "${PACKAGES[@]}"; do
     fi
 done
 yay -S ${to_install[@]}
+rm -rf ~/yay
 
+### Setup git
 echo "Log Into Git via the CLI please..."
 gh auth login
 git config --global user.name "vague2k"
 git config --global user.email "ilovedrawing056@gmail.com"
 
 echo "Cloning repos..."
+mkdir -p ~/Documents/Github
+cd ~/Documents/Github
+
 gh repo clone vague2k/huez.nvim
 gh repo clone vague2k/vague.nvim
 gh repo clone vague2k/rummage
