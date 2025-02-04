@@ -71,13 +71,19 @@ gh repo clone vague2k/rummage
 gh repo clone vague2k/smv
 gh repo clone vague2k/dotfiles
 
+echo "Creating dotfile links..."
+cd ~/Documents/Github/dotfiles
+chmod +x ./mklinks && ./mklinks
 
-echo "Setting up zsh"
+echo "Setting up zsh..."
 cd ~/Documents/Github/dotfiles/zsh
-cp .zshenv ~/.zshenv
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 mv ~/.oh-my-zsh ./ohmyzsh
+rm -rf ~/.oh-my-zsh
+rm ~/.shell*
+rm ~/.z*
 
+cp .zshenv ~/.zshenv
 source ~/.zshenv
 source ./.zshrc
