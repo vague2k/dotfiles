@@ -1,37 +1,37 @@
 #!/usr/bin/env bash
 
 ###################################### HELLO THIS IS IMPORTANT ######################################
-### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH. 
+### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH.
 ### Please run the post install script
 #####################################################################################################
 
 PACKAGES=(
-"arch-install-scripts"
-"base"
-"base-devel"
-"eza"
-"fakeroot-tcp"
-"git"
-"github-cli"
-"glow"
-"go"
-"lazygit"
-"less"
-"lf"
-"lua"
-"nano"
-"neovim"
-"npm"
-"python"
-"python-pynvim"
-"rust"
-"stylua"
-"sudo"
-"unzip"
-"vim"
-"rust"
-"zoxide"
-"zsh"
+    "arch-install-scripts"
+    "base"
+    "base-devel"
+    "eza"
+    "fakeroot-tcp"
+    "git"
+    "github-cli"
+    "glow"
+    "go"
+    "lazygit"
+    "less"
+    "lf"
+    "lua"
+    "nano"
+    "neovim"
+    "npm"
+    "python"
+    "python-pynvim"
+    "rust"
+    "stylua"
+    "sudo"
+    "unzip"
+    "vim"
+    "rust"
+    "zoxide"
+    "zsh"
 )
 
 ### install yay first
@@ -42,7 +42,7 @@ else
     sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 fi
 
-### compare PACKAGES with what's been installed so far, 
+### compare PACKAGES with what's been installed so far,
 ### only install what hasn't been installed yet
 installed_packages=$(pacman -Qe | awk '{print $1}')
 to_install=()
