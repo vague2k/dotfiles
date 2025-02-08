@@ -74,7 +74,7 @@ chmod +x ./mklinks && ./mklinks
 # setup zsh
 cd ~/Documents/Github/dotfiles/zsh
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # at this point you should run the post-install script
 
