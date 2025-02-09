@@ -13,6 +13,10 @@ weirdo.
 I would pull up the [ArchWsl setup docs](https://wsldl-pg.github.io/ArchW-docs/How-to-Setup/#setting-the-root-password)
 while I do this. Go to the `bootstrap-wsl` file
 
+NOTE: obviously in my case the user will be "albert" (since that's me), but if 
+for some fucking reason someone else is running this, replace "albert" with 
+whatever your username is, ok? thanks.
+
 1. Exec `Arch.exe`, and after it installs the wsl registery... launch arch-wsl in 
 the terminal, it should put you in root at which point you copy/paste and run 
 this one liner.
@@ -35,7 +39,7 @@ sudo pacman-key --init && sudo pacman-key --populate && sudo pacman -Sy archlinu
 
 Once you're done with all of that you can FINALLY start the actual fun stuff...
 
-#### Step 3. arch-install
+#### Step 3. the install script
 Go to the `arch-install` file and copy the contents into your terminal after a
 fresh install of arch-wsl. Run it.
 
@@ -44,10 +48,14 @@ fresh install of arch-wsl. Run it.
 if you do exit cuz you didn't read and your a dumbass, start arch-wsl again. run
 a zsh shell, and THEN do step 4.
 
-#### Step 4. post OMZ
+#### Step 4. post install inside zsh
 Go to the `post-install` file and copy the contents into your terminal while in
-a zsh shell.
+a zsh shell, then run the script.
 
+#### Step 5. restart terminal 
+Done. Fully restart the terminal for final changes to take effect (zsh will 
+install 1 or 2 plugins...). You may or may not need to relogin to git or reset 
+git credentials.
 
 ### You're done!!!
 woohoo you're done i can finally go to sleep.

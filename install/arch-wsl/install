@@ -5,6 +5,8 @@
 ### Please run the post install script
 #####################################################################################################
 
+GIT_DIR=~/Documents/Github
+DOT_DIR=$GITDIR/dotfiles
 PACKAGES=(
     "arch-install-scripts"
     "base"
@@ -38,6 +40,8 @@ PACKAGES=(
 cd ~ # make sure we're in home dir
 if command -v "yay" &>/dev/null; then
     echo "yay is installed..."
+    echo "i'm going to assume this script has been ran before and exit early..."
+    return 0
 else
     sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
 fi
@@ -57,8 +61,8 @@ yay -S ${to_install[@]}
 rm -rf ~/yay
 
 ### start cloning some repos
-mkdir -p ~/Documents/Github
-cd ~/Documents/Github
+mkdir -p $GIT_DIR
+cd $GIT_DIR
 
 # these repos are all public, we set git creds later
 git clone https://github.com/vague2k/huez.nvim.git
@@ -68,17 +72,31 @@ git clone https://github.com/vague2k/smv.git
 git clone https://github.com/vague2k/dotfiles.git
 
 # make dotfile symlinks
-cd ~/Documents/Github/dotfiles
+cd $DOT_DIR
 chmod +x ./mklinks && ./mklinks
+
+zoxide add $GIT_DIR
+zoxide add $GIT_DIR/huez.nvim
+zoxide add $GIT_DIR/vague.nvim
+zoxide add $GIT_DIR/rummage
+zoxide add $GIT_DIR/smv
+zoxide add $DOT_DIR
+zoxide add ~/.config
+zoxide add ~/.local
 
 # setup zsh
 cd ~/Documents/Github/dotfiles/zsh
+cd $DOT_DIR/zsh
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# at this point you should run the post-install script
+###################################### HELLO THIS IS IMPORTANT #2 ######################################
+### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH.
+### Please copy/paste and run the post install script
+#####################################################################################################
 
+### This message will print after exiting ZSH after post-install script has been ran
 echo ""
-echo "Everything is setup! Make sure to fully restart the terminal just in case."
-echo "You may or may not need to relogin/reset git credentials into git"
+echo "Done. Fully restart the terminal for final changes to take effect"
+echo "You may or may not need to relogin to git or reset git credentials"
 echo ""
