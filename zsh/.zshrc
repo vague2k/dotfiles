@@ -20,6 +20,11 @@ alias brewu="brew update && brew upgrade"
 setopt INTERACTIVE_COMMENTS
 setopt HIST_SAVE_NO_DUPS
 
+###------- MISC --------###
+if [[ $TERM == "xterm-ghostty" ]]; then
+    export TERM="xterm-256color"
+fi
+
 ###------- EVALS -------###
 # a smarter cd command, see https://github.com/ajeetdsouza/zoxide for more info
 eval "$(zoxide init --cmd cd zsh)"
