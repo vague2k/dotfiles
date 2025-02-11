@@ -53,7 +53,7 @@ return {
       handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
-          require("lazydev").setup({})
+          require("lazydev").setup({ library = { "nvim-dap-ui" } })
           require("lspconfig").lua_ls.setup({
             settings = {
               Lua = {
