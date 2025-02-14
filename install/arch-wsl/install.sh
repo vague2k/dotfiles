@@ -5,7 +5,7 @@
 set -e
 
 GIT_DIR="~/Documents/Github"
-DOT_DIR="$GITDIR/dotfiles"
+DOT_DIR="$GIT_DIR/dotfiles"
 PACKAGES=(
     "arch-install-scripts"
     "base"
