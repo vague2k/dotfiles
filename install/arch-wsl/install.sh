@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/vague2k/dotfiles/install-script/install/arch-wsl/install.sh)"
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/vague2k/dotfiles/install-script/install/arch-wsl/install.sh)"
 
 set -e
 
