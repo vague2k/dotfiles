@@ -114,8 +114,9 @@ git config --global user.email "ilovedrawing056@gmail.com"
 cd ~/Documents/Github/dotfiles/zsh
 cd $DOT_DIR/zsh
 
-ZSH=~/.config/zsh/ohmyzsh sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-cleanup_zsh
+ZSH=~/.config/zsh/ohmyzsh CHSH="yes" RUNZSH="no" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+export -f cleanup_zsh
+zsh -c "cleanup_zsh"
 
 echo ""
 echo "Done. Fully restart the terminal for final changes to take effect"
@@ -125,3 +126,4 @@ echo ""
 unset DOT_DIR
 unset GIT_DIR
 unset PACKAGES
+unset -f cleanup_zsh
