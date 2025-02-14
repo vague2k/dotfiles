@@ -4,7 +4,11 @@
 
 set -e
 
-GIT_DIR="~/Documents/Github"
+# $HOME is defined at the time of login, but it could be unset. If it is unset,
+# a tilde by itself (~) will not be expanded to the current user's home directory.
+# POSIX: https://pubs.opengroup.org/onlinepubs/009696899/basedefs/xbd_chap08.html#tag_08_03
+HOME="${HOME:-$(getent passwd $USER 2>/dev/null | cut -d: -f6)}"
+GIT_DIR="$HOME/Documents/Github"
 DOT_DIR="$GIT_DIR/dotfiles"
 PACKAGES=(
     "arch-install-scripts"
