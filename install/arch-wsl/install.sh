@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-###################################### HELLO THIS IS IMPORTANT ######################################
-### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH.
-### Please run the post install script
-#####################################################################################################
+set -e
 
 GIT_DIR=~/Documents/Github
 DOT_DIR=$GITDIR/dotfiles
@@ -36,9 +33,38 @@ PACKAGES=(
     "zsh"
 )
 
+cmd_exists() {
+  command -v "$@" >/dev/null 2>&1
+}
+
+user_can_sudo() {
+  cmd_exists sudo || return 1
+  case "$PREFIX" in
+  *com.termux*) return 1 ;;
+  esac
+  ! LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"
+}
+
+
+### if root, setup passwd for root and new user "albert"
+if [[ $(id -u) -eq 0 ]]; then
+    echo "Setup passwd for root"
+    passwd 
+    echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
+    useradd -m -G wheel -s /bin/bash albert
+    echo "Setup passwd for user: albert"
+    passwd albert
+    echo "Switching user to... albert"
+    su albert
+    sudo pacman-key --init 
+    sudo pacman-key --populate 
+    sudo pacman -Sy archlinux-keyring 
+    sudo pacman -Su
+fi
+
 ### install yay first
 cd ~ # make sure we're in home dir
-if command -v "yay" &>/dev/null; then
+if cmd_exists "yay"; then
     echo "yay is installed..."
     echo "i'm going to assume this script has been ran before and exit early..."
     return 0
@@ -73,7 +99,8 @@ git clone https://github.com/vague2k/dotfiles.git
 
 # make dotfile symlinks
 cd $DOT_DIR
-chmod +x ./mklinks && ./mklinks
+chmod +x ./mklinks 
+./mklinks
 
 zoxide add $GIT_DIR
 zoxide add $GIT_DIR/huez.nvim
@@ -90,12 +117,6 @@ cd $DOT_DIR/zsh
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-###################################### HELLO THIS IS IMPORTANT #2 ######################################
-### When the script end, immediately after OMZ installs... DO NOT EXIT ZSH.
-### Please copy/paste and run the post install script
-#####################################################################################################
-
-### This message will print after exiting ZSH after post-install script has been ran
 echo ""
 echo "Done. Fully restart the terminal for final changes to take effect"
 echo "You may or may not need to relogin to git or reset git credentials"
