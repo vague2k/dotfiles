@@ -45,6 +45,11 @@ user_can_sudo() {
   ! LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"
 }
 
+### if user can't sudo, install sudo
+if ! user_can_sudo; then
+    pacman -Sy sudo
+fi
+
 
 ### if root, setup passwd for root and new user "albert"
 if [[ $(id -u) -eq 0 ]]; then
