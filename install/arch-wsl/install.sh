@@ -33,43 +33,25 @@ PACKAGES=(
     "zsh"
 )
 
-cmd_exists() {
-  command -v "$@" >/dev/null 2>&1
+cleanup_zsh() {
+
+ZSH_DIR=$DOT_DIR/zsh
+
+cp $ZSH_DIR/.zshenv ~/.zshenv
+source ~/.zshenv
+source $ZSH_DIR/.zshrc
+
+rm ~/.bash*
+rm ~/.shell*
+rm ~/.zcompdump*
+rm ~/.zshrc
+
+unset ZSH_DIR
 }
-
-user_can_sudo() {
-  cmd_exists sudo || return 1
-  case "$PREFIX" in
-  *com.termux*) return 1 ;;
-  esac
-  ! LANG= sudo -n -v 2>&1 | grep -q "may not run sudo"
-}
-
-### if user can't sudo, install sudo
-if ! user_can_sudo; then
-    pacman -Sy sudo
-fi
-
-
-### if root, setup passwd for root and new user "albert"
-if [[ $(id -u) -eq 0 ]]; then
-    echo "Setup passwd for root"
-    passwd 
-    echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
-    useradd -m -G wheel -s /bin/bash albert
-    echo "Setup passwd for user: albert"
-    passwd albert
-    echo "Switching user to... albert"
-    su albert
-    sudo pacman-key --init 
-    sudo pacman-key --populate 
-    sudo pacman -Sy archlinux-keyring 
-    sudo pacman -Su
-fi
 
 ### install yay first
 cd ~ # make sure we're in home dir
-if cmd_exists "yay"; then
+if command -v yay >/dev/null; then
     echo "yay is installed..."
     echo "i'm going to assume this script has been ran before and exit early..."
     return 0
@@ -116,13 +98,24 @@ zoxide add $DOT_DIR
 zoxide add ~/.config
 zoxide add ~/.local
 
+# set git creds
+gh auth login
+
+git config --global user.name "vague2k"
+git config --global user.email "ilovedrawing056@gmail.com"
+
 # setup zsh
 cd ~/Documents/Github/dotfiles/zsh
 cd $DOT_DIR/zsh
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+ZSH=~/.config/zsh/ohmyzsh sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+cleanup_zsh
 
 echo ""
 echo "Done. Fully restart the terminal for final changes to take effect"
 echo "You may or may not need to relogin to git or reset git credentials"
 echo ""
+
+unset DOT_DIR
+unset GIT_DIR
+unset PACKAGES
