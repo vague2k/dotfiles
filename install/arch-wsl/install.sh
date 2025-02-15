@@ -114,9 +114,19 @@ git config --global user.email "ilovedrawing056@gmail.com"
 cd ~/Documents/Github/dotfiles/zsh
 cd $DOT_DIR/zsh
 
-ZSH=~/.config/zsh/ohmyzsh CHSH="yes" RUNZSH="no" sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-export -f cleanup_zsh
-zsh -c "cleanup_zsh"
+ZSH=~/.config/zsh/ohmyzsh 
+CHSH="yes" 
+RUNZSH="no" 
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+zsh -c "cp $HOME/Documents/Github/dotfiles/zsh/.zshenv ~/.zshenv; 
+source ~/.zshenv;
+source $HOME/Documents/Github/dotfiles/zsh/.zshrc;
+rm ~/.bash*;
+rm ~/.shell*;
+rm ~/.zcompdump*;
+rm ~/.zshrc;
+"
 
 echo ""
 echo "Done. Fully restart the terminal for final changes to take effect"
