@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
-# sh -c "$(curl -fsSL https://raw.githubusercontent.com/vague2k/dotfiles/install-script/install/arch-wsl/install.sh)"
+# This script is meant to be run by running this command in the terminal
+# sh -c "$(curl -fsSL https://raw.githubusercontent.com/vague2k/dotfiles/main/install/arch-wsl/install.sh)"
 
 set -e
 
+# the next 4 lines was ripped straight from the omz install script
 # $HOME is defined at the time of login, but it could be unset. If it is unset,
 # a tilde by itself (~) will not be expanded to the current user's home directory.
 # POSIX: https://pubs.opengroup.org/onlinepubs/009696899/basedefs/xbd_chap08.html#tag_08_03
 HOME="${HOME:-$(getent passwd $USER 2>/dev/null | cut -d: -f6)}"
+
 GIT_DIR="$HOME/Documents/Github"
 DOT_DIR="$GIT_DIR/dotfiles"
 PACKAGES=(
@@ -15,7 +18,6 @@ PACKAGES=(
     "base"
     "base-devel"
     "eza"
-    # "fakeroot-tcp"
     "git"
     "github-cli"
     "glow"
@@ -41,7 +43,7 @@ PACKAGES=(
 )
 
 ### install yay first
-cd ~ # make sure we're in home dir
+cd $HOME # make sure we're in home dir
 if command -v yay >/dev/null; then
     echo "yay is installed..."
     echo "i'm going to assume this script has been ran before and exit early..."
@@ -93,10 +95,9 @@ zoxide add ~/.local
 gh auth login
 
 git config --global user.name "vague2k"
-git config --global user.email "ilovedrawing056@gmail.com"
+git config --global user.email "ilovedrawing056@gmail.com" # this email is public knowledge idc that it's in the script, plus it's my spam email lol
 
 # setup zsh
-cd ~/Documents/Github/dotfiles/zsh
 cd $DOT_DIR/zsh
 
 wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
@@ -106,8 +107,7 @@ export RUNZSH="no"
 
 sh install.sh
 
-zsh -c "mv $HOME/.oh-my-zsh $HOME/Documents/Github/dotfiles/zsh/ohmyzsh;
-cp $HOME/Documents/Github/dotfiles/zsh/.zshenv ~/.zshenv; 
+zsh -c "cp $HOME/Documents/Github/dotfiles/zsh/.zshenv ~/.zshenv; 
 rm ~/.bash*;
 rm ~/.shell*;
 rm ~/.zcompdump*;
@@ -116,10 +116,13 @@ source ~/.zshenv;
 source $HOME/Documents/Github/dotfiles/zsh/.zshrc;
 "
 
+rm install.sh
+
 echo ""
 echo "Done. Fully restart the terminal for final changes to take effect"
-echo "You may or may not need to relogin to git or reset git credentials"
 echo ""
+
+cd $HOME
 
 unset DOT_DIR
 unset GIT_DIR
