@@ -55,7 +55,7 @@ run
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/vague2k/dotfiles/main/install/arch-wsl/install.sh)"
 ```
 
-#### Step 5. restart terminal
+#### Step 4. restart terminal
 
 Done. Fully restart the terminal for final changes to take effect (zsh will
 install 1 or 2 plugins...). You may or may not need to relogin to git or reset
