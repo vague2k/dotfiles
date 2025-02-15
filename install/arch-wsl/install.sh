@@ -35,25 +35,10 @@ PACKAGES=(
     "unzip"
     "vim"
     "rust"
+    "wget"
     "zoxide"
     "zsh"
 )
-
-cleanup_zsh() {
-
-ZSH_DIR=$DOT_DIR/zsh
-
-cp $ZSH_DIR/.zshenv ~/.zshenv
-source ~/.zshenv
-source $ZSH_DIR/.zshrc
-
-rm ~/.bash*
-rm ~/.shell*
-rm ~/.zcompdump*
-rm ~/.zshrc
-
-unset ZSH_DIR
-}
 
 ### install yay first
 cd ~ # make sure we're in home dir
@@ -114,19 +99,21 @@ git config --global user.email "ilovedrawing056@gmail.com"
 cd ~/Documents/Github/dotfiles/zsh
 cd $DOT_DIR/zsh
 
-ZSH=~/.config/zsh/ohmyzsh 
-CHSH="yes" 
-RUNZSH="no" 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+export ZSH=~/.config/zsh/ohmyzsh 
+export CHSH="yes" 
+export RUNZSH="no" 
+
+sh install.sh
 
 zsh -c "mv $HOME/.oh-my-zsh $HOME/Documents/Github/dotfiles/zsh/ohmyzsh;
 cp $HOME/Documents/Github/dotfiles/zsh/.zshenv ~/.zshenv; 
-source ~/.zshenv;
-source $HOME/Documents/Github/dotfiles/zsh/.zshrc;
 rm ~/.bash*;
 rm ~/.shell*;
 rm ~/.zcompdump*;
 rm ~/.zshrc;
+source ~/.zshenv;
+source $HOME/Documents/Github/dotfiles/zsh/.zshrc;
 "
 
 echo ""
@@ -137,4 +124,5 @@ echo ""
 unset DOT_DIR
 unset GIT_DIR
 unset PACKAGES
-unset -f cleanup_zsh
+unset CHSH
+unset RUNZSH
