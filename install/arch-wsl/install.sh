@@ -119,8 +119,7 @@ CHSH="yes"
 RUNZSH="no" 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-zsh -c "cp $HOME/.oh-my-zsh $HOME/Documents/Github/dotfiles/zsh/ohmyzsh;
-rm -rf $HOME/.oh-my-zsh;
+zsh -c "mv $HOME/.oh-my-zsh $HOME/Documents/Github/dotfiles/zsh/ohmyzsh;
 cp $HOME/Documents/Github/dotfiles/zsh/.zshenv ~/.zshenv; 
 source ~/.zshenv;
 source $HOME/Documents/Github/dotfiles/zsh/.zshrc;
