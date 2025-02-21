@@ -4,9 +4,8 @@ return {
     local snacks = require("snacks")
 
     snacks.setup({
-      explorer = {
-        replace_netrw = true,
-      },
+      explorer = {},
+      image = {},
       lazygit = {},
       input = {
         icon = "::",
