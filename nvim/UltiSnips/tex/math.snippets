@@ -17,34 +17,9 @@ snippet ff "fraction" wA
 \frac{${1:num}}{${2:denom}}
 endsnippet
 
-snippet ln "linear function" b
-\[
-f(x) = ${1:m}x + ${2:b}
-\]
-endsnippet
-
-snippet qd "quadratic function" b
-\[
-f(x) = ${1:a}x^2 + ${2:b}x + ${3:c}
-\]
-endsnippet
-
-snippet pp "left right parentheses" b
+snippet pp "left right parentheses" wA
 \left($1\right)
 endsnippet
-
-
-snippet ls "law of sines" b
-\[
-\frac{\sin(${1:A})}{a} = \frac{\sin(${2:B})}{b} = \frac{\sin(${3:C})}{c}
-\]
-endsnippet
-snippet lc "law of cosines" b
-\[
-c^2 = a^2 + b^2 - 2ab\cos(${1:C})
-\]
-endsnippet
-
 
 snippet '([A-Za-z])(\d)' "auto subscript" wrA
 `!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
