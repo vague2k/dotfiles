@@ -18,7 +18,6 @@ require("lazy").setup({
   { import = "vague.plugins.lsp" },
   { import = "vague.plugins.lang.go" },
   { import = "vague.plugins.lang.css" },
-  { import = "vague.plugins.lang.python" },
   { import = "vague.plugins.lang.markdown" },
   { import = "vague.plugins.lang.latex" },
 }, {

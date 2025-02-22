@@ -2,6 +2,7 @@
 -- but i could use it in the future for some different types of snippets
 return {
   "Sirver/ultisnips",
+  ft = { "tex" },
   config = function()
     vim.g.UltiSnipsExpandTrigger = "<Tab>"
     vim.g.UltiSnipsJumpForwardTrigger = "<Tab>"
