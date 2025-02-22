@@ -28,7 +28,7 @@ return {
 
     lsp_zero.setup()
     require("mason").setup({})
-    require("mason-lspconfig").setup({
+    require("mason-lspconfig").setup({ ---@diagnostic disable-line
 
       -- ensure these LSPs are installed
       ensure_installed = {
@@ -53,7 +53,7 @@ return {
       handlers = {
         lsp_zero.default_setup,
         lua_ls = function()
-          require("lazydev").setup({ library = { "nvim-dap-ui" } })
+          require("lazydev").setup({ library = { "nvim-dap-ui" } }) ---@diagnostic disable-line
           require("lspconfig").lua_ls.setup({
             settings = {
               Lua = {
