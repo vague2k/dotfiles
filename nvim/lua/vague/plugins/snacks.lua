@@ -18,6 +18,16 @@ return {
       },
       picker = {
         prompt = " :: ",
+        sources = {
+          explorer = {
+            exclude = { ".node_modules*", ".DS_Store" },
+            include = { ".git*", ".go*", ".config", ".local", ".cache" },
+          },
+          files = {
+            exclude = { ".node_modules*", ".DS_Store" },
+            include = { ".git*", ".go*", ".config", ".local", ".cache" },
+          },
+        },
       },
     })
 
