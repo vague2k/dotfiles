@@ -76,8 +76,10 @@ return {
                   unusedvariables = true,
                 },
                 semanticTokens = true,
-                noSemanticString = true,
-                noSemanticNumber = true,
+                semanticTokenTypes = {
+                  number = true,
+                  string = true,
+                },
                 staticcheck = true,
               },
             },
