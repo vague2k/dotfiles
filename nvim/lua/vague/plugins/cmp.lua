@@ -7,7 +7,7 @@ return {
     require("blink-cmp").setup({
       keymap = { preset = "enter" },
       cmdline = {
-        keymap = { preset = "default" },
+        keymap = { preset = "super-tab" },
       },
       -- completion menu behavior
       completion = {
