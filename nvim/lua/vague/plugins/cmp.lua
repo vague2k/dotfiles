@@ -2,16 +2,16 @@ return {
   "saghen/blink.cmp",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = "rafamadriz/friendly-snippets",
-  version = "v0.9.2",
+  version = "v0.12.4",
   config = function()
     require("blink-cmp").setup({
-      keymap = {
-        preset = "enter",
-        cmdline = { preset = "default" },
+      keymap = { preset = "enter" },
+      cmdline = {
+        keymap = { preset = "default" },
       },
       -- completion menu behavior
       completion = {
-        list = { selection = "auto_insert" }, -- inserts potential selection when scrolling through list
+        list = { selection = { auto_insert = true } }, -- inserts potential selection when scrolling through list
         documentation = {
           auto_show = true,
           window = {
