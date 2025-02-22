@@ -26,6 +26,17 @@ return {
       float_border = "rounded",
     })
 
+    -- workaround fix to get borders working on doc hover for nvim-0.11
+    -- delete this block when issues #20202 or #32242 are resolved
+    if vim.fn.has("nvim-0.11") == 1 then
+      local _hover = vim.lsp.buf.hover
+      vim.lsp.buf.hover = function(opts)
+        opts = opts or {}
+        opts.border = opts.border or "rounded"
+        return _hover(opts)
+      end
+    end
+
     lsp_zero.setup()
     require("mason").setup({})
     require("mason-lspconfig").setup({ ---@diagnostic disable-line
