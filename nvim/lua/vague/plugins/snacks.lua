@@ -27,6 +27,10 @@ return {
             exclude = { ".node_modules*", ".DS_Store" },
             include = { ".git*", ".go*", ".config", ".local", ".cache" },
           },
+          todo_comments = {
+            exclude = { "*.ics" },
+            include = {},
+          },
         },
       },
     })
