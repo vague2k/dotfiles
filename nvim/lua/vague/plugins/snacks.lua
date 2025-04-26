@@ -5,7 +5,6 @@ return {
 
     snacks.setup({
       explorer = {},
-      image = {},
       lazygit = {},
       input = {
         icon = "::",
