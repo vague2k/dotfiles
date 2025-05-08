@@ -1,47 +1,27 @@
 return {
-  "VonHeikemen/lsp-zero.nvim",
-  branch = "v4.x",
-  event = { "BufReadPre", "BufNewFile" },
+  "neovim/nvim-lspconfig", -- provides sensible defaults for LSPs
   dependencies = {
-    "neovim/nvim-lspconfig",
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "folke/lazydev.nvim",
-    { "antosha417/nvim-lsp-file-operations", config = true },
+    "mason-org/mason.nvim", -- manages LSPs and tells nvim where they're installed
+    "mason-org/mason-lspconfig.nvim", -- bridges the gap between mason and nvim-lspconfig
+    "folke/lazydev.nvim", -- faster lua_ls setup for nvim
   },
+  event = { "BufReadPre", "BufNewFile" },
   config = function()
-    local lsp_zero = require("lsp-zero")
-    lsp_zero.on_attach(function(_, bufnr)
-      local bufmap = function(keys, func) vim.keymap.set("n", keys, func, { buffer = bufnr }) end
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local bufmap = function(keys, func) vim.keymap.set("n", keys, func, { buffer = args.buf }) end
 
-      bufmap("<leader>r", vim.lsp.buf.rename) -- renames a reference
-      bufmap("gd", vim.lsp.buf.definition) -- goto a definition
-      bufmap("K", vim.lsp.buf.hover) -- display reference information
-      bufmap("<leader>fd", ":Telescope diagnostics bufnr=0<CR>") -- open a list of diagnostics
-      bufmap("<leader>d", vim.diagnostic.open_float) -- display diagnostic information
-      bufmap("<leader>n", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end) -- toggle LSP inlay hints
-    end)
-
-    lsp_zero.extend_lspconfig({
-      float_border = "rounded",
+        bufmap("<leader>r", vim.lsp.buf.rename) -- renames a reference
+        bufmap("gd", vim.lsp.buf.definition) -- goto a definition
+        bufmap("K", vim.lsp.buf.hover) -- display reference information
+        bufmap("<leader>fd", ":Telescope diagnostics bufnr=0<CR>") -- open a list of diagnostics
+        bufmap("<leader>d", vim.diagnostic.open_float) -- display diagnostic information
+        bufmap("<leader>n", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({})) end) -- toggle LSP inlay hint
+      end,
     })
 
-    -- workaround fix to get borders working on doc hover for nvim-0.11
-    -- delete this block when issues #20202 or #32242 are resolved
-    if vim.fn.has("nvim-0.11") == 1 then
-      local _hover = vim.lsp.buf.hover
-      vim.lsp.buf.hover = function(opts)
-        opts = opts or {}
-        opts.border = opts.border or "rounded"
-        return _hover(opts)
-      end
-    end
-
-    lsp_zero.setup()
     require("mason").setup({})
-    require("mason-lspconfig").setup({ ---@diagnostic disable-line
-
-      -- ensure these LSPs are installed
+    require("mason-lspconfig").setup({
       ensure_installed = {
         "lua_ls",
         "ts_ls",
@@ -62,15 +42,10 @@ return {
 
       -- handlers for specific languages
       handlers = {
-        lsp_zero.default_setup,
         lua_ls = function()
-          require("lazydev").setup({ library = { "nvim-dap-ui" } }) ---@diagnostic disable-line
           require("lspconfig").lua_ls.setup({
             settings = {
               Lua = {
-                diagnostics = {
-                  globals = { "vim" },
-                },
                 hint = { enable = true },
                 workspace = { checkThirdParty = false },
                 telemetry = { enable = false },
@@ -96,6 +71,13 @@ return {
             },
           })
         end,
+      },
+    })
+
+    require("lazydev").setup({ ---@diagnostic disable-line
+      library = {
+        "nvim-dap-ui",
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
     })
   end,
