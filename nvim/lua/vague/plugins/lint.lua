@@ -3,10 +3,8 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   config = function()
     require("lint").linters_by_ft = {
-      javascript = { "biomejs" },
-      typescript = { "biomejs" },
-      javascriptreact = { "biomejs" },
-      typescriptreact = { "biomejs" },
+      lua = { "luacheck" },
+      python = { "ruff" },
       go = { "golangcilint" },
     }
   end,

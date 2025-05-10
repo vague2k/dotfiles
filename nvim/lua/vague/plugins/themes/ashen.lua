@@ -1,3 +1,0 @@
-return {
-  "ficcdaf/ashen.nvim",
-}

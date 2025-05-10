@@ -1,3 +1,4 @@
+-- highlight a selection when you yank it
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({
@@ -7,6 +8,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+-- puts a colorcolumn at col 80, as a guideline
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
     vim.opt.colorcolumn = "80"

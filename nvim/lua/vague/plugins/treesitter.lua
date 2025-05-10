@@ -8,18 +8,12 @@ return {
     ---@diagnostic disable-next-line
     treesitter.setup({
       ensure_installed = {
-        "vim",
-        "c_sharp",
-        "vimdoc",
         "lua",
-        "cpp",
+        "vim",
+        "vimdoc",
         "python",
         "go",
-        "tsx",
         "sql",
-        "astro",
-        "css",
-        "regex",
         "bash",
         "markdown",
         "markdown_inline",

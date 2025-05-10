@@ -6,18 +6,10 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt" },
-        javascript = { "prettier" },
-        typecript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        css = { "prettier" },
-        html = { "prettier" },
-        markdown = { "prettier" },
-        sh = { "beautysh" },
-        zsh = { "beautysh" },
+        python = { "ruff" },
       },
 
-      format_on_save = {
+      format_on_save = { -- builtin way to do "on LspAttach, format on save."
         lsp_fallback = true,
         async = false,
         timeout_ms = 500,

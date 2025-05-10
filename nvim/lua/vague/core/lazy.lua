@@ -14,11 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   { import = "vague.plugins" },
-  { import = "vague.plugins.themes" },
-  { import = "vague.plugins.lang.go" },
-  { import = "vague.plugins.lang.css" },
-  { import = "vague.plugins.lang.markdown" },
-  { import = "vague.plugins.lang.latex" },
 }, {
   -- dir where local plugins are stored
   dev = { path = "~/Documents/Github" },

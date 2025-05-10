@@ -1,10 +1,12 @@
 return {
-  ft = { "go" },
   "nvim-neotest/neotest",
+  Lazy = true,
   dependencies = {
-    "nvim-neotest/neotest-go",
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
     "nvim-neotest/nvim-nio",
-    -- Your other test adapters here
+    -- adapters start here
+    "nvim-neotest/neotest-go",
   },
   config = function()
     require("neotest").setup({

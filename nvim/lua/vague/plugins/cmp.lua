@@ -2,7 +2,7 @@ return {
   "saghen/blink.cmp",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = "rafamadriz/friendly-snippets",
-  version = "v0.12.4",
+  version = "v1.2.0",
   config = function()
     require("blink-cmp").setup({
       keymap = { preset = "enter" },
@@ -34,6 +34,7 @@ return {
                 end,
               },
             },
+            -- add padding between various completion elements (purely cosmetic)
             columns = {
               { "source_name", gap = 1 },
               { "label", "label_description", gap = 1 },
