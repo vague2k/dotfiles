@@ -1,5 +1,6 @@
 return {
   "folke/snacks.nvim",
+  keys = { "<leader>pv", "<leader>ff" },
   config = function()
     local snacks = require("snacks")
 
@@ -20,7 +21,7 @@ return {
         sources = {
           explorer = {
             exclude = { ".node_modules*", ".DS_Store" },
-            include = { ".git*", ".go*", ".config", ".local", ".cache" },
+            include = { ".*" },
           },
           files = {
             exclude = { ".node_modules*", ".DS_Store" },

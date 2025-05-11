@@ -8,6 +8,7 @@ return {
       keymap = { preset = "enter" },
       cmdline = {
         keymap = { preset = "super-tab" },
+        completion = { menu = { auto_show = true } },
       },
       -- completion menu behavior
       completion = {
