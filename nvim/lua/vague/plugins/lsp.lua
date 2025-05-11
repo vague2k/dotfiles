@@ -1,6 +1,7 @@
 return {
-  "mason-org/mason.nvim",
+  "neovim/nvim-lspconfig",
   dependencies = {
+    "mason-org/mason.nvim",
     "mason-org/mason-lspconfig.nvim",
     "folke/lazydev.nvim",
   },
@@ -14,17 +15,8 @@ return {
         bufmap("<leader>d", vim.diagnostic.open_float) -- display diagnostic information
       end,
     })
-
-    require("mason").setup({
-      ui = {
-        icons = {
-          package_installed = "✓",
-          package_pending = "➜",
-          package_uninstalled = "✗",
-        },
-      },
-    })
-
+    vim.lsp.config("*", { capabilities = vim.lsp.protocol.make_client_capabilities() })
+    require("mason").setup()
     require("mason-lspconfig").setup({ ---@diagnostic disable-line
       ensure_installed = {
         "lua_ls",
@@ -32,13 +24,11 @@ return {
         "gopls",
       },
     })
-
     require("lazydev").setup({ ---@diagnostic disable-line
       library = {
         "nvim-dap-ui",
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
     })
-    require("lazydev").find_workspace(vim.api.nvim_get_current_buf())
   end,
 }
