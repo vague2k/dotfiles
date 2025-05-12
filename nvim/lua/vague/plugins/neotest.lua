@@ -9,7 +9,7 @@ return {
     "nvim-neotest/neotest-go",
   },
   config = function()
-    require("neotest").setup({
+    require("neotest").setup({ ---@diagnostic disable-line
       adapters = {
         require("neotest-go"),
       },
