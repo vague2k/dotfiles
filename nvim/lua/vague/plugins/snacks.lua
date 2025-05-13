@@ -1,6 +1,6 @@
 return {
   "folke/snacks.nvim",
-  keys = { "<leader>pv", "<leader>ff" },
+  keys = { "<leader>pv", "<leader>ff", "<leader>gg" },
   config = function()
     local snacks = require("snacks")
 
