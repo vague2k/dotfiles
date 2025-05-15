@@ -27,11 +27,6 @@ export TERMINFO="$XDG_DATA_HOME"/terminfo
 export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo
 export TLDR_CACHE_DIR="$XDG_CACHE_HOME"/tldr
 
-###------- PATH -------###
-export PATH=~/.local/bin/:$PATH
-export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$CARGO_HOME/bin
-
 # lf icons
 export LF_ICONS="\
 tw=:\

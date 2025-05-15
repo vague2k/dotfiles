@@ -20,6 +20,12 @@ alias brewu="brew update && brew upgrade"
 setopt INTERACTIVE_COMMENTS
 setopt HIST_SAVE_NO_DUPS
 
+###------- PATH --------###
+export PATH=~/.local/bin/:$PATH
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$CARGO_HOME/bin
+export PATH=/opt/homebrew/bin:$PATH
+
 ###------- MISC --------###
 if [[ $TERM == "xterm-ghostty" ]]; then
     export TERM="xterm-256color"

@@ -42,7 +42,9 @@ mklink "$DOTDIR/ghostty" "$CONF/ghostty"
 for script in "$DOTDIR/bin/scripts/"*; do
     if [ -f "$script" ]; then
         script_name=$(basename "$script")
-        mklink "$script" "$BIN/$script_name"
+        path=$BIN/$script_name
+        mklink "$script" "$path"
+        chmod +x "$path"
     fi
 done
 
