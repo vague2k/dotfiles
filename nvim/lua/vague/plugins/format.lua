@@ -6,7 +6,8 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         go = { "gofumpt" },
-        python = { "ruff" },
+        python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+        json = { "jq" },
       },
 
       format_on_save = { -- builtin way to do "on LspAttach, format on save."
