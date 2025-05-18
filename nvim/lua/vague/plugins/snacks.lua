@@ -1,5 +1,6 @@
 return {
   "folke/snacks.nvim",
+  dev = true,
   keys = { "<leader>pv", "<leader>ff", "<leader>gg" },
   config = function()
     local snacks = require("snacks")
@@ -7,6 +8,24 @@ return {
     snacks.setup({
       explorer = {},
       lazygit = {},
+      indent = {
+        enabled = false,
+        indent = { enabled = false },
+        animate = {
+          duration = {
+            step = 30,
+            total = 200,
+          },
+        },
+        chunk = {
+          enabled = true,
+          char = {
+            corner_top = "╭",
+            corner_bottom = "╰",
+            arrow = ">",
+          },
+        },
+      },
       input = {
         icon = "::",
         win = {
