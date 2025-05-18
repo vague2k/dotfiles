@@ -1,15 +1,13 @@
 return {
   "folke/snacks.nvim",
   dev = true,
-  keys = { "<leader>pv", "<leader>ff", "<leader>gg" },
+  keys = { "<leader>ff", "<leader>gg" },
   config = function()
     local snacks = require("snacks")
 
     snacks.setup({
-      explorer = {},
       lazygit = {},
       indent = {
-        enabled = false,
         indent = { enabled = false },
         animate = {
           duration = {
@@ -56,8 +54,8 @@ return {
 
     local opts = { noremap = true, silent = true }
 
-    -- file explorer
-    vim.keymap.set("n", "<leader>pv", snacks.explorer.open, opts) -- Find files
+    -- lazygit
+    vim.keymap.set("n", "<leader>gg", snacks.lazygit.open, opts)
 
     -- picker stuff
     vim.keymap.set("n", "<leader>ff", snacks.picker.files, opts) -- Find files
@@ -65,11 +63,9 @@ return {
     vim.keymap.set("n", "<leader>fh", snacks.picker.highlights, opts) -- Find highlights
     vim.keymap.set("n", "<leader>fd", snacks.picker.diagnostics, opts) -- Find diagnostics
     vim.keymap.set("n", "<leader>fg", snacks.picker.grep, opts) -- Live grep
-    vim.keymap.set("n", "<leader>co", snacks.picker.colorschemes, opts) -- Find help
+    vim.keymap.set("n", "<leader>gf", snacks.picker.git_diff, opts) -- Shows all git diffs
+    vim.keymap.set("n", "<leader>co", snacks.picker.colorschemes, opts) -- Shows all installed colorschemes
     vim.keymap.set("n", "<leader>to", function() snacks.picker.todo_comments() end, opts) -- Find Todo comments
-    vim.keymap.set("n", "<leader>pp", ":lua Snacks.picker() <cr>", opts) -- opens a list of pickers to choose from
-
-    -- lazygit
-    vim.keymap.set("n", "<leader>gg", snacks.lazygit.open, opts)
+    vim.keymap.set("n", "<leader>pp", ":lua Snacks.picker() <cr>", opts) -- Opens a list of pickers to choose from
   end,
 }
