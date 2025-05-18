@@ -10,9 +10,6 @@ return {
       },
       float = {
         max_width = 0.3,
-        win_options = {
-          winblend = 3,
-        },
       },
     })
 
