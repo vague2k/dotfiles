@@ -10,6 +10,7 @@ return {
   config = function()
     require("neo-tree").setup({
       close_if_last_window = true,
+      window = { width = 64 },
       source_selector = {
         winbar = true,
         sources = { { source = "filesystem" } },
