@@ -1,7 +1,7 @@
 return {
   "folke/snacks.nvim",
   dev = true,
-  keys = { "<leader>ff", "<leader>gg" },
+  event = "VeryLazy",
   config = function()
     local snacks = require("snacks")
 
