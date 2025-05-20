@@ -15,6 +15,7 @@ alias tree="eza --tree"
 alias rum="rummage get"
 alias pull="git pull --rebase"
 alias brewu="brew update && brew upgrade"
+alias gitlog="git log --pretty=format:'%C(cyan)%h%Creset %C(yellow)%ad%Creset %Cgreen%s%Creset'"
 
 ###------- OPTS --------###
 setopt INTERACTIVE_COMMENTS
