@@ -35,6 +35,7 @@ PACKAGES=(
     "rust"
     "stylua"
     "sudo"
+    "tmux"
     "unzip"
     "vim"
     "ripgrep"
@@ -92,6 +93,10 @@ zoxide add $GIT_DIR/smv
 zoxide add $DOT_DIR
 zoxide add ~/.config
 zoxide add ~/.local
+
+# set up tmux plugin manager
+mkdir -p $DOT_DIR/tmux/plugins
+git clone https://github.com/tmux-plugins/tpm $DOT_DIR/tmux/plugins/tpm
 
 # set git creds
 gh auth login
