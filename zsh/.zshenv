@@ -27,6 +27,8 @@ export TERMINFO="$XDG_DATA_HOME"/terminfo
 export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo
 export TLDR_CACHE_DIR="$XDG_CACHE_HOME"/tldr
 
+export FZF_DEFAULT_OPTS='--height=99% --layout=reverse --border --color=border:black'
+
 # lf icons
 export LF_ICONS="\
 tw=:\
