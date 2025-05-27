@@ -8,7 +8,6 @@ keymap("n", "<C-k>", "<C-w>k", opts) -- Navigate up window
 keymap("n", "<C-l>", "<C-w>l", opts) -- Navigate right window
 keymap("n", "<C-f>", ":silent !tmux neww tmux-sessionizer<CR>", opts) -- Start a new tmux session in a different terminal tab
 keymap("n", "<leader>s", ":vsplit<CR>", opts) -- Start a new tmux session in a different terminal tab
-keymap("n", "q:", "", opts) -- disables cmd win, it's very annoying for me
 keymap("n", "<leader>r", vim.lsp.buf.rename, opts) -- renames a reference
 keymap("n", "gd", vim.lsp.buf.definition, opts) -- goto a definition
 keymap("n", "<leader>d", vim.diagnostic.open_float, opts) -- display diagnostic information
