@@ -27,7 +27,26 @@ export TERMINFO="$XDG_DATA_HOME"/terminfo
 export TERMINFO_DIRS="$XDG_DATA_HOME"/terminfo:/usr/share/terminfo
 export TLDR_CACHE_DIR="$XDG_CACHE_HOME"/tldr
 
-export FZF_DEFAULT_OPTS='--height=99% --layout=reverse --border --color=border:black'
+export FZF_DEFAULT_OPTS="
+    --height=99%
+    --layout=reverse
+    --pointer='█'
+    --scrollbar='▌'
+    --highlight-line
+    --color=hl:#f3be7c
+    --color=bg:-1
+    --color=gutter:-1
+    --color=bg+:#252532
+    --color=fg+:#aeaed1
+    --color=hl+:#f3be7c
+    --color=border:#606079
+    --color=prompt:#bb9dbd
+    --color=query:#aeaed1:bold
+    --color=pointer:#aeaed1
+    --color=scrollbar:#aeaed1
+    --color=info:#f3be7c
+    --color=spinner:#7fa563
+    "
 
 # lf icons
 export LF_ICONS="\
