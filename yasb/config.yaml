@@ -1,0 +1,177 @@
+watch_stylesheet: true
+watch_config: true
+debug: false
+bars:
+  status-bar:
+    enabled: true
+    screens: ['*'] 
+    class_name: "yasb-bar"
+    alignment:
+      position: "top"
+      center: false
+    blur_effect:
+      enabled: false
+      acrylic: false
+      dark_mode: true
+      round_corners: true
+      border_color: None
+    window_flags:
+      always_on_top: false
+      windows_app_bar: true
+    dimensions:
+      width: "100%"
+      height: 32
+    # padding:
+    #   top: 8
+    #   left: 8
+    #   bottom: 14
+    #   right: 8
+    widgets:
+      left:
+        [
+          "home",
+          "traffic",
+          "active_window",
+        ] 
+      center: [
+          "taskbar"
+        ]
+      right:
+        [
+          "cpu",
+          "memory",
+          "clock",
+          "volume",
+          "disk",
+          "power_menu"
+        ]
+widgets:
+  home:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>\udb80\udf5c</span>"
+      menu_list:
+        - { title: "Home", path: "~" }
+        - { title: "Downloads", path: "C:\\Users\\desktop\\Downloads"}
+        - { title: "Documents", path: "C:\\Users\\desktop\\Documents"}
+        - { title: "Pictures", path: "C:\\Users\\desktop\\Pictures"}
+        - { title: "Videos", path: "C:\\Users\\desktop\\Videos"}
+      system_menu: true
+      power_menu: false
+      blur: true
+      round_corners: true
+      distance: 10
+  taskbar:
+    type: "yasb.taskbar.TaskbarWidget"
+    options:
+      animation:
+        enabled: true
+      icon_size: 14
+  traffic:
+      type: "yasb.traffic.TrafficWidget"
+      options:
+        label: "<span></span> \uea9a{download_speed} \ueaa1{upload_speed}"
+        label_alt: "<span></span> Download {download_speed} | Upload {upload_speed}"
+        update_interval: 1000
+        callbacks:
+          on_left: 'toggle_label'
+          on_right: 'exec cmd /c Taskmgr'
+  disk:
+    type: "yasb.disk.DiskWidget"
+    options:
+        label: "<span>\uf473</span>"
+        label_alt: "<span>\uf473</span>"
+        group_label:
+          volume_labels: ["C", "D", "E", "F"]
+          show_label_name: true 
+          round_corners: True
+          alignment: "right"
+          direction: "down"
+          distance: 6
+        callbacks:
+          on_left: "toggle_group"
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_alt: "[class_name='{win[class_name]}' exe='{win[process][name]}' hwnd={win[hwnd]}]"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 14
+      max_length: 56
+      max_length_ellipsis: "..."
+      monitor_exclusive: true
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "<span></span>{%I:%M %p}"
+      label_alt: "{%A %d %B %Y, %H:%M}"
+      timezones: [] #Looking up time zone info from registry
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span> {level}"
+      label_alt: "{volume}"
+      volume_icons:
+        - "\ueee8"  # Icon for muted
+        - "\uf026"  # Icon for 0-10% volume
+        - "\uf027"  # Icon for 11-30% volume
+        - "\uf027"  # Icon for 31-60% volume
+        - "\uf028"  # Icon for 61-100% volume
+      callbacks:
+        on_right: "exec cmd.exe /c start ms-settings:sound"
+  power_menu:
+    type: "yasb.power_menu.PowerMenuWidget"
+    options:
+      label: "\uf011"
+      uptime: True
+      blur: False
+      blur_background: True
+      animation_duration: 300 # Milisecond 
+      button_row: 3 # Number of buttons in row, min 1 max 5
+      buttons:
+        lock: ["\uea75","Lock"]
+        signout: ["\udb80\udf43","Sign out"]
+        shutdown: ["\uf011","Shut Down"]
+        restart: ["\uead2","Restart"]
+        hibernate: ["\uf28e","Hibernate"]
+        cancel: ["\udb81\udf3a","Cancel"]
+  cpu:
+    type: "yasb.cpu.CpuWidget"
+    options:
+      label: "<span></span> {info[percent][total]}%"
+      label_alt: "<span>\uf437</span> {info[histograms][cpu_percent]}"
+      update_interval: 2000
+      histogram_icons:
+        - '\u2581' # Icon for 0% usage
+        - '\u2581' # Icon for 10% usage 
+        - '\u2582' # Icon for 20% usage
+        - '\u2583' # Icon for 30% usage
+        - '\u2584' # Icon for 40% usage
+        - '\u2585' # Icon for 50% usage 
+        - '\u2586' # Icon for 60% usage
+        - '\u2587' # Icon for 70% usage
+        - '\u2588' # Icon for 80%+ usage
+      histogram_num_columns: 8
+      callbacks:
+        on_right: "exec cmd /c Taskmgr"
+      container_padding:
+        top: 0
+        left: 0
+        bottom: 0
+        right: 5
+  memory:
+    type: "yasb.memory.MemoryWidget"
+    options:
+      label: "<span></span> {virtual_mem_used}/{virtual_mem_total}"
+      label_alt: "<span></span> {virtual_mem_percent}%"
+      update_interval: 5000
+      callbacks:
+        on_left: "toggle_label"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
+      container_padding:
+        top: 0
+        left: 8
+        bottom: 0
+        right: 0

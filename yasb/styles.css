@@ -1,0 +1,346 @@
+:root {
+    --background: #141415;
+    --foreground: #cdcdcd;
+    --background-secondary: #1c1c24;
+    --cursor: #cdcdcd;
+    --black: #252530;
+    --grey: #606079;
+    --red: #d8647e;
+    --green: #7fa563;
+    --yellow: #f3be7c;
+    --blue: #6e94b2;
+    --magenta: #bb9dbd;
+    --cyan: #aeaed1;
+
+    --bright-red: #e08398;
+    --bright-green: #99b782;
+    --bright-yellow: #f5cb96;
+    --bright-blue: #8ba9c1;
+    --bright-magenta: #c9b1ca;
+    --bright-cyan: #bebeda;
+}
+
+* {
+    font-family: "Iosevka NFP";
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--foreground);
+    padding: 0;
+    margin: 0;
+}
+
+.yasb-bar {
+    background-color: var(--background);
+    /* border-radius: 8px; */
+}
+
+/***----------------------------------      • Widgets •      -----------------------------------***/
+
+.widget {
+    padding: 0 10px;
+    margin: 4px;
+    background-color: var(--background-secondary);
+    border-radius: 5px;
+}
+
+.widget .label {
+    padding: 2px 2px 1px 2px;
+
+}
+
+.widget .label.alt {
+    padding: 1px 8px 1px 8px;
+}
+
+/***----------------------------------      • Icons & Typography •      -----------------------------------***/
+
+.icon {
+    font-size: 16px;
+}
+
+.volume-widget .icon {
+    color: var(--green);
+    margin: 1px 2px 0 0;
+}
+
+.start-menu .icon {
+    font-size: 18px;
+    color: var(--red);
+}
+
+.clock-widget .icon {
+    color: var(--blue);
+    font-size: 14px;
+    margin: 0px 3px;
+}
+
+.disk-widget .icon {
+    color: var(--yellow);
+}
+
+.traffic-widget .icon {
+    color: var(--cyan);
+    margin: 0px 3px;
+}
+
+.cpu-widget .icon {
+    color: var(--magenta);
+    margin: 0px 2px 0px 3px;
+}
+
+.memory-widget .icon {
+    color: var(--cyan);
+    margin: 0px 2px 0px 4px;
+}
+
+/***----------------------------------      • Home Menu •      -----------------------------------***/
+
+.home-menu {
+    background-color: var(--background);
+    padding: 0;
+    margin-left: 0px;
+}
+
+.home-menu .menu-item {
+    padding: 8px 48px 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.home-menu .menu-item:hover {
+    background-color: var(--background-secondary);
+    margin: 4px 6px;
+}
+
+.home-menu .separator {
+    max-height: 1px;
+    background-color: var(--black);
+    margin: 0 8px;
+}
+
+/***----------------------------------      • WIFI •      -----------------------------------***/
+
+.traffic-widget .label {
+    color: var(--foreground);
+}
+
+/***----------------------------------      • CPU •      -----------------------------------***/
+
+.cpu-widget {
+    padding-right: 0;
+}
+
+.cpu-widget .widget-container {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.cpu-widget .label {
+    min-width: 34px;
+}
+
+/***----------------------------------      • Memory •      -----------------------------------***/
+
+.memory-widget {
+    padding-left: 0;
+}
+
+.memory-widget .widget-container {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.memory-widget .label {
+    min-width: 34px;
+}
+
+/***---------------------------------      • Audio Widget •      ----------------------------------***/
+
+.audio-menu {
+    background-color: var(--background);
+}
+
+.audio-container .device {
+    border: none;
+    padding: 6px 8px 6px 4px;
+    margin: 2px 0;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.audio-container .device.selected {
+    background-color: var(--green);
+    color: var(--black);
+}
+
+.audio-container .device:hover {
+    background-color: var(--black);
+    color: var(--foreground);
+}
+
+.volume-slider::groove {
+    color: transparent;
+}
+
+.volume-slider::handle {
+    background-color: transparent;
+}
+
+/***----------------------------------      • Calendar •      -----------------------------------***/
+
+.taskbar-widget {
+    padding: 0 3px;
+    margin: 4px;
+}
+
+.taskbar-widget .app-icon {
+    padding: 0 7px;
+    border-radius: 3px;
+}
+
+.taskbar-widget .app-icon.foreground {
+    margin: 3px 0;
+    background-color: var(--grey);
+}
+
+/***----------------------------------      • Calendar •      -----------------------------------***/
+
+.calendar {
+    background-color: var(--background);
+}
+
+.calendar .calendar-table,
+.calendar .calendar-table::item {
+    background-color: transparent;
+    color: var(--overlay1);
+}
+
+.calendar .calendar-table::item:hover {
+    color: var(--foreground);
+    background: var(--background-secondary);
+    border-radius: 8px;
+}
+
+.calendar .calendar-table::item:selected {
+    color: var(--foreground);
+    background: var(--grey);
+    border-radius: 8px;
+}
+
+.calendar .day-label {
+    margin-top: 20px;
+}
+
+.calendar .day-label,
+.calendar .month-label,
+.calendar .date-label {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 700;
+    min-width: 180px;
+    max-width: 180px;
+}
+
+.calendar .month-label {
+    font-weight: normal;
+    padding-bottom: 12px;
+}
+
+.calendar .date-label {
+    font-size: 88px;
+    font-weight: 900;
+    color: var(--text);
+    margin-top: -20px;
+}
+
+/***----------------------------------      • Disk •      -----------------------------------***/
+
+.disk-widget {
+    padding: 0 6px;
+}
+
+.disk-group {
+    background-color: var(--background);
+}
+
+.disk-group-row {
+    min-width: 300px;
+    max-width: 300px;
+    max-height: 50px;
+    border-radius: 4px;
+}
+
+.disk-group-row:hover {
+    background-color: var(--background-secondary);
+}
+
+.disk-group-label-bar {
+    max-height: 2px;
+    background-color: transparent;
+    border-radius: 4px;
+    background-color: var(--black);
+}
+
+.disk-group-label-bar::chunk {
+    background-color: var(--yellow);
+    border-radius: 4px;
+}
+
+.disk-group-label {
+    font-size: 12px;
+}
+
+.disk-group-label-size {
+    font-size: 12px;
+    color: var(--foreground);
+}
+
+
+/***-------------------------------      • Power Menu Widget •      --------------------------------***/
+
+.power-menu-popup {
+    background: var(--background);
+}
+
+.power-menu-widget .label {
+    color: var(--red);
+    font-size: 16px;
+    padding: 0
+}
+
+.power-menu-popup .button {
+    padding: 0px;
+    margin: 5px;
+    width: 250px;
+    height: 175px;
+    background-color: var(--background);
+    color: var(--foreground);
+
+}
+
+.power-menu-popup .button.hover {
+    background-color: var(--background-secondary);
+}
+
+.power-menu-popup .button .label {
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.power-menu-popup .button .icon {
+    font-size: 55px;
+    padding-top: 25px;
+    padding-right: 10px;
+    color: var(--foreground);
+}
+
+.power-menu-popup .button.cancel .icon {
+    color: var(--red);
+}
+
+.power-menu-popup .button.cancel .label {
+    color: var(--red);
+}
