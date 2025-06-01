@@ -26,6 +26,7 @@ export PATH=~/.local/bin/:$PATH
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$CARGO_HOME/bin
 export PATH=/opt/homebrew/bin:$PATH
+export ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 
 ###------- MISC --------###
 if [[ $TERM == "xterm-ghostty" ]]; then

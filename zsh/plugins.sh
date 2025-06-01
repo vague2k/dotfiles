@@ -8,6 +8,7 @@ ZSH_CUSTOM=${ZSH_CUSTOM:-$ZSH/custom}
 github_plugins=(
     zsh-users/zsh-autosuggestions
     zsh-users/zsh-syntax-highlighting
+    jeffreytse/zsh-vi-mode
 )
 
 for plugin in "${github_plugins[@]}"; do
