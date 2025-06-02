@@ -14,6 +14,7 @@ return {
         "lua_ls",
         "basedpyright",
         "gopls",
+        "templ",
       },
     })
     require("lazydev").setup({ ---@diagnostic disable-line

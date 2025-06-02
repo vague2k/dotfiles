@@ -8,6 +8,7 @@ return {
         go = { "gofumpt" },
         python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
         json = { "jq" },
+        sql = { "sqruff" },
       },
 
       format_on_save = { -- builtin way to do "on LspAttach, format on save."
