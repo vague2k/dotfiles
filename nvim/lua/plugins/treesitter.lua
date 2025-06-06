@@ -20,6 +20,7 @@ return {
         "bash",
         "markdown",
         "markdown_inline",
+        "c_sharp",
       },
       highlight = { enable = true },
     })

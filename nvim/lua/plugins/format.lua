@@ -7,6 +7,7 @@ return {
         lua = { "stylua" },
         go = { "gofumpt" },
         templ = { "templ" },
+        csharp = { "csharpier" },
         python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
         json = { "jq" },
         sql = { "sqruff" },
