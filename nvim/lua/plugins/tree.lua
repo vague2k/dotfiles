@@ -20,7 +20,7 @@ return {
           hide_dotfiles = false,
           hide_gitignored = false,
           hide_hidden = true, -- only works on Windows for hidden files/directories
-          hide_by_name = { "node_modules", "tmp", ".git" },
+          hide_by_name = { "node_modules", "tmp", ".git", "__pycache_" },
         },
       },
       event_handlers = {
