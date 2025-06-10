@@ -1,6 +1,9 @@
 return {
-  "MeanderingProgrammer/render-markdown.nvim",
-  ft = { "markdown" },
-  dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-  config = function() require("render-markdown").setup({}) end,
+  "OXY2DEV/markview.nvim",
+  lazy = false, -- plugin already does it's own lazy loading
+  config = function()
+    require("markview").setup({
+      preview = { icons = "devicons" },
+    })
+  end,
 }
