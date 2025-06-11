@@ -21,6 +21,7 @@ return {
           hide_gitignored = false,
           hide_hidden = true, -- only works on Windows for hidden files/directories
           hide_by_name = { "node_modules", "tmp", ".git", "__pycache_" },
+          hide_by_pattern = { "*_templ.go" },
         },
       },
       event_handlers = {
