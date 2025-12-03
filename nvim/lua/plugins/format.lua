@@ -10,6 +10,8 @@ return {
         python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
         json = { "jq" },
         sql = { "sqruff" },
+        javascript = { "prettierd" },
+        typescript = { "prettierd" },
       },
 
       format_on_save = { -- builtin way to do "on LspAttach, format on save."

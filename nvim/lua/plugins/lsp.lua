@@ -15,6 +15,8 @@ return {
         "basedpyright",
         "gopls",
         "templ",
+        "ts_ls",
+        "astro",
       },
     })
     require("lazydev").setup({ ---@diagnostic disable-line

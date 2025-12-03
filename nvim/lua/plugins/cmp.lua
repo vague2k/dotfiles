@@ -2,13 +2,24 @@ return {
   "saghen/blink.cmp",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = "rafamadriz/friendly-snippets",
-  version = "v1.2.0",
+  version = "v1.8.0",
   config = function()
     require("blink-cmp").setup({
       keymap = { preset = "enter" },
       cmdline = {
         keymap = { preset = "super-tab" },
         completion = { menu = { auto_show = true } },
+      },
+      sources = {
+        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            -- make lazydev completions top priority (see `:h blink.cmp`)
+            score_offset = 100,
+          },
+        },
       },
       -- completion menu behavior
       completion = {

@@ -1,6 +1,9 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
+  dependencies = {
+    "virchau13/tree-sitter-astro",
+  },
   -- branch = "main",
   event = { "BufReadPre", "BufNewFile" },
   config = function()
