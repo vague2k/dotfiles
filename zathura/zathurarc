@@ -1,0 +1,33 @@
+set synctex true
+
+# Open document in fit-width mode by default
+set adjust-open width
+
+# One page per row by default
+set pages-per-row 1
+
+# stop at page boundries
+set scroll-page-aware "true"
+set smooth-scroll "true"
+set scroll-full-overlap 0.01
+set scroll-step 100
+
+# zoom settings
+set zoom-min 10
+set guioptions ""
+
+set highlight-color "rgba(149, 235, 0, 0.3)"
+set highlight-active-color "rgba(57, 242, 5, 0.3)"
+
+# dark mode
+set recolor true
+set recolor-darkcolor "#cdcdcd"
+set recolor-lightcolor "#141415"
+
+map j scroll down
+map k scroll up
+map gg goto top
+map G goto bottom
+map + zoom in
+map - zoom out
+map <C-r> recolor

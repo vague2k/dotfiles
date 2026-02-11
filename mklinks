@@ -38,6 +38,7 @@ mklink "$DOTDIR/tmux" "$CONF/tmux"
 mklink "$DOTDIR/glow" "$CONF/glow"
 mklink "$DOTDIR/wezterm" "$CONF/wezterm"
 mklink "$DOTDIR/ghostty" "$CONF/ghostty"
+mklink "$DOTDIR/zathura" "$CONF/zathura"
 
 for script in "$DOTDIR/bin/scripts/"*; do
     if [ -f "$script" ]; then
