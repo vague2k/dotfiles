@@ -2,7 +2,7 @@ return {
   "saghen/blink.cmp",
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = "rafamadriz/friendly-snippets",
-  version = "v1.8.0",
+  version = "v1.x.x",
   config = function()
     require("blink-cmp").setup({
       keymap = { preset = "enter" },
