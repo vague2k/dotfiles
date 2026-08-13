@@ -36,3 +36,6 @@ fi
 ###------- EVALS -------###
 # a smarter cd command, see https://github.com/ajeetdsouza/zoxide for more info
 eval "$(zoxide init --cmd cd zsh)"
+
+# bun completions
+[ -s "/home/albert/.bun/_bun" ] && source "/home/albert/.bun/_bun"
