@@ -1,19 +1,45 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
   branch = "main",
-  main = "nvim-treesitter",
+  build = ":TSUpdate",
   dependencies = {
     "virchau13/tree-sitter-astro",
   },
   event = { "BufReadPre", "BufNewFile" },
-  init = function()
+  lazy = false,
+  dependencies = {
+    "virchau13/tree-sitter-astro",
+  },
+  config = function()
+    local treesitter = require("nvim-treesitter")
+    local ensure_installed = {
+      "lua",
+      "vim",
+      "vimdoc",
+      "python",
+      "go",
+      "templ",
+      "sql",
+      "bash",
+      "markdown",
+      "markdown_inline",
+    }
+    treesitter.install(ensure_installed)
+
+    -- attempts to get a treesitter parser for the current file's language
     vim.api.nvim_create_autocmd("FileType", {
-      callback = function()
-        -- Enable treesitter highlighting and disable regex syntax
-        pcall(vim.treesitter.start)
-        -- Enable treesitter-based indentation
-        vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      pattern = "*",
+      callback = function(args)
+        local buf = args.buf
+        local ft = vim.bo[buf].filetype
+
+        local lang = vim.treesitter.language.get_lang(ft)
+        if not lang then return end
+
+        local ok_add = pcall(vim.treesitter.language.add, lang)
+        if not ok_add then return end
+
+        pcall(vim.treesitter.start, buf, lang)
       end,
     })
     local ensureInstalled = {

@@ -14,6 +14,7 @@ return {
         string = true,
       },
       staticcheck = true,
+      gofumpt = true,
     },
   },
 }
