@@ -39,6 +39,7 @@ mklink "$DOTDIR/glow" "$CONF/glow"
 mklink "$DOTDIR/wezterm" "$CONF/wezterm"
 mklink "$DOTDIR/ghostty" "$CONF/ghostty"
 mklink "$DOTDIR/zathura" "$CONF/zathura"
+mklink "$DOTDIR/opencode" "$CONF/opencode"
 
 for script in "$DOTDIR/bin/scripts/"*; do
     if [ -f "$script" ]; then
