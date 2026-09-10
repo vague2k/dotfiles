@@ -1,21 +1,14 @@
 return {
   "folke/snacks.nvim",
   dev = true,
-  event = "VeryLazy",
+  lazy = false,
+  priority = 1000,
   config = function()
     local snacks = require("snacks")
 
     snacks.setup({
       lazygit = {},
       bigfile = { size = 1024 * 1024 },
-      zen = {
-        toggles = {
-          dim = false,
-        },
-        win = {
-          width = 100,
-        },
-      },
       indent = {
         indent = { enabled = false },
         animate = {
