@@ -1,53 +1,58 @@
-import type { Plugin } from "@opencode-ai/plugin";
+import { Plugin } from "@opencode/plugin";
 
-const RECENT_CONTEXT_LIMIT = 10;
+const RECENT_MESSAGE_LIMIT = 10;
+const MAX_MESSAGE_LENGTH = 500;
 
-export const BtwPlugin: Plugin = async (ctx) => {
-  return {
-    "command.execute.before": async (input, output) => {
-      if (input.command !== "btw") return;
+export default Plugin.define({
+  id: "btw",
+  async setup(ctx) {
+    await ctx.command.transform((editor) => {
+      editor.add({
+        name: "btw",
+        description: "Ask a side question without interrupting your main task",
+        async execute({ sessionID, prompt, delivery }) {
+          const context = await recentContext(ctx, sessionID);
+          await ctx.session.prompt({
+            ...prompt,
+            sessionID,
+            text: `${context}\n\n${prompt.text}`,
+            delivery,
+          });
+        },
+      });
+    });
+  },
+});
 
-      try {
-        const result = await ctx.client.session.messages({
-          path: { id: input.sessionID },
-          query: { limit: RECENT_CONTEXT_LIMIT },
-        });
+async function recentContext(ctx: Plugin.Context, sessionID: string) {
+  const messages = (await ctx.session.context({ sessionID })).slice(
+    -RECENT_MESSAGE_LIMIT,
+  );
+  const lines = [
+    'You are answering a quick "by the way" side question. Answer concisely (under 200 words). Do NOT make any code changes or edit files.',
+    "",
+    "## Recent conversation context for reference",
+  ];
 
-        if (result.error) {
-          console.error("[btw] SDK error:", result.error);
-          return;
-        }
+  for (const message of messages) {
+    if (message.type === "user") {
+      lines.push(`[user]: ${truncate(message.text)}`);
+      continue;
+    }
 
-        const messages = result.data;
-        if (!messages || !Array.isArray(messages) || messages.length === 0)
-          return;
+    if (message.type === "assistant") {
+      const text = message.content
+        .filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join("\n");
+      if (text) lines.push(`[assistant]: ${truncate(text)}`);
+    }
+  }
 
-        const contextLines: string[] = [
-          "## Recent conversation context for reference",
-          "The user is mid-task. Answer their side question concisely. Do NOT modify files.\n",
-        ];
+  return lines.join("\n");
+}
 
-        for (const msg of messages) {
-          const role = msg.info.role;
-          for (const part of msg.parts) {
-            if (part.type === "text" && !part.synthetic) {
-              const text =
-                part.text.length > 500
-                  ? part.text.slice(0, 500) + "..."
-                  : part.text;
-              contextLines.push(`[${role}]: ${text}\n`);
-            }
-          }
-        }
-
-        output.parts.unshift({
-          type: "text",
-          text: contextLines.join("\n"),
-          synthetic: true,
-        } as any);
-      } catch (err) {
-        console.error("[btw] Failed to inject context:", err);
-      }
-    },
-  };
-};
+function truncate(text: string) {
+  if (text.length <= MAX_MESSAGE_LENGTH) return text;
+  return `${text.slice(0, MAX_MESSAGE_LENGTH)}...`;
+}
