@@ -6,7 +6,7 @@ window-height = 100
 window-padding-x = 20
 window-padding-y = 20
 window-padding-balance = true
-cursor-style = block 
+cursor-style = block
 cursor-style-blink = true
 
 shell-integration = zsh
