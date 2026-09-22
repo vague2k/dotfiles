@@ -3,6 +3,7 @@ require("modules.autostart")
 require("modules.animations")
 require("modules.keybinds")
 require("modules.rules")
+require("noctalia")
 
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
@@ -71,3 +72,6 @@ hl.config({
     disable_hyprland_logo = true, -- If true disables the random hyprland logo / anime girl background. :(
   },
 })
+
+-- For Noctalia Color templates
+require("noctalia").apply_theme()

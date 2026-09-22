@@ -1,2 +1,4 @@
 **/.DS_Store
 lazy-lock.json
+**/base16.lua
+**/matugen.lua

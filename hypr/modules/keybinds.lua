@@ -64,6 +64,7 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 local noc_ipc = "noctalia msg "
 hl.bind(mainMod .. "+ comma", hl.dsp.exec_cmd(noc_ipc .. "settings-toggle"))
 hl.bind(mainMod .. "+ SHIFT + R", hl.dsp.exec_cmd(noc_ipc .. "config-reload"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noc_ipc .. "panel-open wallpaper"))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd(noc_ipc .. "window-switcher"))
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(noc_ipc .. "volume-up"))

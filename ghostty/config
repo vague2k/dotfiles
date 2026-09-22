@@ -1,4 +1,3 @@
-theme=Vague
 font-family = Iosevka Nerd Font Mono
 font-size = 11
 window-width = 250
@@ -13,3 +12,4 @@ shell-integration = zsh
 
 config-file = ?./macos
 
+theme = noctalia
