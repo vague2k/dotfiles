@@ -1,8 +1,13 @@
----------------------
----- KEYBINDINGS ----
----------------------
-
-local programs = require("modules.programs")
+local programs = function()
+  local terminal = "ghostty"
+  return {
+    terminal = terminal,
+    fileManager = "nautilus",
+    menu = "noctalia msg panel-toggle launcher",
+    browser = "brave",
+  }
+end
+local programs = programs()
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
@@ -17,7 +22,14 @@ hl.bind(
     center = true,
   })
 )
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(programs.menu))
+hl.bind(
+  mainMod .. " + R",
+  hl.dsp.exec_cmd(programs.menu, {
+    float = true,
+    size = { "(monitor_w*0.20)", "(monitor_h*0.40)" },
+    center = true,
+  })
+)
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(programs.browser))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
@@ -47,3 +59,15 @@ hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- noctalia
+local noc_ipc = "noctalia msg "
+hl.bind(mainMod .. "+ comma", hl.dsp.exec_cmd(noc_ipc .. "settings-toggle"))
+hl.bind(mainMod .. "+ SHIFT + R", hl.dsp.exec_cmd(noc_ipc .. "config-reload"))
+hl.bind("ALT + Tab", hl.dsp.exec_cmd(noc_ipc .. "window-switcher"))
+
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(noc_ipc .. "volume-up"))
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(noc_ipc .. "volume-down"))
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd(noc_ipc .. "volume-mute"))
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(noc_ipc .. "brightness-up"))
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(noc_ipc .. "brightness-down"))

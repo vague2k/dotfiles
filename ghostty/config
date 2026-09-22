@@ -1,6 +1,6 @@
-theme = Vague
-font-family = IosevkaTerm Nerd Font Mono
-font-size = 13
+theme=Vague
+font-family = Iosevka Nerd Font Mono
+font-size = 11
 window-width = 250
 window-height = 100
 window-padding-x = 20
