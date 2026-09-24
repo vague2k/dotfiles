@@ -15,7 +15,7 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(programs.terminal))
 hl.bind(
-  mainMod .. " + F",
+  mainMod .. " + E",
   hl.dsp.exec_cmd(programs.fileManager, {
     float = true,
     size = { "(monitor_w*0.70)", "(monitor_h*0.70)" },
@@ -31,6 +31,7 @@ hl.bind(
   })
 )
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(programs.browser))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 

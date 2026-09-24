@@ -43,7 +43,7 @@ start = [
     "workspaces",
 ]
 center = []
-end = ["cpu", "ram", "disk", "audio", "volume", "clock"]
+end = ["cpu", "ram", "disk", "audio", "volume", "bluetooth", "clock"]
 
 # Default capsule style for all widgets on this bar (see Widget Capsule section)
 capsule = false
