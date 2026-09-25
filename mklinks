@@ -39,7 +39,6 @@ mklink "$DOTDIR/ghostty" "$CONF/ghostty"
 mklink "$DOTDIR/zathura" "$CONF/zathura"
 mklink "$DOTDIR/opencode" "$CONF/opencode"
 mklink "$DOTDIR/hypr" "$CONF/hypr"
-mklink "$DOTDIR/noctalia" "$CONF/noctalia"
 mklink "$DOTDIR/quickshell" "$CONF/quickshell"
 
 for script in "$DOTDIR/bin/scripts/"*; do

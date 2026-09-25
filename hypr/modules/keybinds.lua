@@ -3,7 +3,7 @@ local programs = function()
   return {
     terminal = terminal,
     fileManager = "nautilus",
-    menu = "noctalia msg panel-toggle launcher",
+    menu = "qs ipc call launcher toggle",
     browser = "brave",
   }
 end
@@ -11,7 +11,6 @@ local programs = programs()
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
--- Example binds, see https://wiki.hypr.land/configuring/core/binds/ for more
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(programs.terminal))
 hl.bind(
@@ -22,18 +21,15 @@ hl.bind(
     center = true,
   })
 )
-hl.bind(
-  mainMod .. " + R",
-  hl.dsp.exec_cmd(programs.menu, {
-    float = true,
-    size = { "(monitor_w*0.20)", "(monitor_h*0.40)" },
-    center = true,
-  })
-)
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(programs.menu))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(programs.browser))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
+hl.bind(
+  mainMod .. " + P",
+  hl.dsp.exec_cmd('grim -o "$(hyprctl monitors -j | jq -r ".[] | select(.focused) | .name")" - | wl-copy')
+)
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
@@ -61,15 +57,30 @@ hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
--- noctalia
-local noc_ipc = "noctalia msg "
-hl.bind(mainMod .. "+ comma", hl.dsp.exec_cmd(noc_ipc .. "settings-toggle"))
-hl.bind(mainMod .. "+ SHIFT + R", hl.dsp.exec_cmd(noc_ipc .. "config-reload"))
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noc_ipc .. "panel-open wallpaper"))
-hl.bind("ALT + Tab", hl.dsp.exec_cmd(noc_ipc .. "window-switcher"))
+-- quickshell
+local ipc = "qs ipc call "
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(ipc .. "wallpaper toggle"))
+hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd(ipc .. "audio toggle"))
+hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(ipc .. "bluetooth toggle"))
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(noc_ipc .. "volume-up"))
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(noc_ipc .. "volume-down"))
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd(noc_ipc .. "volume-mute"))
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(noc_ipc .. "brightness-up"))
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(noc_ipc .. "brightness-down"))
+-- window switcher (hold Alt+Tab to cycle, release Alt to focus)
+hl.bind("ALT + Tab", hl.dsp.exec_cmd(ipc .. "switcher next"), { repeating = true })
+hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd(ipc .. "switcher prev"), { repeating = true })
+hl.bind("ALT + ALT_L", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
+hl.bind("ALT + ALT_R", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
+
+-- notifications
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(ipc .. "notifications dismiss_all"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd(ipc .. "notifications dnd_toggle"))
+
+-- audio
+hl.bind(
+  "XF86AudioRaiseVolume",
+  hl.dsp.exec_cmd("wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"),
+  { locked = true, repeating = true }
+)
+hl.bind(
+  "XF86AudioLowerVolume",
+  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
+  { locked = true, repeating = true }
+)

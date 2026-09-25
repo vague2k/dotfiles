@@ -5,16 +5,21 @@ import QtQuick
 Item {
     id: root
 
+    property var theme: DefaultTheme {}
     implicitWidth: 100
     implicitHeight: 23
     readonly property int bandCount: 15
     property var targets: Array(bandCount).fill(0)
 
+    // Prefer the theme-generated cava config once a palette exists; otherwise
+    // fall back to the bundled one so a fresh install still visualizes.
+    readonly property string configPath: root.theme.themedCavaConfig && root.theme.ready ? root.theme.themedCavaConfig : Quickshell.shellPath("bar/cava.conf")
+
     // Cava captures the default PipeWire output and writes 15 ASCII bands per frame.
     Process {
         id: capture
         running: true
-        command: ["cava", "-p", Quickshell.shellPath("cava.conf")]
+        command: ["cava", "-p", root.configPath]
         stdout: SplitParser {
             onRead: line => {
                 const bands = line.trim().replace(/;$/, "").split(";");
@@ -37,13 +42,8 @@ Item {
                 x: index * 6
                 width: 5
                 height: Math.max(2, level * 20)
-                color: "#73a5e2"
+                color: root.theme.accentPrimary
                 anchors.bottom: parent.bottom
-
-                // Approximate Noctalia's 60ms smoothing as new frames arrive.
-                Behavior on height {
-                    NumberAnimation { duration: 130; easing.type: Easing.OutCubic }
-                }
             }
         }
     }

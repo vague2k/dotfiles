@@ -14,4 +14,4 @@ confirm-close-surface = false
 
 config-file = ?./macos
 
-theme = noctalia
+theme = theme

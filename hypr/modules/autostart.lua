@@ -1,4 +1,7 @@
 hl.on("hyprland.start", function()
-  --hl.exec_cmd("noctalia")
   hl.exec_cmd("qs")
+  -- Polkit authentication agent (package: hyprpolkitagent)
+  hl.exec_cmd("systemctl --user start hyprpolkitagent")
+  -- Wallpaper daemon (package: awww)
+  hl.exec_cmd("awww-daemon")
 end)

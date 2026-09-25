@@ -1,0 +1,36 @@
+# Bundled matugen config used via `matugen image <img> -c this-file`.
+# It only renders the files the shell owns and never touches your own matugen
+# setup. See set.sh for invocation and post-processing.
+[config]
+
+[templates.quickshell]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/quickshell.json'
+output_path = '~/.local/state/quickshell/wallpaper-theme.json'
+
+[templates.cava]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/cava.template'
+output_path = '~/.local/state/quickshell/cava.conf'
+
+[templates.ghostty]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/ghostty.template'
+output_path = '~/.config/ghostty/themes/theme'
+
+[templates.tmux]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/tmux.template'
+output_path = '~/.config/tmux/themes/theme.conf'
+
+[templates.gtk3]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/gtk.template'
+output_path = '~/.config/gtk-3.0/theme.css'
+
+[templates.gtk4]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/gtk.template'
+output_path = '~/.config/gtk-4.0/theme.css'
+
+[templates.qt5]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/qt.template'
+output_path = '~/.config/qt5ct/colors/theme.conf'
+
+[templates.qt6]
+input_path = '~/.config/quickshell/theme/wallpaper-theme/templates/qt.template'
+output_path = '~/.config/qt6ct/colors/theme.conf'
