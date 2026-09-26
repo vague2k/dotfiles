@@ -1,9 +1,3 @@
-------------------
----- MONITORS ----
-------------------
-
--- See https://wiki.hypr.land/configuring/core/monitors/
-
 -- DP-2 (Acer VG240Y P, 1920x1080), primary anchored at 0x0.
 hl.monitor({
   output = "DP-2",
