@@ -233,6 +233,14 @@ Scope {
                 }
                 BarButton {
                     theme: root.theme
+                    anchors.verticalCenter: parent.verticalCenter
+                    glyph: ""
+                    glyphFamily: tablerIcons.name
+                    label: stats.gpu
+                    progress: stats.gpuUsage
+                }
+                BarButton {
+                    theme: root.theme
                     glyph: ""
                     glyphFamily: tablerIcons.name
                     label: stats.ram

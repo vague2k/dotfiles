@@ -14,6 +14,36 @@ Scope {
 
     readonly property var adapter: Bluetooth.defaultAdapter
 
+    // Devices are split into known (connected/paired/bonded) and newly
+    // discovered ones so scan results don't get mixed in with saved devices.
+    // Unnamed discoveries are dropped: BLE advertises many devices whose only
+    // "name" is their MAC address, which just clutters the list.
+    function buildDeviceSections() {
+        const all = root.adapter?.devices.values ?? [];
+        const known = [];
+        const available = [];
+        for (let i = 0; i < all.length; i++) {
+            const device = all[i];
+            if (device.connected || device.paired || device.bonded)
+                known.push({
+                    device: device,
+                    section: "Known"
+                });
+            else if ((device.deviceName ?? "").length > 0)
+                available.push({
+                    device: device,
+                    section: "Available"
+                });
+        }
+        known.sort(function (a, b) {
+            return (b.device.connected ? 1 : 0) - (a.device.connected ? 1 : 0) || a.device.name.localeCompare(b.device.name);
+        });
+        available.sort(function (a, b) {
+            return a.device.name.localeCompare(b.device.name);
+        });
+        return known.concat(available);
+    }
+
     component BarButton: Rectangle {
         id: button
         property var theme: DefaultTheme {}
@@ -225,7 +255,7 @@ Scope {
                 PanelCard {
                     theme: root.theme
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.max(94, devices.contentHeight + 46)
+                    Layout.fillHeight: true
                     visible: root.adapter?.enabled ?? false
 
                     Text {
@@ -248,8 +278,61 @@ Scope {
                         anchors.bottomMargin: 8
                         clip: true
                         spacing: root.theme.spacing
-                        model: root.adapter?.devices.values || []
+                        model: root.buildDeviceSections()
                         keyNavigationWraps: true
+
+                        section.property: "section"
+                        section.delegate: Item {
+                            width: devices.width
+                            height: 20
+
+                            Text {
+                                anchors.left: parent.left
+                                anchors.leftMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: section
+                                color: root.theme.textSecondary
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: 10
+                                font.bold: true
+                            }
+
+                            Rectangle {
+                                anchors.bottom: parent.bottom
+                                width: parent.width
+                                height: 1
+                                color: root.theme.bgBorder
+                            }
+                        }
+
+                        // A custom contentItem replaces the style's own, so we
+                        // also lose its `visible`/`opacity` bindings. Without
+                        // them the thumb is painted at full opacity and stretched
+                        // over the whole track whenever the list fits the view,
+                        // so re-add them here to keep it a slim, auto-hiding thumb.
+                        ScrollBar.vertical: ScrollBar {
+                            id: deviceScrollBar
+                            policy: ScrollBar.AsNeeded
+                            width: 6
+
+                            contentItem: Rectangle {
+                                implicitWidth: 4
+                                radius: 2
+                                color: root.theme.bgBorderStrong
+                                visible: deviceScrollBar.size < 1.0
+                                opacity: deviceScrollBar.active ? 1 : 0
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: 150
+                                    }
+                                }
+                            }
+
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+                        }
 
                         delegate: Rectangle {
                             id: deviceRow
@@ -266,7 +349,7 @@ Scope {
 
                                 Text {
                                     Layout.fillWidth: true
-                                    text: deviceRow.modelData.name + (deviceRow.modelData.connected ? "  Connected" : "")
+                                    text: deviceRow.modelData.device.name + (deviceRow.modelData.device.connected ? "  Connected" : "")
                                     color: root.theme.textPrimary
                                     font.family: root.theme.fontFamily
                                     font.pixelSize: 11
@@ -275,18 +358,19 @@ Scope {
 
                                 BarButton {
                                     theme: root.theme
-                                    label: deviceRow.modelData.connected ? "Disconnect" : deviceRow.modelData.paired ? "Connect" : deviceRow.modelData.pairing ? "Cancel" : "Pair"
+                                    label: deviceRow.modelData.device.connected ? "Disconnect" : deviceRow.modelData.device.paired ? "Connect" : deviceRow.modelData.device.pairing ? "Cancel" : "Pair"
                                     action: true
                                     labelFontSize: 11
                                     onClicked: {
-                                        if (deviceRow.modelData.connected)
-                                            deviceRow.modelData.disconnect();
-                                        else if (deviceRow.modelData.paired)
-                                            deviceRow.modelData.connect();
-                                        else if (deviceRow.modelData.pairing)
-                                            deviceRow.modelData.cancelPair();
+                                        const d = deviceRow.modelData.device;
+                                        if (d.connected)
+                                            d.disconnect();
+                                        else if (d.paired)
+                                            d.connect();
+                                        else if (d.pairing)
+                                            d.cancelPair();
                                         else
-                                            deviceRow.modelData.pair();
+                                            d.pair();
                                     }
                                 }
 
@@ -294,8 +378,8 @@ Scope {
                                     theme: root.theme
                                     label: "×"
                                     action: true
-                                    visible: deviceRow.modelData.paired
-                                    onClicked: deviceRow.modelData.forget()
+                                    visible: deviceRow.modelData.device.paired
+                                    onClicked: deviceRow.modelData.device.forget()
                                 }
                             }
                         }
@@ -307,10 +391,6 @@ Scope {
                     text: "No Bluetooth adapter found"
                     color: root.theme.textSecondary
                     font.family: root.theme.fontFamily
-                }
-
-                Item {
-                    Layout.fillHeight: true
                 }
             }
         }

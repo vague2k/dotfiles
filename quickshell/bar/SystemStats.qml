@@ -7,10 +7,12 @@ QtObject {
     property string cpu: "--"
     property string ram: "--"
     property string disk: "--"
+    property string gpu: "--"
     // Usage fractions (0..1) used to drive the per-stat progress bars.
     property real cpuUsage: 0
     property real ramUsage: 0
     property real diskUsage: 0
+    property real gpuUsage: 0
 
     property double previousTotal: 0
     property double previousIdle: 0
@@ -25,11 +27,13 @@ QtObject {
         onTriggered: {
             if (!statsProcess.running)
                 statsProcess.running = true;
+            if (!gpuProcess.running)
+                gpuProcess.running = true;
         }
     }
 
     property Process statsProcess: Process {
-        command: ["sh", "-c", "cat /proc/stat /proc/meminfo; df -P / | tail -1"]
+        command: ["sh", "-c", "cat /proc/stat /proc/meminfo; df -P /"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.split("\n");
@@ -62,6 +66,20 @@ QtObject {
                     const fields = diskLine.trim().split(/\s+/);
                     root.disk = fields[4];
                     root.diskUsage = Math.max(0, Math.min(1, parseInt(fields[4]) / 100));
+                }
+            }
+        }
+    }
+
+    // i have an nvidia gpu
+    property Process gpuProcess: Process {
+        command: ["sh", "-c", "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const value = parseInt(text.trim(), 10);
+                if (!Number.isNaN(value)) {
+                    root.gpuUsage = Math.max(0, Math.min(1, value / 100));
+                    root.gpu = value + "%";
                 }
             }
         }

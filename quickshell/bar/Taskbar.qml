@@ -79,7 +79,7 @@ Row {
             readonly property var entry: DesktopEntries.heuristicLookup(modelData.wayland?.appId || modelData.lastIpcObject?.class || "")
 
             width: root.tabWidth
-            label: (entry?.name || modelData.wayland?.appId || modelData.lastIpcObject?.class || "App") + (modelData.title ? " - " + modelData.title : "")
+            label: modelData.title ? modelData.title : (entry?.name || modelData.wayland?.appId || modelData.lastIpcObject?.class || "App")
             icon: Quickshell.iconPath(entry?.icon || "", true)
             selected: modelData.activated
             boxed: true
