@@ -1,7 +1,6 @@
 //@ pragma IconTheme hicolor
 import Quickshell
 import Quickshell.Services.Pipewire
-import "theme"
 import "bar"
 import "launcher"
 import "audio"
@@ -16,35 +15,17 @@ ShellRoot {
         objects: [Pipewire.defaultAudioSink]
     }
 
-    Bar {
-        theme: Theme
-    }
+    Bar {}
 
-    AppLauncher {
-        theme: Theme
-    }
+    AppLauncher {}
 
-    AudioPanel {
-        theme: Theme
-    }
+    AudioPanel {}
 
-    BluetoothPanel {
-        theme: Theme
-    }
+    BluetoothPanel {}
 
-    SessionOverlay {
-        theme: Theme
-    }
+    SessionOverlay {}
 
-    WallpaperManager {
-        theme: Theme
-    }
+    WallpaperManager {}
 
-    Switcher {
-        theme: Theme
-    }
-
-    NotificationPopup {
-        theme: Theme
-    }
+    NotificationPopup {}
 }

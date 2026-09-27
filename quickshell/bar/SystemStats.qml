@@ -8,7 +8,6 @@ QtObject {
     property string ram: "--"
     property string disk: "--"
     property string gpu: "--"
-    // Usage fractions (0..1) used to drive the per-stat progress bars.
     property real cpuUsage: 0
     property real ramUsage: 0
     property real diskUsage: 0
@@ -71,7 +70,6 @@ QtObject {
         }
     }
 
-    // i have an nvidia gpu
     property Process gpuProcess: Process {
         command: ["sh", "-c", "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"]
         stdout: StdioCollector {

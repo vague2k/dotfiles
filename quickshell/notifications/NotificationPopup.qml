@@ -5,10 +5,12 @@ import Quickshell.Io
 import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Layouts
+import "../components"
+import "../theme"
 
 Scope {
     id: root
-    property var theme: DefaultTheme {}
+    property var theme: Theme
     property string font: theme.fontFamily
 
     IpcHandler {
@@ -125,7 +127,7 @@ Scope {
 
                                     IconImage {
                                         anchors.centerIn: parent
-                                        source: Quickshell.iconPath(notifCard.modelData.appIcon, true)
+                                        source: AppLookup.iconPath(notifCard.modelData.appIcon)
                                         implicitSize: 16
                                         visible: notifCard.modelData.appIcon !== ""
                                     }
@@ -316,7 +318,7 @@ Scope {
                                             target: progressBar
                                             property: "width"
                                             to: 0
-                                            duration: notifCard.modelData.expireTimeout > 0 ? notifCard.modelData.expireTimeout : notifCard.modelData.defaultTimeout  // no * 1000: matches the timer — Quickshell passes raw D-Bus ms
+                                            duration: notifCard.modelData.expireTimeout > 0 ? notifCard.modelData.expireTimeout : notifCard.modelData.defaultTimeout
                                         }
                                     }
                                 }

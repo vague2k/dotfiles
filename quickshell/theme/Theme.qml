@@ -4,9 +4,6 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 
-// Provider module: owns the matugen palette, the selected M3 scheme, and the
-// generation pipeline. shell.qml injects this as `theme` into every module;
-// modules fall back to their own DefaultTheme.qml when used standalone.
 Singleton {
     id: root
 

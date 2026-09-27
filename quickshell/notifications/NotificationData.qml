@@ -6,22 +6,23 @@ QtObject {
 
     property Notification notification: null
     property bool closed: false
-
-    property string seqId: ""
-    property string notifId: ""
-
-    property string summary: ""
-    property string body: ""
-    property string appIcon: ""
-    property string appName: ""
-    property string image: ""
-    property var actions: []
-    property int urgency: NotificationUrgency.Normal
-    property real expireTimeout: defaultTimeout
-
     property bool hovered: false
+    property string seqId: ""
 
-    readonly property int defaultTimeout: 5000  // ms — fallback auto-dismiss when app sends -1/0
+    readonly property int defaultTimeout: 5000
+
+    readonly property string notifId: String(notification?.id ?? "")
+    readonly property string summary: notification?.summary || ""
+    readonly property string body: notification?.body || ""
+    readonly property string appIcon: notification?.appIcon || ""
+    readonly property string appName: notification?.appName || ""
+    readonly property string image: notification?.image || ""
+    readonly property int urgency: notification?.urgency ?? NotificationUrgency.Normal
+    readonly property real expireTimeout: notification?.expireTimeout > 0 ? notification.expireTimeout : defaultTimeout
+    readonly property var actions: (notification?.actions ?? []).map(action => ({
+                identifier: action.identifier,
+                text: action.text
+            }))
 
     readonly property Connections _conn: Connections {
         target: notificationData.notification
@@ -33,74 +34,12 @@ QtObject {
             NotificationService._remove(notificationData);
             notificationData.destroy();
         }
-
-        function onSummaryChanged(): void {
-            if (notificationData.notification)
-                notificationData.summary = notificationData.notification.summary || "";
-        }
-        function onBodyChanged(): void {
-            if (notificationData.notification)
-                notificationData.body = notificationData.notification.body || "";
-        }
-        function onAppIconChanged(): void {
-            if (notificationData.notification)
-                notificationData.appIcon = notificationData.notification.appIcon || "";
-        }
-        function onAppNameChanged(): void {
-            if (notificationData.notification)
-                notificationData.appName = notificationData.notification.appName || "";
-        }
-        function onImageChanged(): void {
-            if (notificationData.notification)
-                notificationData.image = notificationData.notification.image || "";
-        }
-        function onUrgencyChanged(): void {
-            if (notificationData.notification)
-                notificationData.urgency = notificationData.notification.urgency;
-        }
-        function onExpireTimeoutChanged(): void {
-            if (notificationData.notification)
-                notificationData.expireTimeout = notificationData.notification.expireTimeout;
-        }
-        function onActionsChanged(): void {
-            if (!notificationData.notification)
-                return;
-            notificationData.actions = notificationData.notification.actions.map(function (a) {
-                return {
-                    identifier: a.identifier,
-                    text: a.text
-                };
-            });
-        }
     }
 
     readonly property Timer _timer: Timer {
         running: !notificationData.closed && !notificationData.hovered && notificationData.urgency !== NotificationUrgency.Critical
-        interval: notificationData.expireTimeout > 0 ? notificationData.expireTimeout : notificationData.defaultTimeout  // no * 1000: Quickshell passes raw D-Bus ms, not seconds
-        onTriggered: {
-            notificationData.dismiss();
-        }
-    }
-
-    Component.onCompleted: {
-        if (!notification)
-            return;
-        notifId = String(notification.id || "");
-        summary = notification.summary || "";
-        body = notification.body || "";
-        appIcon = notification.appIcon || "";
-        appName = notification.appName || "";
-        image = notification.image || "";
-        urgency = notification.urgency;
-
-        const rawTimeout = notification.expireTimeout;
-        expireTimeout = rawTimeout > 0 ? rawTimeout : defaultTimeout;
-        actions = notification.actions.map(function (a) {
-            return {
-                identifier: a.identifier,
-                text: a.text
-            };
-        });
+        interval: notificationData.expireTimeout
+        onTriggered: notificationData.dismiss()
     }
 
     function dismiss(): void {

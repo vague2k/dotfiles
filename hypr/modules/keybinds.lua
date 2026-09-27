@@ -64,10 +64,10 @@ hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd(ipc .. "audio toggle"))
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(ipc .. "bluetooth toggle"))
 
 -- window switcher (hold Alt+Tab to cycle, release Alt to focus)
-hl.bind("ALT + Tab", hl.dsp.exec_cmd(ipc .. "switcher next"), { repeating = true })
-hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd(ipc .. "switcher prev"), { repeating = true })
-hl.bind("ALT + ALT_L", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
-hl.bind("ALT + ALT_R", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
+-- hl.bind("ALT + Tab", hl.dsp.exec_cmd(ipc .. "switcher next"), { repeating = true })
+-- hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd(ipc .. "switcher prev"), { repeating = true })
+-- hl.bind("ALT + ALT_L", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
+-- hl.bind("ALT + ALT_R", hl.dsp.exec_cmd(ipc .. "switcher commit"), { release = true })
 
 -- notifications
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(ipc .. "notifications dismiss_all"))

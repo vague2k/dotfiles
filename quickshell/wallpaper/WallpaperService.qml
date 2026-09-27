@@ -4,8 +4,6 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 
-// Scans the wallpaper directory, tracks the current image, and applies it via
-// the awww daemon.
 Singleton {
     id: root
 
@@ -25,8 +23,6 @@ Singleton {
         if (!path)
             return;
         root.currentWallpaper = path;
-        // The daemon is started at login (see hypr autostart). This service only
-        // tells it which image to display.
         apply.exec(["awww", "img", path, "--transition-type", "fade", "--transition-pos", "center", "--transition-duration", "1"]);
     }
 

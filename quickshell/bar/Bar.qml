@@ -3,103 +3,18 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import QtQuick
+import "../components"
+import "../theme"
 
-// Standalone bar module: one bar window per screen, toggled via IPC `bar toggle`.
 Scope {
     id: root
 
-    property var theme: DefaultTheme {}
+    property var theme: Theme
     property bool barVisible: true
 
     FontLoader {
         id: tablerIcons
         source: "file:///usr/share/fonts/TTF/tabler-icons.ttf"
-    }
-
-    component BarButton: Rectangle {
-        id: button
-        property var theme: DefaultTheme {}
-        property string label: ""
-        property int labelFontSize: theme.fontSize
-        property string glyph: ""
-        property int glyphFontSize: 20
-        property string glyphFamily: "tabler-icons"
-        property string icon: ""
-        property int iconSize: 17
-        property bool selected: false
-        property bool boxed: false
-        property real lineHeight: 1
-        property real progress: -1
-        signal clicked
-
-        color: boxed ? (selected ? theme.bgSelected : mouse.containsMouse ? theme.bgHover : theme.bgSurface) : "transparent"
-        border.color: boxed ? (selected ? theme.accentPrimary : theme.bgBorder) : "transparent"
-        border.width: boxed ? 1 : 0
-        implicitWidth: labelText.implicitWidth + (iconImage.visible ? button.iconSize + theme.spacing : 0) + (glyphText.visible ? glyphText.implicitWidth + theme.spacing : 0) + (progressTrack.visible ? progressTrack.width + theme.spacing : 0) + 12
-        implicitHeight: 25
-
-        Row {
-            id: content
-            anchors.verticalCenter: parent.verticalCenter
-            x: (button.width - implicitWidth) / 2
-            spacing: button.theme.spacing
-
-            Image {
-                id: iconImage
-                visible: button.icon !== ""
-                source: button.icon
-                width: button.iconSize
-                height: button.iconSize
-                anchors.verticalCenter: parent.verticalCenter
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Text {
-                id: glyphText
-                visible: button.glyph !== ""
-                text: button.glyph
-                color: button.theme.textPrimary
-                font.family: button.glyphFamily
-                font.pixelSize: button.glyphFontSize
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Rectangle {
-                id: progressTrack
-                visible: button.progress >= 0
-                width: 4
-                height: 16
-                color: button.theme.bgBorder
-                anchors.verticalCenter: parent.verticalCenter
-
-                Rectangle {
-                    anchors.bottom: parent.bottom
-                    width: parent.width
-                    height: parent.height * Math.max(0, Math.min(1, button.progress))
-                    color: button.theme.accentPrimary
-                }
-            }
-
-            Text {
-                id: labelText
-                text: button.label
-                color: button.theme.textPrimary
-                font.family: button.theme.fontFamily
-                font.pixelSize: button.labelFontSize
-                lineHeight: button.lineHeight
-                lineHeightMode: Text.ProportionalHeight
-                elide: Text.ElideRight
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-
-        MouseArea {
-            id: mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: button.clicked()
-        }
     }
 
     IpcHandler {
@@ -153,7 +68,6 @@ Scope {
 
                 BarButton {
                     id: startButton
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     boxed: true
                     label: "START"
@@ -162,7 +76,6 @@ Scope {
 
                 BarButton {
                     id: wallpaperButton
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: ""
                     glyphFamily: tablerIcons.name
@@ -183,7 +96,6 @@ Scope {
                     Repeater {
                         model: ["brave-browser", "steam", "com.mitchellh.ghostty"]
                         BarButton {
-                            theme: root.theme
                             required property string modelData
                             readonly property var app: DesktopEntries.byId(modelData)
                             width: 24
@@ -209,7 +121,6 @@ Scope {
                 }
 
                 Taskbar {
-                    theme: root.theme
                     monitor: Hyprland.monitorFor(bar.screen)
                     maxWidth: Math.max(0, bar.width - x - rightSide.width - 30)
                     anchors.verticalCenter: parent.verticalCenter
@@ -224,7 +135,6 @@ Scope {
                 spacing: 0
 
                 BarButton {
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: "勺"
                     glyphFamily: tablerIcons.name
@@ -232,7 +142,6 @@ Scope {
                     progress: stats.cpuUsage
                 }
                 BarButton {
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: ""
                     glyphFamily: tablerIcons.name
@@ -240,7 +149,6 @@ Scope {
                     progress: stats.gpuUsage
                 }
                 BarButton {
-                    theme: root.theme
                     glyph: ""
                     glyphFamily: tablerIcons.name
                     label: stats.ram
@@ -248,7 +156,6 @@ Scope {
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 BarButton {
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: ""
                     glyphFamily: tablerIcons.name
@@ -258,12 +165,10 @@ Scope {
 
                 BarButton {
                     id: visualizerButton
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     width: 108
                     onClicked: Quickshell.execDetached(["qs", "ipc", "call", "audio", "toggle"])
                     AudioVisualizer {
-                        theme: root.theme
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 2
@@ -272,7 +177,6 @@ Scope {
 
                 BarButton {
                     id: soundButton
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: Pipewire.defaultAudioSink?.audio?.muted ? "" : ""
                     glyphFamily: tablerIcons.name
@@ -282,7 +186,6 @@ Scope {
 
                 BarButton {
                     id: bluetoothButton
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     glyph: ""
                     glyphFamily: tablerIcons.name
@@ -292,7 +195,6 @@ Scope {
                 }
 
                 BarButton {
-                    theme: root.theme
                     anchors.verticalCenter: parent.verticalCenter
                     label: Qt.formatDateTime(clock.date, "MMM dd, yyyy\nhh:mm:ss AP")
                     labelFontSize: 12

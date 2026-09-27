@@ -1,6 +1,3 @@
-# Bundled matugen config used via `matugen image <img> -c this-file`.
-# It only renders the files the shell owns and never touches your own matugen
-# setup. See set.sh for invocation and post-processing.
 [config]
 
 [templates.quickshell]

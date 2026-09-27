@@ -1,21 +1,19 @@
 import Quickshell
 import Quickshell.Io
 import QtQuick
+import "../theme"
 
 Item {
     id: root
 
-    property var theme: DefaultTheme {}
+    property var theme: Theme
     implicitWidth: 100
     implicitHeight: 23
     readonly property int bandCount: 15
     property var targets: Array(bandCount).fill(0)
 
-    // Prefer the theme-generated cava config once a palette exists; otherwise
-    // fall back to the bundled one so a fresh install still visualizes.
     readonly property string configPath: root.theme.themedCavaConfig && root.theme.ready ? root.theme.themedCavaConfig : Quickshell.shellPath("bar/cava.conf")
 
-    // Cava captures the default PipeWire output and writes 15 ASCII bands per frame.
     Process {
         id: capture
         running: true

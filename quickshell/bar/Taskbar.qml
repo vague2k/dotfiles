@@ -1,72 +1,14 @@
-import Quickshell
 import Quickshell.Hyprland
 import QtQuick
+import "../components"
 
 Row {
     id: root
 
-    property var theme: DefaultTheme {}
     property var monitor
     property int maxWidth: 800
     readonly property var windows: Hyprland.toplevels.values.filter(window => window.monitor?.name === monitor?.name && window.workspace?.id > 0)
     readonly property int tabWidth: Math.min(210, Math.max(0, Math.floor((maxWidth - Math.max(0, windows.length - 1) * spacing) / Math.max(1, windows.length))))
-
-    component BarButton: Rectangle {
-        id: button
-        property var theme: DefaultTheme {}
-        property string label: ""
-        property int labelFontSize: theme.fontSize
-        property string icon: ""
-        property int iconSize: 17
-        property bool selected: false
-        property bool boxed: false
-        property bool alignLeft: false
-        signal clicked
-
-        color: boxed ? (selected ? theme.bgSelected : mouse.containsMouse ? theme.bgHover : theme.bgSurface) : "transparent"
-        border.color: boxed ? (selected ? theme.accentPrimary : theme.bgBorder) : "transparent"
-        border.width: boxed ? 1 : 0
-        implicitWidth: labelText.implicitWidth + (iconImage.visible ? button.iconSize + theme.spacing : 0) + 12
-        implicitHeight: 25
-
-        Row {
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            spacing: button.theme.spacing
-
-            Image {
-                id: iconImage
-                visible: button.icon !== ""
-                source: button.icon
-                width: button.iconSize
-                height: button.iconSize
-                anchors.verticalCenter: parent.verticalCenter
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Text {
-                id: labelText
-                width: parent.width - (iconImage.visible ? iconImage.width + parent.spacing : 0)
-                text: button.label
-                color: button.theme.textPrimary
-                font.family: button.theme.fontFamily
-                font.pixelSize: button.labelFontSize
-                elide: Text.ElideRight
-                anchors.verticalCenter: parent.verticalCenter
-            }
-        }
-
-        MouseArea {
-            id: mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: button.clicked()
-        }
-    }
 
     spacing: 1
 
@@ -74,13 +16,12 @@ Row {
         model: root.windows
 
         BarButton {
-            theme: root.theme
             required property var modelData
-            readonly property var entry: DesktopEntries.heuristicLookup(modelData.wayland?.appId || modelData.lastIpcObject?.class || "")
+            readonly property var entry: AppLookup.resolveWindow(modelData)
 
             width: root.tabWidth
             label: modelData.title ? modelData.title : (entry?.name || modelData.wayland?.appId || modelData.lastIpcObject?.class || "App")
-            icon: Quickshell.iconPath(entry?.icon || "", true)
+            icon: AppLookup.icon(entry)
             selected: modelData.activated
             boxed: true
             alignLeft: true
