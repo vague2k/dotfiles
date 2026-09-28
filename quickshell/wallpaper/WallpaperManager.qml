@@ -48,7 +48,8 @@ Scope {
         title: "Wallpapers"
         bodyWidth: 600
         bodyHeight: 520
-        bodyInset: 16
+        anchorLeft: true
+        anchorBottom: true
         headerKeyboardNavigable: true
 
         onOpenChanged: if (open) {

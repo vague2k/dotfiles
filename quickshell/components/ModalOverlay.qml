@@ -13,13 +13,22 @@ Scope {
     property bool open: false
     property real bodyWidth: 380
     property real bodyHeight: 500
-    property real bodyInset: 0
     property int bodyBorderWidth: 1
     property bool headerKeyboardNavigable: false
     property bool closeOnEscape: true
     signal escapePressed
 
+    property bool anchorLeft: false
+    property bool anchorRight: false
+    property bool anchorTop: false
+    property bool anchorBottom: false
+    property int marginLeft: 4
+    property int marginRight: 4
+    property int marginTop: 4
+    property int marginBottom: 36
+
     default property alias content: contentColumn.data
+    property alias popover: popoverSlot.data
 
     IpcHandler {
         target: root.ipcTarget
@@ -47,26 +56,30 @@ Scope {
             right: true
         }
 
-        Rectangle {
+        MouseArea {
             anchors.fill: parent
-            color: Theme.bgOverlay
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: root.open = false
-            }
+            onClicked: root.open = false
         }
 
         Rectangle {
             id: body
-            width: Math.min(root.bodyWidth, panel.width - root.bodyInset)
-            height: Math.min(root.bodyHeight, panel.height - root.bodyInset)
-            anchors.centerIn: parent
-            visible: root.open
+
+            readonly property real maxWidth: Math.max(0, panel.width - root.marginLeft - root.marginRight)
+            readonly property real maxHeight: Math.max(0, panel.height - root.marginTop - root.marginBottom)
+
+            width: Math.min(root.bodyWidth, maxWidth)
+            height: Math.min(root.bodyHeight, maxHeight)
+            x: root.anchorLeft ? root.marginLeft : root.anchorRight ? panel.width - width - root.marginRight : Math.round((panel.width - width) / 2)
+            y: root.anchorTop ? root.marginTop : root.anchorBottom ? panel.height - height - root.marginBottom : Math.round((panel.height - height) / 2)
+
             focus: true
             color: Theme.bgSurfaceLow
             border.color: Theme.bgBorder
             border.width: root.bodyBorderWidth
+
+            MouseArea {
+                anchors.fill: parent
+            }
 
             Keys.onEscapePressed: {
                 if (root.closeOnEscape)
@@ -93,6 +106,11 @@ Scope {
                     Layout.fillHeight: true
                     spacing: Theme.sectionSpacing
                 }
+            }
+
+            Item {
+                id: popoverSlot
+                anchors.fill: parent
             }
         }
     }

@@ -13,6 +13,7 @@ Scope {
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
     readonly property var outputs: Pipewire.nodes.values.filter(node => node.audio && node.isSink && !node.isStream)
+    readonly property var inputs: Pipewire.nodes.values.filter(node => node.audio && !node.isSink && !node.isStream)
     readonly property var streams: Pipewire.nodes.values.filter(node => node.audio && node.isStream && node.isSink)
 
     PwObjectTracker {
@@ -25,6 +26,8 @@ Scope {
         title: "Audio"
         bodyWidth: 380
         bodyHeight: 500
+        anchorRight: true
+        anchorBottom: true
 
         ColumnLayout {
             Layout.fillWidth: true
@@ -38,29 +41,44 @@ Scope {
                     required property int index
                     readonly property bool output: index === 0
                     readonly property var device: output ? root.sink : root.source
+                    readonly property var devices: output ? root.outputs : root.inputs
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 96
+                    Layout.preferredHeight: 84
 
                     ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 8
                         spacing: root.theme.spacing
 
-                        Text {
-                            text: deviceCard.output ? "Output" : "Input"
-                            color: root.theme.textPrimary
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: root.theme.fontSize
-                            font.bold: true
-                        }
-
-                        Text {
+                        RowLayout {
                             Layout.fillWidth: true
-                            text: deviceCard.device?.description || "No device"
-                            color: root.theme.textSecondary
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: 11
-                            elide: Text.ElideRight
+                            spacing: root.theme.spacing
+
+                            Text {
+                                text: deviceCard.output ? "Output" : "Input"
+                                color: root.theme.textPrimary
+                                font.family: root.theme.fontFamily
+                                font.pixelSize: root.theme.fontSize
+                                font.bold: true
+                            }
+
+                            Item {
+                                Layout.fillWidth: true
+                            }
+
+                            PanelSelect {
+                                Layout.fillWidth: true
+                                model: deviceCard.devices
+                                textRole: "description"
+                                font.pixelSize: 11
+                                currentIndex: deviceCard.devices.findIndex(node => node.id === deviceCard.device?.id)
+                                onActivated: index => {
+                                    if (deviceCard.output)
+                                        Pipewire.preferredDefaultAudioSink = deviceCard.devices[index];
+                                    else
+                                        Pipewire.preferredDefaultAudioSource = deviceCard.devices[index];
+                                }
+                            }
                         }
 
                         RowLayout {
@@ -92,34 +110,6 @@ Scope {
                             }
                         }
                     }
-                }
-            }
-        }
-
-        PanelCard {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 56
-
-            RowLayout {
-                anchors.fill: parent
-                anchors.margins: 8
-                spacing: root.theme.spacing
-
-                Text {
-                    text: "Output device"
-                    color: root.theme.textSecondary
-                    font.family: root.theme.fontFamily
-                    font.pixelSize: 11
-                }
-
-                PanelSelect {
-                    id: outputSelect
-                    Layout.fillWidth: true
-                    model: root.outputs
-                    textRole: "description"
-                    font.pixelSize: 11
-                    currentIndex: root.outputs.findIndex(node => node.id === root.sink?.id)
-                    onActivated: index => Pipewire.preferredDefaultAudioSink = root.outputs[index]
                 }
             }
         }

@@ -45,6 +45,8 @@ Scope {
         title: "Bluetooth"
         bodyWidth: 310
         bodyHeight: 380
+        anchorRight: true
+        anchorBottom: true
 
         onOpenChanged: if (!open && root.adapter)
             root.adapter.discovering = false

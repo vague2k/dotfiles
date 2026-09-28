@@ -15,6 +15,7 @@ Scope {
     property string userName: Quickshell.env("USER") || "user"
     property var menuEntry: null
     property real menuY: 0
+    property bool sessionOpen: true
 
     function focusSearch() {
         search.text = "";
@@ -26,6 +27,22 @@ Scope {
     function closeMenu() {
         menuEntry = null;
         menuY = 0;
+    }
+
+    function toggleSession() {
+        const wasOpen = sessionOpen;
+        closeMenu();
+        sessionOpen = !wasOpen;
+    }
+
+    function runSession(action) {
+        overlay.open = false;
+        if (action === "logout")
+            Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.exit()"]);
+        else if (action === "restart")
+            Quickshell.execDetached(["systemctl", "reboot"]);
+        else
+            Quickshell.execDetached(["systemctl", "poweroff"]);
     }
 
     function entryActions(entry) {
@@ -55,6 +72,7 @@ Scope {
     }
 
     function openMenu(entry, y) {
+        sessionOpen = false;
         if (!entryActions(entry).length) {
             closeMenu();
             return;
@@ -258,6 +276,8 @@ Scope {
         ipcTarget: "launcher"
         bodyWidth: 460
         bodyHeight: 550
+        anchorLeft: true
+        anchorBottom: true
         closeOnEscape: false
 
         onOpenChanged: {
@@ -268,7 +288,9 @@ Scope {
         }
 
         onEscapePressed: {
-            if (root.menuEntry)
+            if (root.sessionOpen)
+                root.sessionOpen = false;
+            else if (root.menuEntry)
                 root.closeMenu();
             else
                 overlay.open = false;
@@ -431,9 +453,64 @@ Scope {
                 name: root.userName
                 Layout.preferredWidth: root.placesWidth
                 Layout.alignment: Qt.AlignVCenter
-                onClicked: {
-                    overlay.open = false;
-                    Quickshell.execDetached(["qs", "ipc", "call", "session", "toggle"]);
+                onClicked: root.toggleSession()
+            }
+        }
+
+        popover: Rectangle {
+            id: sessionMenu
+            visible: root.sessionOpen
+            width: root.placesWidth
+            height: sessionColumn.implicitHeight + 8
+            x: parent.width - width - root.theme.panelPadding
+            y: parent.height - height - root.theme.panelPadding - 26 - root.theme.sectionSpacing
+            color: root.theme.bgSurfaceLow
+            border.color: root.theme.bgBorder
+            border.width: 1
+
+            Column {
+                id: sessionColumn
+                width: parent.width - 8
+                x: 4
+                y: 4
+                spacing: 1
+
+                Text {
+                    width: parent.width
+                    height: 20
+                    text: "Session"
+                    color: root.theme.textSecondary
+                    font.family: root.theme.fontFamily
+                    font.pixelSize: 10
+                    font.bold: true
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                Rectangle {
+                    width: parent.width
+                    height: 1
+                    color: root.theme.bgBorder
+                }
+
+                MenuRow {
+                    width: sessionColumn.width
+                    icon: Quickshell.iconPath("system-log-out", true)
+                    label: "Log out"
+                    onClicked: root.runSession("logout")
+                }
+
+                MenuRow {
+                    width: sessionColumn.width
+                    icon: Quickshell.iconPath("system-reboot", true)
+                    label: "Restart"
+                    onClicked: root.runSession("restart")
+                }
+
+                MenuRow {
+                    width: sessionColumn.width
+                    icon: Quickshell.iconPath("system-shutdown", true)
+                    label: "Shut down"
+                    onClicked: root.runSession("shutdown")
                 }
             }
         }

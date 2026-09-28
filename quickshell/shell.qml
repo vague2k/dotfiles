@@ -5,9 +5,7 @@ import "bar"
 import "launcher"
 import "audio"
 import "bluetooth"
-import "session"
 import "wallpaper"
-import "switcher"
 import "notifications"
 
 ShellRoot {
@@ -22,8 +20,6 @@ ShellRoot {
     AudioPanel {}
 
     BluetoothPanel {}
-
-    SessionOverlay {}
 
     WallpaperManager {}
 
