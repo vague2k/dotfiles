@@ -12,10 +12,8 @@ Scope {
 
     property var places: []
     readonly property int placesWidth: 140
-    property string userName: Quickshell.env("USER") || "user"
     property var menuEntry: null
     property real menuY: 0
-    property bool sessionOpen: true
 
     function focusSearch() {
         search.text = "";
@@ -27,12 +25,6 @@ Scope {
     function closeMenu() {
         menuEntry = null;
         menuY = 0;
-    }
-
-    function toggleSession() {
-        const wasOpen = sessionOpen;
-        closeMenu();
-        sessionOpen = !wasOpen;
     }
 
     function runSession(action) {
@@ -72,7 +64,6 @@ Scope {
     }
 
     function openMenu(entry, y) {
-        sessionOpen = false;
         if (!entryActions(entry).length) {
             closeMenu();
             return;
@@ -90,19 +81,6 @@ Scope {
         else
             Quickshell.execDetached(["xdg-open", place.target]);
         overlay.open = false;
-    }
-
-    Process {
-        id: whoamiProc
-        running: true
-        command: ["whoami"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const name = text.trim();
-                if (name.length > 0)
-                    root.userName = name;
-            }
-        }
     }
 
     Process {
@@ -207,70 +185,6 @@ Scope {
         }
     }
 
-    component SessionButton: Rectangle {
-        id: button
-        property string glyph: ""
-        property string name: ""
-        signal clicked
-
-        activeFocusOnTab: true
-        Keys.onReturnPressed: button.clicked()
-        Keys.onEnterPressed: button.clicked()
-        Keys.onSpacePressed: button.clicked()
-
-        readonly property bool highlight: mouse.containsMouse || activeFocus
-
-        color: highlight ? root.theme.accentPrimary : "transparent"
-        border.color: activeFocus ? root.theme.accentPrimary : root.theme.bgBorderStrong
-        border.width: 1
-        implicitHeight: 26
-
-        RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
-            spacing: 6
-
-            Text {
-                text: button.glyph
-                color: button.highlight ? root.theme.bgBase : root.theme.accentPrimary
-                font.family: root.theme.fontFamily
-                font.pixelSize: 16
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                Layout.fillWidth: true
-                text: button.name
-                color: button.highlight ? root.theme.bgBase : root.theme.accentPrimary
-                font.family: root.theme.fontFamily
-                font.pixelSize: root.theme.fontSize
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                text: ">"
-                color: button.highlight ? root.theme.bgBase : root.theme.textSecondary
-                font.family: root.theme.fontFamily
-                font.pixelSize: root.theme.fontSize
-                Layout.alignment: Qt.AlignVCenter
-            }
-        }
-
-        MouseArea {
-            id: mouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                button.forceActiveFocus();
-                button.clicked();
-            }
-        }
-    }
-
     ModalOverlay {
         id: overlay
         ipcTarget: "launcher"
@@ -288,9 +202,7 @@ Scope {
         }
 
         onEscapePressed: {
-            if (root.sessionOpen)
-                root.sessionOpen = false;
-            else if (root.menuEntry)
+            if (root.menuEntry)
                 root.closeMenu();
             else
                 overlay.open = false;
@@ -403,21 +315,54 @@ Scope {
                 border.color: root.theme.bgBorder
                 border.width: 1
 
-                ListView {
-                    id: places
+                ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 4
-                    clip: true
-                    model: root.places
                     spacing: 1
-                    activeFocusOnTab: true
 
-                    delegate: MenuRow {
-                        required property var modelData
-                        width: places.width
-                        icon: Quickshell.iconPath(modelData.icon || "", true)
-                        label: modelData.label
-                        onClicked: root.launchPlace(modelData)
+                    ListView {
+                        id: places
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        clip: true
+                        model: root.places
+                        spacing: 1
+                        activeFocusOnTab: true
+
+                        delegate: MenuRow {
+                            required property var modelData
+                            width: places.width
+                            icon: Quickshell.iconPath(modelData.icon || "", true)
+                            label: modelData.label
+                            onClicked: root.launchPlace(modelData)
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        implicitHeight: 1
+                        color: root.theme.bgBorder
+                    }
+
+                    MenuRow {
+                        Layout.fillWidth: true
+                        icon: Quickshell.iconPath("system-log-out", true)
+                        label: "Log out"
+                        onClicked: root.runSession("logout")
+                    }
+
+                    MenuRow {
+                        Layout.fillWidth: true
+                        icon: Quickshell.iconPath("system-reboot", true)
+                        label: "Restart"
+                        onClicked: root.runSession("restart")
+                    }
+
+                    MenuRow {
+                        Layout.fillWidth: true
+                        icon: Quickshell.iconPath("system-shutdown", true)
+                        label: "Shut down"
+                        onClicked: root.runSession("shutdown")
                     }
                 }
             }
@@ -446,72 +391,6 @@ Scope {
                 }
                 onTextChanged: root.closeMenu()
                 onAccepted: root.launchApp(root.filteredApps()[0])
-            }
-
-            SessionButton {
-                glyph: "\uF011"
-                name: root.userName
-                Layout.preferredWidth: root.placesWidth
-                Layout.alignment: Qt.AlignVCenter
-                onClicked: root.toggleSession()
-            }
-        }
-
-        popover: Rectangle {
-            id: sessionMenu
-            visible: root.sessionOpen
-            width: root.placesWidth
-            height: sessionColumn.implicitHeight + 8
-            x: parent.width - width - root.theme.panelPadding
-            y: parent.height - height - root.theme.panelPadding - 26 - root.theme.sectionSpacing
-            color: root.theme.bgSurfaceLow
-            border.color: root.theme.bgBorder
-            border.width: 1
-
-            Column {
-                id: sessionColumn
-                width: parent.width - 8
-                x: 4
-                y: 4
-                spacing: 1
-
-                Text {
-                    width: parent.width
-                    height: 20
-                    text: "Session"
-                    color: root.theme.textSecondary
-                    font.family: root.theme.fontFamily
-                    font.pixelSize: 10
-                    font.bold: true
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: root.theme.bgBorder
-                }
-
-                MenuRow {
-                    width: sessionColumn.width
-                    icon: Quickshell.iconPath("system-log-out", true)
-                    label: "Log out"
-                    onClicked: root.runSession("logout")
-                }
-
-                MenuRow {
-                    width: sessionColumn.width
-                    icon: Quickshell.iconPath("system-reboot", true)
-                    label: "Restart"
-                    onClicked: root.runSession("restart")
-                }
-
-                MenuRow {
-                    width: sessionColumn.width
-                    icon: Quickshell.iconPath("system-shutdown", true)
-                    label: "Shut down"
-                    onClicked: root.runSession("shutdown")
-                }
             }
         }
     }
