@@ -1,7 +1,11 @@
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
+import Quickshell.Widgets
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
+
 import "../components"
 import "../theme"
 
@@ -9,78 +13,66 @@ Scope {
     id: root
 
     property var theme: Theme
-
+    property int selectedIndex: 0
     property var places: []
-    readonly property int placesWidth: 140
-    property var menuEntry: null
-    property real menuY: 0
 
-    function focusSearch() {
-        search.text = "";
-        closeMenu();
-        results.currentIndex = 0;
-        search.forceActiveFocus();
+    IpcHandler {
+        target: "launcher"
+        function toggle(): void {
+            launcherPanel.visible = !launcherPanel.visible;
+            if (launcherPanel.visible) {
+                searchInput.text = "";
+                selectedIndex = -1;
+                searchInput.forceActiveFocus();
+            }
+        }
     }
 
-    function closeMenu() {
-        menuEntry = null;
-        menuY = 0;
+    ScriptModel {
+        id: filteredApps
+        objectProp: "id"
+        values: {
+            const all = [...DesktopEntries.applications.values];
+            const q = searchInput.text.trim().toLowerCase();
+            if (q === "")
+                return all.sort((a, b) => a.name.localeCompare(b.name));
+            return all.filter(d => (d.name && d.name.toLowerCase().includes(q)) || (d.genericName && d.genericName.toLowerCase().includes(q)) || (d.keywords && d.keywords.some(k => k.toLowerCase().includes(q))) || (d.categories && d.categories.some(c => c.toLowerCase().includes(q)))).sort((a, b) => {
+                const an = a.name.toLowerCase();
+                const bn = b.name.toLowerCase();
+                const aStarts = an.startsWith(q);
+                const bStarts = bn.startsWith(q);
+                if (aStarts && !bStarts)
+                    return -1;
+                if (!aStarts && bStarts)
+                    return 1;
+                return an.localeCompare(bn);
+            });
+        }
+    }
+
+    function launchApp(entry) {
+        entry.execute();
+        launcherPanel.visible = false;
+    }
+
+    function launchPlace(place) {
+        if (!place)
+            return;
+        if (place.kind === "exec")
+            Quickshell.execDetached([place.target]);
+        else
+            Quickshell.execDetached(["xdg-open", place.target]);
+        launcherPanel.visible = false;
     }
 
     function runSession(action) {
-        overlay.open = false;
+        launcherPanel.visible = false;
         if (action === "logout")
             Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.exit()"]);
         else if (action === "restart")
             Quickshell.execDetached(["systemctl", "reboot"]);
         else
             Quickshell.execDetached(["systemctl", "poweroff"]);
-    }
-
-    function entryActions(entry) {
-        const actions = entry ? entry.actions : null;
-        return actions && actions.length ? actions : [];
-    }
-
-    function filteredApps() {
-        const query = search.text.trim().toLowerCase();
-        return DesktopEntries.applications.values.filter(app => !query || (app.name + " " + app.genericName).toLowerCase().includes(query)).sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    function launchApp(app) {
-        if (!app)
-            return;
-        closeMenu();
-        app.execute();
-        overlay.open = false;
-    }
-
-    function launchAction(action) {
-        if (!action)
-            return;
-        closeMenu();
-        action.execute();
-        overlay.open = false;
-    }
-
-    function openMenu(entry, y) {
-        if (!entryActions(entry).length) {
-            closeMenu();
-            return;
-        }
-        menuEntry = entry;
-        menuY = y;
-    }
-
-    function launchPlace(place) {
-        if (!place)
-            return;
-        closeMenu();
-        if (place.kind === "exec")
-            Quickshell.execDetached([place.target]);
-        else
-            Quickshell.execDetached(["xdg-open", place.target]);
-        overlay.open = false;
     }
 
     Process {
@@ -114,283 +106,334 @@ Scope {
         }
     }
 
-    component MenuRow: Rectangle {
-        id: row
-        property string icon: ""
-        property string label: ""
-        property bool hasSubmenu: false
-        property bool selected: false
-        signal clicked
-        signal submenuRequested
+    PanelWindow {
+        id: launcherPanel
+        visible: false
+        focusable: true
+        color: "transparent"
 
-        implicitHeight: 24
-        color: menuMouse.containsMouse || chevronMouse.containsMouse ? root.theme.bgHover : row.selected ? root.theme.bgSelected : "transparent"
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.namespace: "quickshell-launcher"
+        exclusionMode: ExclusionMode.Ignore
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 6
-            spacing: 8
-
-            Image {
-                id: rowIcon
-                visible: row.icon !== ""
-                source: row.icon
-                sourceSize.width: 18
-                sourceSize.height: 18
-                Layout.preferredWidth: 18
-                Layout.preferredHeight: 18
-                fillMode: Image.PreserveAspectFit
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                Layout.fillWidth: true
-                text: row.label
-                color: root.theme.textPrimary
-                font.family: root.theme.fontFamily
-                font.pixelSize: root.theme.fontSize
-                elide: Text.ElideRight
-                Layout.alignment: Qt.AlignVCenter
-            }
-
-            Text {
-                visible: row.hasSubmenu
-                text: ">"
-                color: root.theme.textSecondary
-                font.family: root.theme.fontFamily
-                font.pixelSize: root.theme.fontSize
-                Layout.alignment: Qt.AlignVCenter
-                Layout.rightMargin: chevronMouse.containsMouse ? 0 : 4
-            }
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
         }
 
+        // transparent overlay
         MouseArea {
-            id: menuMouse
             anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: row.clicked()
-        }
-
-        MouseArea {
-            id: chevronMouse
-            visible: row.hasSubmenu
-            width: 22
-            height: parent.height
-            anchors.right: parent.right
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: row.submenuRequested()
-        }
-    }
-
-    ModalOverlay {
-        id: overlay
-        ipcTarget: "launcher"
-        bodyWidth: 460
-        bodyHeight: 550
-        anchorLeft: true
-        anchorBottom: true
-        closeOnEscape: false
-
-        onOpenChanged: {
-            if (open)
-                Qt.callLater(root.focusSearch);
-            else
-                root.closeMenu();
-        }
-
-        onEscapePressed: {
-            if (root.menuEntry)
-                root.closeMenu();
-            else
-                overlay.open = false;
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: root.theme.sectionSpacing
+            onClicked: launcherPanel.visible = false
 
             Rectangle {
-                id: appsColumn
-                z: 1
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                color: root.theme.bgSurface
-                border.color: root.theme.bgBorder
-                border.width: 1
+                anchors.fill: parent
+                color: "transparent"
+            }
+        }
 
-                ListView {
-                    id: results
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    clip: true
-                    model: root.filteredApps()
-                    spacing: 1
-                    currentIndex: 0
-                    keyNavigationWraps: true
-                    activeFocusOnTab: true
-                    highlightFollowsCurrentItem: true
-                    onActiveFocusChanged: if (activeFocus)
-                        positionViewAtIndex(currentIndex, ListView.Contain)
-                    Keys.onReturnPressed: root.launchApp(results.currentItem?.modelData)
-                    Keys.onEnterPressed: root.launchApp(results.currentItem?.modelData)
-                    onMovementStarted: root.closeMenu()
+        // launcher box
+        Rectangle {
+            id: launcherBox
+            width: 460
+            height: 550
+            color: root.theme.bgBase
+            border.color: root.theme.bgBorder
+            border.width: 1
 
-                    delegate: MenuRow {
-                        id: appRow
-                        required property var modelData
-                        required property int index
-                        width: results.width
-                        icon: Quickshell.iconPath(modelData.icon || "", true)
-                        label: modelData.name
-                        hasSubmenu: root.entryActions(modelData).length > 0
-                        selected: ListView.isCurrentItem && results.activeFocus
-                        onClicked: {
-                            results.currentIndex = index;
-                            root.launchApp(modelData);
-                        }
-                        onSubmenuRequested: root.openMenu(modelData, appRow.mapToItem(appsColumn, 0, 0).y)
-                    }
-                }
+            anchors {
+                bottom: parent.bottom
+                left: parent.left
+                bottomMargin: 36
+                leftMargin: 4
+            }
 
-                Rectangle {
-                    id: actionsMenu
-                    z: 20
-                    visible: root.menuEntry !== null
-                    x: appsColumn.width
-                    y: Math.max(0, Math.min(root.menuY, appsColumn.height - height))
-                    width: root.placesWidth
-                    height: menuColumn.implicitHeight + 8
-                    color: root.theme.bgSurfaceLow
-                    border.color: root.theme.bgBorder
-                    border.width: 1
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: root.theme.sectionSpacing
 
-                    Column {
-                        id: menuColumn
-                        width: parent.width - 8
-                        x: 4
-                        y: 4
-                        spacing: 1
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: root.theme.sectionSpacing
 
-                        Text {
-                            width: parent.width
-                            height: 20
-                            text: root.menuEntry?.name || ""
-                            color: root.theme.textSecondary
-                            font.family: root.theme.fontFamily
-                            font.pixelSize: 10
-                            font.bold: true
-                            elide: Text.ElideRight
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                    // App column
+                    Rectangle {
+                        id: appsColumn
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: root.theme.bgSurface
+                        border.color: root.theme.bgBorder
+                        border.width: 1
 
-                        Rectangle {
-                            width: parent.width
-                            height: 1
-                            color: root.theme.bgBorder
-                        }
+                        ListView {
+                            id: resultsList
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            model: filteredApps
+                            clip: true
+                            focus: true
+                            currentIndex: root.selectedIndex
+                            highlightMoveDuration: 0
 
-                        Repeater {
-                            model: root.entryActions(root.menuEntry)
+                            highlight: Rectangle {
+                                color: root.theme.bgSelected
+                                visible: root.selectedIndex >= 0
+                            }
 
-                            delegate: MenuRow {
+                            delegate: Rectangle {
+                                id: delegateRoot
                                 required property var modelData
-                                width: menuColumn.width
-                                icon: Quickshell.iconPath(modelData.icon || "", true)
-                                label: modelData.name
-                                onClicked: root.launchAction(modelData)
+                                required property int index
+
+                                Accessible.role: Accessible.Button
+                                Accessible.name: (modelData.name ?? "Application") + (modelData.genericName ? " - " + modelData.genericName : "")
+
+                                width: resultsList.width
+                                height: 24
+                                color: "transparent"
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8
+                                    anchors.rightMargin: 8
+                                    spacing: root.theme.sectionSpacing
+
+                                    // App icon
+                                    Item {
+                                        width: 18
+                                        height: 18
+                                        Layout.alignment: Qt.AlignVCenter
+
+                                        IconImage {
+                                            anchors.fill: parent
+                                            source: Quickshell.iconPath(delegateRoot.modelData.icon ?? "", true)
+                                            visible: (delegateRoot.modelData.icon ?? "") !== ""
+                                        }
+
+                                        // Fallback icon
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: ""
+                                            color: root.theme.accentPrimary
+                                            font.pixelSize: 20
+                                            font.family: root.theme.fontFamily
+                                            visible: (delegateRoot.modelData.icon ?? "") === ""
+                                        }
+                                    }
+
+                                    // App name
+                                    Text {
+                                        text: delegateRoot.modelData.name ?? ""
+                                        color: root.theme.textPrimary
+                                        font.pixelSize: root.theme.fontSize
+                                        font.family: root.theme.fontFamily
+                                        elide: Text.ElideRight
+                                        Layout.fillWidth: true
+                                    }
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.launchApp(delegateRoot.modelData)
+                                    onPositionChanged: root.selectedIndex = delegateRoot.index
+                                }
+                            }
+
+                            // Empty state
+                            Text {
+                                anchors.centerIn: parent
+                                text: "  No applications found"
+                                color: root.theme.textMuted
+                                font.pixelSize: 14
+                                font.family: root.theme.fontFamily
+                                visible: resultsList.count === 0 && searchInput.text !== ""
+                            }
+                        }
+                    }
+
+                    // Places column
+                    Rectangle {
+                        id: placesColumn
+                        Layout.preferredWidth: 140
+                        Layout.fillHeight: true
+                        color: root.theme.bgSurface
+                        border.color: root.theme.bgBorder
+                        border.width: 1
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            spacing: 0
+
+                            ListView {
+                                id: placesList
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                model: root.places
+                                clip: true
+
+                                delegate: Rectangle {
+                                    id: placeDelegate
+                                    required property var modelData
+
+                                    width: placesList.width
+                                    height: 24
+                                    color: placeMouse.containsMouse ? root.theme.bgHover : "transparent"
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: root.theme.sectionSpacing
+
+                                        Text {
+                                            Layout.fillWidth: true
+                                            Layout.alignment: Qt.AlignVCenter
+                                            text: placeDelegate.modelData.label ?? ""
+                                            color: root.theme.textPrimary
+                                            font.pixelSize: root.theme.fontSize
+                                            font.family: root.theme.fontFamily
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: placeMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.launchPlace(placeDelegate.modelData)
+                                    }
+                                }
+                            }
+
+                            // separator
+                            Rectangle {
+                                Layout.fillWidth: true
+                                implicitHeight: 1
+                                color: root.theme.bgBorder
+                            }
+
+                            Repeater {
+                                model: [
+                                    {
+                                        label: "Log out",
+                                        action: "logout"
+                                    },
+                                    {
+                                        label: "Restart",
+                                        action: "restart"
+                                    },
+                                    {
+                                        label: "Shut down",
+                                        action: "shutdown"
+                                    }
+                                ]
+
+                                delegate: Rectangle {
+                                    id: sessionDelegate
+                                    required property var modelData
+
+                                    Layout.fillWidth: placesList.width
+                                    Layout.preferredHeight: 24
+                                    color: sessionMouse.containsMouse ? root.theme.bgHover : "transparent"
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 8
+                                        anchors.rightMargin: 8
+                                        spacing: root.theme.sectionSpacing
+
+                                        Text {
+                                            Layout.fillWidth: true
+                                            Layout.alignment: Qt.AlignVCenter
+                                            text: sessionDelegate.modelData.label ?? ""
+                                            color: root.theme.textPrimary
+                                            font.pixelSize: root.theme.fontSize
+                                            font.family: root.theme.fontFamily
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: sessionMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.runSession(modelData.action)
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            Rectangle {
-                Layout.preferredWidth: root.placesWidth
-                Layout.fillHeight: true
-                color: root.theme.bgSurface
-                border.color: root.theme.bgBorder
-                border.width: 1
+                // separator
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: 1
+                    color: root.theme.bgBorder
+                }
 
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    spacing: 1
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: root.theme.sectionSpacing
 
-                    ListView {
-                        id: places
+                    TextField {
+                        id: searchInput
+                        implicitHeight: 26
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        clip: true
-                        model: root.places
-                        spacing: 1
-                        activeFocusOnTab: true
+                        leftPadding: 8
+                        rightPadding: 8
+                        placeholderText: "Search applications"
+                        color: root.theme.textPrimary
+                        placeholderTextColor: root.theme.textSecondary
+                        selectionColor: root.theme.accentPrimary
+                        selectedTextColor: root.theme.bgBase
+                        font.family: root.theme.fontFamily
+                        font.pixelSize: root.theme.fontSize
 
-                        delegate: MenuRow {
-                            required property var modelData
-                            width: places.width
-                            icon: Quickshell.iconPath(modelData.icon || "", true)
-                            label: modelData.label
-                            onClicked: root.launchPlace(modelData)
+                        background: Rectangle {
+                            color: Theme.bgSurfaceLow
+                            border.width: 1
+                            border.color: searchInput.activeFocus ? Theme.accentPrimary : Theme.bgBorder
+                        }
+
+                        onTextChanged: root.selectedIndex = text === "" ? -1 : 0
+
+                        Keys.onEscapePressed: launcherPanel.visible = false
+
+                        Keys.onPressed: event => {
+                            if (event.key === Qt.Key_Down) {
+                                event.accepted = true;
+                                root.selectedIndex = Math.min(root.selectedIndex + 1, resultsList.count - 1);
+                                resultsList.positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                            } else if (event.key === Qt.Key_Up) {
+                                event.accepted = true;
+                                root.selectedIndex = Math.max(root.selectedIndex - 1, 0);
+                                resultsList.positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                                event.accepted = true;
+                                if (root.selectedIndex >= 0) {
+                                    const entry = filteredApps.values[root.selectedIndex];
+                                    if (entry)
+                                        root.launchApp(entry);
+                                }
+                            } else if (event.key === Qt.Key_Tab) {
+                                event.accepted = true;
+                                root.selectedIndex = Math.min(root.selectedIndex + 1, resultsList.count - 1);
+                                resultsList.positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                            }
                         }
                     }
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        implicitHeight: 1
-                        color: root.theme.bgBorder
-                    }
-
-                    MenuRow {
-                        Layout.fillWidth: true
-                        icon: Quickshell.iconPath("system-log-out", true)
-                        label: "Log out"
-                        onClicked: root.runSession("logout")
-                    }
-
-                    MenuRow {
-                        Layout.fillWidth: true
-                        icon: Quickshell.iconPath("system-reboot", true)
-                        label: "Restart"
-                        onClicked: root.runSession("restart")
-                    }
-
-                    MenuRow {
-                        Layout.fillWidth: true
-                        icon: Quickshell.iconPath("system-shutdown", true)
-                        label: "Shut down"
-                        onClicked: root.runSession("shutdown")
-                    }
                 }
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            implicitHeight: 1
-            color: root.theme.bgBorder
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: root.theme.sectionSpacing
-
-            PanelSearchField {
-                id: search
-                Layout.fillWidth: true
-                placeholderText: "Search applications"
-                KeyNavigation.tab: results
-                Keys.onDownPressed: {
-                    if (results.count) {
-                        results.currentIndex = 0;
-                        results.forceActiveFocus();
-                    }
-                }
-                onTextChanged: root.closeMenu()
-                onAccepted: root.launchApp(root.filteredApps()[0])
             }
         }
     }
