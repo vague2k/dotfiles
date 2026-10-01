@@ -75,10 +75,12 @@ Scope {
             onClicked: root.open = false
         }
 
+        Keys.onEscapePressed: root.open = false
+
         Rectangle {
             id: body
-            width: Math.min(600, panel.width - 8)
-            height: Math.min(520, panel.height - 40)
+            width: 600
+            height: 520
             color: Theme.bgSurfaceLow
             border.color: Theme.bgBorder
             border.width: 1
@@ -120,8 +122,8 @@ Scope {
                         id: wallpaperCloseButton
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
-                        width: 26
-                        height: 22
+                        width: 24
+                        height: 24
                         activeFocusOnTab: true
                         color: wallpaperCloseMouse.containsMouse || activeFocus ? Theme.accentPrimary : "transparent"
                         border.color: activeFocus ? Theme.accentPrimary : Theme.bgBorderStrong
@@ -217,7 +219,7 @@ Scope {
                         onActivated: index => Theme.setScheme(Theme.schemes[index].value)
 
                         implicitHeight: 22
-                        leftPadding: 8
+                        leftPadding: 4
                         rightPadding: 26
                         spacing: 0
                         font.family: Theme.fontFamily
@@ -243,7 +245,7 @@ Scope {
                         indicator: Text {
                             x: schemePicker.width - width - 8
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "⌄"
+                            text: ""
                             color: Theme.textSecondary
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.fontSize
@@ -280,8 +282,7 @@ Scope {
                                 implicitHeight: contentHeight
                                 model: schemePicker.popup.visible ? schemePicker.delegateModel : null
                                 currentIndex: schemePicker.highlightedIndex
-                                ScrollIndicator.vertical: ScrollIndicator {
-                                }
+                                ScrollIndicator.vertical: ScrollIndicator {}
                             }
 
                             background: Rectangle {
@@ -348,6 +349,7 @@ Scope {
                         else
                             search.forceActiveFocus();
                     }
+                    Keys.onEscapePressed: root.open = false
                     Keys.onBacktabPressed: {
                         if (currentIndex > 0)
                             root.focusGrid(currentIndex - 1);
@@ -395,7 +397,7 @@ Scope {
                                 text: tile.modelData.split("/").pop()
                                 color: Theme.textPrimary
                                 font.family: Theme.fontFamily
-                                font.pixelSize: 12
+                                font.pixelSize: Theme.fontSize
                                 elide: Text.ElideMiddle
                             }
 
@@ -409,6 +411,18 @@ Scope {
                             }
                         }
                     }
+
+                    Text {
+                        anchors.centerIn: parent
+                        width: grid.width - 24
+                        horizontalAlignment: Text.AlignHCenter
+                        wrapMode: Text.WordWrap
+                        visible: grid.count === 0
+                        text: WallpaperService.wallpapers.length ? "No matching wallpapers" : "No images found in " + WallpaperService.directory
+                        color: Theme.textSecondary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                    }
                 }
 
                 Rectangle {
@@ -418,17 +432,8 @@ Scope {
                 }
 
                 Text {
-                    visible: grid.count === 0
-                    text: WallpaperService.wallpapers.length ? "No matching wallpapers" : "No images found in " + WallpaperService.directory
-                    color: Theme.textSecondary
-                    font.family: Theme.fontFamily
-                    font.pixelSize: Theme.fontSize
-                    Layout.alignment: Qt.AlignHCenter
-                }
-
-                Text {
                     Layout.fillWidth: true
-                    text: Theme.error || (Theme.busy ? "Applying wallpaper theme..." : "")
+                    text: Theme.error
                     visible: text !== ""
                     color: Theme.textSecondary
                     font.family: Theme.fontFamily

@@ -56,8 +56,8 @@ Scope {
 
         Rectangle {
             id: body
-            width: Math.min(380, panel.width - 8)
-            height: Math.min(500, panel.height - 40)
+            width: 400
+            height: 500
             color: Theme.bgSurfaceLow
             border.color: Theme.bgBorder
             border.width: 1
@@ -98,8 +98,8 @@ Scope {
                     Rectangle {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
-                        width: 26
-                        height: 22
+                        width: 24
+                        height: 24
                         color: audioCloseMouse.containsMouse ? Theme.accentPrimary : "transparent"
                         border.color: Theme.bgBorderStrong
                         border.width: 1
@@ -175,7 +175,7 @@ Scope {
                                         model: deviceCard.devices
                                         textRole: "description"
                                         font.family: Theme.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Theme.fontSize
                                         currentIndex: deviceCard.devices.findIndex(node => node.id === deviceCard.device?.id)
                                         onActivated: index => {
                                             if (deviceCard.output)
@@ -185,7 +185,7 @@ Scope {
                                         }
 
                                         implicitHeight: 22
-                                        leftPadding: 8
+                                        leftPadding: 4
                                         rightPadding: 26
                                         spacing: 0
                                         hoverEnabled: true
@@ -210,7 +210,7 @@ Scope {
                                         indicator: Text {
                                             x: deviceSelect.width - width - 8
                                             anchors.verticalCenter: parent.verticalCenter
-                                            text: "⌄"
+                                            text: ""
                                             color: Theme.textSecondary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: Theme.fontSize
@@ -247,8 +247,7 @@ Scope {
                                                 implicitHeight: contentHeight
                                                 model: deviceSelect.popup.visible ? deviceSelect.delegateModel : null
                                                 currentIndex: deviceSelect.highlightedIndex
-                                                ScrollIndicator.vertical: ScrollIndicator {
-                                                }
+                                                ScrollIndicator.vertical: ScrollIndicator {}
                                             }
 
                                             background: Rectangle {
@@ -273,7 +272,7 @@ Scope {
                                         onMoved: if (deviceCard.device?.audio)
                                             deviceCard.device.audio.volume = value
 
-                                        implicitHeight: 22
+                                        implicitHeight: 24
                                         hoverEnabled: true
                                         activeFocusOnTab: false
 
@@ -294,8 +293,8 @@ Scope {
                                         handle: Rectangle {
                                             x: deviceVolume.leftPadding + deviceVolume.visualPosition * (deviceVolume.availableWidth - width)
                                             y: (deviceVolume.height - height) / 2
-                                            width: 6
-                                            height: 16
+                                            width: 8
+                                            height: 20
                                             color: deviceVolume.pressed || deviceVolume.hovered || deviceVolume.activeFocus ? Theme.textPrimary : Theme.accentPrimary
                                         }
                                     }
@@ -304,12 +303,12 @@ Scope {
                                         text: Math.round((deviceCard.device?.audio?.volume || 0) * 100) + "%"
                                         color: Theme.textPrimary
                                         font.family: Theme.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Theme.fontSize
                                     }
 
                                     Rectangle {
-                                        implicitWidth: muteText.implicitWidth + 16
-                                        implicitHeight: 22
+                                        implicitWidth: 24
+                                        implicitHeight: 24
                                         color: muteMouse.containsMouse ? Theme.accentPrimary : "transparent"
                                         border.color: Theme.bgBorderStrong
                                         border.width: 1
@@ -320,7 +319,7 @@ Scope {
                                             text: deviceCard.device?.audio?.muted ? "×" : deviceCard.output ? "󰕾" : "󰍬"
                                             color: muteMouse.containsMouse ? Theme.bgBase : Theme.accentPrimary
                                             font.family: Theme.fontFamily
-                                            font.pixelSize: 12
+                                            font.pixelSize: Theme.iconSize
                                         }
 
                                         MouseArea {
@@ -394,8 +393,8 @@ Scope {
                                     spacing: Theme.spacing
 
                                     IconImage {
-                                        Layout.preferredWidth: 22
-                                        Layout.preferredHeight: 22
+                                        Layout.preferredWidth: Theme.iconSize
+                                        Layout.preferredHeight: Theme.iconSize
                                         source: Quickshell.iconPath(streamRow.entry?.icon || streamRow.properties["application.icon-name"], true)
                                     }
 
@@ -439,7 +438,7 @@ Scope {
                                         text: Math.round((streamRow.modelData?.audio?.volume || 0) * 100) + "%"
                                         color: Theme.textPrimary
                                         font.family: Theme.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Theme.fontSize
                                     }
                                 }
                             }
@@ -453,7 +452,7 @@ Scope {
                                 text: "No application playback streams are currently available."
                                 color: Theme.textMuted
                                 font.family: Theme.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.fontSize
                             }
                         }
                     }

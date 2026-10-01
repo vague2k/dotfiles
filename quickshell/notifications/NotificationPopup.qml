@@ -15,32 +15,104 @@ Scope {
             glyph: "󰙯"
         },
         {
-            match: "firefox",
-            glyph: "󰈹"
-        },
-        {
             match: "spotify",
             glyph: "󰓇"
         },
         {
-            match: "chrome",
-            glyph: ""
+            match: "steam",
+            glyph: "󰓓"
         },
         {
-            match: "telegram",
-            glyph: ""
+            match: "obsidian",
+            glyph: ""
+        },
+        {
+            match: "ghostty",
+            glyph: "󰆍"
         },
         {
             match: "terminal",
-            glyph: ""
+            glyph: "󰞷"
         },
         {
-            match: "kitty",
-            glyph: ""
+            match: "neovim",
+            glyph: ""
         },
         {
-            match: "alacritty",
-            glyph: ""
+            match: "nvim",
+            glyph: ""
+        },
+        {
+            match: "vim",
+            glyph: ""
+        },
+        {
+            match: "meld",
+            glyph: "󰆊"
+        },
+        {
+            match: "zathura",
+            glyph: "󰈦"
+        },
+        {
+            match: "files",
+            glyph: "󰉋"
+        },
+        {
+            match: "nautilus",
+            glyph: "󰉋"
+        },
+        {
+            match: "rustdesk",
+            glyph: "󰢹"
+        },
+        {
+            match: "btop",
+            glyph: "勺"
+        },
+        {
+            match: "bluetooth",
+            glyph: ""
+        },
+        {
+            match: "volume",
+            glyph: "󰕾"
+        },
+        {
+            match: "pavucontrol",
+            glyph: "󰕾"
+        },
+        {
+            match: "cachyos",
+            glyph: "󰣇"
+        },
+        {
+            match: "wine",
+            glyph: "󰡶"
+        },
+        {
+            match: "protontricks",
+            glyph: "󰡶"
+        },
+        {
+            match: "winetricks",
+            glyph: "󰡶"
+        },
+        {
+            match: "wowup",
+            glyph: "󰊖"
+        },
+        {
+            match: "brave",
+            glyph: "󰖟"
+        },
+        {
+            match: "firefox",
+            glyph: "󰈹"
+        },
+        {
+            match: "chrome",
+            glyph: "󰊯"
         }
     ]
 
@@ -102,6 +174,26 @@ Scope {
                         required property var modelData
                         required property int index
 
+                        readonly property var entry: {
+                            const key = (modelData.appName || "").toLowerCase();
+                            if (!key)
+                                return null;
+                            const heuristic = DesktopEntries.heuristicLookup(modelData.appName);
+                            if (heuristic)
+                                return heuristic;
+                            const apps = DesktopEntries.applications.values;
+                            return apps.find(e => (e.name || "").toLowerCase() === key) || apps.find(e => (e.name || "").toLowerCase().includes(key)) || apps.find(e => (e.name || "").length > 1 && key.includes((e.name || "").toLowerCase())) || null;
+                        }
+                        readonly property string iconName: {
+                            const names = [entry?.icon, entry?.id, modelData.appIcon];
+                            for (const name of names) {
+                                if (name && (name.includes("/") || Quickshell.hasThemeIcon(name)))
+                                    return name;
+                            }
+                            return "";
+                        }
+                        readonly property bool hasIcon: iconName !== ""
+
                         Layout.fillWidth: true
                         Layout.preferredHeight: cardContent.implicitHeight + 24
                         radius: 0
@@ -152,20 +244,20 @@ Scope {
                                 spacing: 8
 
                                 Item {
-                                    Layout.preferredWidth: 16
-                                    Layout.preferredHeight: 16
+                                    Layout.preferredWidth: Theme.iconSize
+                                    Layout.preferredHeight: Theme.iconSize
                                     Layout.alignment: Qt.AlignVCenter
 
                                     IconImage {
                                         anchors.centerIn: parent
-                                        source: Quickshell.iconPath(notifCard.modelData.appIcon, true)
-                                        implicitSize: 16
-                                        visible: notifCard.modelData.appIcon !== ""
+                                        source: notifCard.hasIcon ? Quickshell.iconPath(notifCard.iconName, true) : ""
+                                        implicitSize: Theme.iconSize
+                                        visible: notifCard.hasIcon
                                     }
 
                                     Text {
                                         anchors.centerIn: parent
-                                        visible: notifCard.modelData.appIcon === ""
+                                        visible: !notifCard.hasIcon
                                         text: {
                                             if (notifCard.modelData.urgency === NotificationUrgency.Critical)
                                                 return "󰀦";
@@ -174,7 +266,7 @@ Scope {
                                             return found ? found.glyph : "󰂚";
                                         }
                                         color: notifCard.modelData.urgency === NotificationUrgency.Critical ? Theme.urgencyCritical : Theme.urgencyNormal
-                                        font.pixelSize: 14
+                                        font.pixelSize: Theme.iconSize
                                         font.family: Theme.fontFamily
                                     }
                                 }
@@ -182,7 +274,7 @@ Scope {
                                 Text {
                                     text: notifCard.modelData.appName || "Notification"
                                     color: Theme.textSecondary
-                                    font.pixelSize: 13
+                                    font.pixelSize: Theme.fontSize
                                     font.family: Theme.fontFamily
                                     Layout.alignment: Qt.AlignVCenter
                                 }
@@ -204,7 +296,7 @@ Scope {
                                         anchors.centerIn: parent
                                         text: "󰅖"
                                         color: closeHover.containsMouse ? Theme.accentRed : Theme.textMuted
-                                        font.pixelSize: 12
+                                        font.pixelSize: Theme.fontSize
                                         font.family: Theme.fontFamily
                                     }
 
@@ -237,7 +329,7 @@ Scope {
                                 Text {
                                     text: notifCard.modelData.body
                                     color: Theme.textSecondary
-                                    font.pixelSize: 10
+                                    font.pixelSize: Theme.fontSize
                                     font.family: Theme.fontFamily
                                     wrapMode: Text.Wrap
                                     maximumLineCount: 3
@@ -298,7 +390,7 @@ Scope {
                                             anchors.centerIn: parent
                                             text: actionBtn.modelData.text || ""
                                             color: Theme.accentPrimary
-                                            font.pixelSize: 11
+                                            font.pixelSize: Theme.fontSize
                                             font.family: Theme.fontFamily
                                         }
 

@@ -23,7 +23,7 @@ Singleton {
         if (!path)
             return;
         root.currentWallpaper = path;
-        apply.exec(["awww", "img", path, "--transition-type", "fade", "--transition-pos", "center", "--transition-duration", "1"]);
+        apply.exec(["awww", "img", path, "--transition-type", "fade", "--transition-pos", "center", "--transition-duration", "0.5"]);
     }
 
     Process {

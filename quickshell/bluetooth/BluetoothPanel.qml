@@ -60,8 +60,8 @@ Scope {
 
         Rectangle {
             id: body
-            width: Math.min(310, panel.width - 8)
-            height: Math.min(380, panel.height - 40)
+            width: 400
+            height: 500
             color: Theme.bgSurfaceLow
             border.color: Theme.bgBorder
             border.width: 1
@@ -102,8 +102,8 @@ Scope {
                     Rectangle {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
-                        width: 26
-                        height: 22
+                        width: 24
+                        height: 24
                         color: bluetoothCloseMouse.containsMouse ? Theme.accentPrimary : "transparent"
                         border.color: Theme.bgBorderStrong
                         border.width: 1
@@ -144,7 +144,7 @@ Scope {
                                 text: "Bluetooth"
                                 color: Theme.textPrimary
                                 font.family: Theme.fontFamily
-                                font.pixelSize: 11
+                                font.pixelSize: Theme.fontSize
                             }
                             Item {
                                 Layout.fillWidth: true
@@ -169,6 +169,7 @@ Scope {
                                 MouseArea {
                                     id: scanMouse
                                     anchors.fill: parent
+                                    hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: if (root.adapter)
                                         root.adapter.discovering = !root.adapter.discovering
@@ -194,6 +195,7 @@ Scope {
                                 MouseArea {
                                     id: enabledMouse
                                     anchors.fill: parent
+                                    hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: if (root.adapter)
                                         root.adapter.enabled = !root.adapter.enabled
@@ -246,7 +248,7 @@ Scope {
                                 text: section
                                 color: Theme.textSecondary
                                 font.family: Theme.fontFamily
-                                font.pixelSize: 10
+                                font.pixelSize: Theme.fontSize
                                 font.bold: true
                             }
 
@@ -276,7 +278,7 @@ Scope {
                                     text: deviceRow.modelData.device.name + (deviceRow.modelData.device.connected ? "  Connected" : "")
                                     color: Theme.textPrimary
                                     font.family: Theme.fontFamily
-                                    font.pixelSize: 11
+                                    font.pixelSize: Theme.fontSize
                                     elide: Text.ElideRight
                                 }
 
@@ -293,12 +295,13 @@ Scope {
                                         text: deviceRow.modelData.device.connected ? "Disconnect" : deviceRow.modelData.device.paired ? "Connect" : deviceRow.modelData.device.pairing ? "Cancel" : "Pair"
                                         color: pairMouse.containsMouse ? Theme.bgBase : Theme.accentPrimary
                                         font.family: Theme.fontFamily
-                                        font.pixelSize: 11
+                                        font.pixelSize: Theme.fontSize
                                     }
 
                                     MouseArea {
                                         id: pairMouse
                                         anchors.fill: parent
+                                        hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: {
                                             const d = deviceRow.modelData.device;
@@ -334,6 +337,7 @@ Scope {
                                     MouseArea {
                                         id: forgetMouse
                                         anchors.fill: parent
+                                        hoverEnabled: true
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: deviceRow.modelData.device.forget()
                                     }

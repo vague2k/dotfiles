@@ -8,7 +8,8 @@ Row {
 
     property var monitor
     property int maxWidth: 800
-    readonly property var windows: Hyprland.toplevels.values.filter(window => window.monitor?.name === monitor?.name && window.workspace?.id > 0)
+    // Order tabs by workspace id (address breaks a tie so windows on the same workspace keep their order instead of shuffling when the model updates)
+    readonly property var windows: Hyprland.toplevels.values.filter(window => window.monitor?.name === monitor?.name && window.workspace?.id > 0).sort((a, b) => a.workspace.id - b.workspace.id || (a.address < b.address ? -1 : a.address > b.address ? 1 : 0))
     readonly property int tabWidth: Math.min(220, Math.max(0, Math.floor((maxWidth - Math.max(0, windows.length - 1) * spacing) / Math.max(1, windows.length))))
 
     spacing: 1
@@ -36,8 +37,8 @@ Row {
                 Image {
                     id: taskIcon
                     anchors.verticalCenter: parent.verticalCenter
-                    width: 20
-                    height: 20
+                    width: Theme.iconSize
+                    height: Theme.iconSize
                     source: Quickshell.iconPath(taskButton.entry?.icon || "", true)
                     fillMode: Image.PreserveAspectFit
                 }

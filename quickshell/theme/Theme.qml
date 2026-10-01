@@ -125,6 +125,7 @@ Singleton {
 
     readonly property string fontFamily: "Iosevka Nerd Font Mono"
     readonly property int fontSize: 14
+    readonly property int iconSize: 20
     readonly property color bgBase: palette.bgBase || "#1c222b"
     readonly property color bgSurface: palette.bgSurface || "#272e39"
     readonly property color bgSurfaceLow: palette.bgSurfaceLow || "#202630"

@@ -185,8 +185,8 @@ Scope {
 
                                     // App icon
                                     IconImage {
-                                        Layout.preferredWidth: 18
-                                        Layout.preferredHeight: 18
+                                        Layout.preferredWidth: Theme.iconSize
+                                        Layout.preferredHeight: Theme.iconSize
                                         Layout.alignment: Qt.AlignVCenter
                                         source: Quickshell.iconPath(delegateRoot.modelData.icon ?? "", true)
                                         visible: (delegateRoot.modelData.icon ?? "") !== ""

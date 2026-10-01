@@ -102,7 +102,7 @@ Scope {
                         text: ""
                         color: Theme.textPrimary
                         font.family: tablerIcons.name
-                        font.pixelSize: 20
+                        font.pixelSize: Theme.iconSize
                     }
 
                     MouseArea {
@@ -147,8 +147,8 @@ Scope {
 
                             Image {
                                 anchors.centerIn: parent
-                                width: 20
-                                height: 20
+                                width: Theme.iconSize
+                                height: Theme.iconSize
                                 source: Quickshell.iconPath(modelData.icon)
                                 fillMode: Image.PreserveAspectFit
                             }
@@ -227,7 +227,7 @@ Scope {
                                 text: modelData.glyph
                                 color: Theme.textPrimary
                                 font.family: tablerIcons.name
-                                font.pixelSize: 20
+                                font.pixelSize: Theme.iconSize
                             }
 
                             Rectangle {
@@ -290,7 +290,7 @@ Scope {
                             text: Pipewire.defaultAudioSink?.audio?.muted ? "" : ""
                             color: Theme.textPrimary
                             font.family: tablerIcons.name
-                            font.pixelSize: 20
+                            font.pixelSize: Theme.iconSize
                         }
 
                         Text {
@@ -320,7 +320,7 @@ Scope {
                         text: ""
                         color: Theme.textPrimary
                         font.family: tablerIcons.name
-                        font.pixelSize: 22
+                        font.pixelSize: Theme.iconSize
                     }
 
                     MouseArea {
