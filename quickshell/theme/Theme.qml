@@ -49,10 +49,6 @@ Singleton {
         apply(wallpaper, value);
     }
 
-    function retry() {
-        apply(wallpaper, scheme);
-    }
-
     function apply(path, value) {
         if (!path || !schemes.some(item => item.value === value)) {
             error = "Select a wallpaper and a supported M3 scheme";
@@ -65,7 +61,8 @@ Singleton {
         generate.exec(["sh", Quickshell.shellPath("theme/wallpaper-theme/set.sh"), path, value]);
     }
 
-    property Process checkGenerator: Process {
+    Process {
+        id: checkGenerator
         running: true
         command: ["sh", "-c", "command -v matugen"]
         onExited: (code, status) => {
@@ -74,7 +71,8 @@ Singleton {
         }
     }
 
-    property FileView settingsFile: FileView {
+    FileView {
+        id: settingsFile
         path: root.stateDirectory + "/wallpaper.json"
         printErrors: false
         onLoaded: {
@@ -90,7 +88,8 @@ Singleton {
         }
     }
 
-    property FileView paletteFile: FileView {
+    FileView {
+        id: paletteFile
         path: root.stateDirectory + "/wallpaper-theme.json"
         printErrors: false
         watchChanges: true
@@ -106,7 +105,8 @@ Singleton {
         }
     }
 
-    property Process generate: Process {
+    Process {
+        id: generate
         stderr: StdioCollector {
             onStreamFinished: if (text.trim())
                 root.error = text.trim()
@@ -118,13 +118,13 @@ Singleton {
                     root.error = "Could not apply wallpaper theme";
                 return;
             }
-            root.settingsFile.reload();
-            root.paletteFile.reload();
+            settingsFile.reload();
+            paletteFile.reload();
         }
     }
 
     readonly property string fontFamily: "Iosevka Nerd Font Mono"
-    readonly property int fontSize: 13
+    readonly property int fontSize: 14
     readonly property color bgBase: palette.bgBase || "#1c222b"
     readonly property color bgSurface: palette.bgSurface || "#272e39"
     readonly property color bgSurfaceLow: palette.bgSurfaceLow || "#202630"
@@ -133,14 +133,10 @@ Singleton {
     readonly property color bgSelected: palette.bgSelected || "#35465e"
     readonly property color bgBorder: palette.bgBorder || "#596575"
     readonly property color bgBorderStrong: palette.bgBorderStrong || "#6f9fd7"
-    readonly property color bgOverlay: palette.bgOverlay || "#88000000"
     readonly property color textPrimary: palette.textPrimary || "#e8edf5"
     readonly property color textSecondary: palette.textSecondary || "#aeb6c2"
     readonly property color textMuted: palette.textMuted || "#596575"
     readonly property color accentPrimary: palette.accentPrimary || "#73a5e2"
-    readonly property color accentCyan: palette.accentCyan || "#7dcfff"
-    readonly property color accentGreen: palette.accentGreen || "#9ece6a"
-    readonly property color accentOrange: palette.accentOrange || "#ff9e64"
     readonly property color accentRed: palette.accentRed || "#f7768e"
     readonly property color urgencyLow: textMuted
     readonly property color urgencyNormal: accentPrimary

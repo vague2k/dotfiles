@@ -9,7 +9,6 @@ Singleton {
 
     property list<var> notifications: []
     property bool doNotDisturb: false
-    readonly property int count: notifications.length
     property int _seqCounter: 0
 
     Component {
@@ -65,11 +64,6 @@ Singleton {
         root.notifications = root.notifications.filter(function (n) {
             return n !== notifData;
         });
-    }
-
-    function dismiss(notifData): void {
-        if (notifData)
-            notifData.dismiss();
     }
 
     function dismissAll(): void {

@@ -1,9 +1,0 @@
-singleton AppLookup AppLookup.qml
-BarButton BarButton.qml
-ModalOverlay ModalOverlay.qml
-PanelButton PanelButton.qml
-PanelCard PanelCard.qml
-PanelHeader PanelHeader.qml
-PanelSearchField PanelSearchField.qml
-PanelSelect PanelSelect.qml
-PanelSlider PanelSlider.qml

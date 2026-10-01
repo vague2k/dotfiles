@@ -1,7 +1,8 @@
+import Quickshell
 import QtQuick
 import Quickshell.Services.Notifications
 
-QtObject {
+Scope {
     id: notificationData
 
     property Notification notification: null
@@ -24,7 +25,8 @@ QtObject {
                 text: action.text
             }))
 
-    readonly property Connections _conn: Connections {
+    Connections {
+        id: _conn
         target: notificationData.notification
 
         function onClosed(): void {
@@ -36,7 +38,8 @@ QtObject {
         }
     }
 
-    readonly property Timer _timer: Timer {
+    Timer {
+        id: _timer
         running: !notificationData.closed && !notificationData.hovered && notificationData.urgency !== NotificationUrgency.Critical
         interval: notificationData.expireTimeout
         onTriggered: notificationData.dismiss()

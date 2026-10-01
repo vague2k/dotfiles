@@ -3,13 +3,11 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import QtQuick
-import "../components"
 import "../theme"
 
 Scope {
     id: root
 
-    property var theme: Theme
     property bool barVisible: true
 
     FontLoader {
@@ -42,14 +40,14 @@ Scope {
             }
 
             screen: modelData
-            implicitHeight: 30
+            implicitHeight: 32
             visible: root.barVisible
-            color: root.theme.bgBase
+            color: Theme.bgBase
 
             Rectangle {
                 anchors.fill: parent
                 color: "transparent"
-                border.color: root.theme.bgBorder
+                border.color: Theme.bgBorder
                 border.width: 1
             }
 
@@ -62,31 +60,62 @@ Scope {
             Row {
                 id: leftSide
                 anchors.left: parent.left
-                anchors.leftMargin: root.theme.barInset
+                anchors.leftMargin: Theme.barInset
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: root.theme.spacing
+                spacing: Theme.spacing
 
-                BarButton {
-                    id: startButton
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    boxed: true
-                    label: "START"
-                    onClicked: Quickshell.execDetached(["qs", "ipc", "call", "launcher", "toggle"])
+                    implicitWidth: startText.implicitWidth + 12
+                    implicitHeight: 28
+                    color: startMouse.containsMouse ? Theme.bgHover : Theme.bgSurface
+                    border.color: Theme.bgBorder
+                    border.width: 1
+
+                    Text {
+                        id: startText
+                        anchors.centerIn: parent
+                        text: "START"
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                    }
+
+                    MouseArea {
+                        id: startMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.execDetached(["qs", "ipc", "call", "launcher", "toggle"])
+                    }
                 }
 
-                BarButton {
-                    id: wallpaperButton
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    glyph: ""
-                    glyphFamily: tablerIcons.name
-                    glyphFontSize: 20
-                    onClicked: Quickshell.execDetached(["qs", "ipc", "call", "wallpaper", "toggle"])
+                    implicitWidth: wallpaperGlyph.implicitWidth + 12
+                    implicitHeight: 28
+                    color: "transparent"
+
+                    Text {
+                        id: wallpaperGlyph
+                        anchors.centerIn: parent
+                        text: ""
+                        color: Theme.textPrimary
+                        font.family: tablerIcons.name
+                        font.pixelSize: 20
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.execDetached(["qs", "ipc", "call", "wallpaper", "toggle"])
+                    }
                 }
 
                 Rectangle {
                     width: 1
-                    height: 16
-                    color: root.theme.bgBorder
+                    height: 20
+                    color: Theme.bgBorder
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -94,20 +123,43 @@ Scope {
                     spacing: 2
                     anchors.verticalCenter: parent.verticalCenter
                     Repeater {
-                        model: ["brave-browser", "steam", "com.mitchellh.ghostty"]
-                        BarButton {
-                            required property string modelData
-                            readonly property var app: DesktopEntries.byId(modelData)
+                        model: [
+                            {
+                                id: "brave-browser",
+                                icon: "brave-desktop"
+                            },
+                            {
+                                id: "steam",
+                                icon: "steam"
+                            },
+                            {
+                                id: "com.mitchellh.ghostty",
+                                icon: "com.mitchellh.ghostty"
+                            }
+                        ]
+
+                        Rectangle {
+                            required property var modelData
+                            readonly property var app: DesktopEntries.byId(modelData.id)
                             width: 24
-                            label: ""
-                            icon: Quickshell.iconPath(({
-                                    "brave-browser": "brave-desktop",
-                                    "steam": "steam",
-                                    "com.mitchellh.ghostty": "com.mitchellh.ghostty"
-                                })[modelData])
-                            onClicked: {
-                                if (app)
-                                    app.execute();
+                            implicitHeight: 28
+                            color: "transparent"
+
+                            Image {
+                                anchors.centerIn: parent
+                                width: 20
+                                height: 20
+                                source: Quickshell.iconPath(modelData.icon)
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (app)
+                                        app.execute();
+                                }
                             }
                         }
                     }
@@ -115,8 +167,8 @@ Scope {
 
                 Rectangle {
                     width: 1
-                    height: 16
-                    color: root.theme.bgBorder
+                    height: 20
+                    color: Theme.bgBorder
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
@@ -130,75 +182,169 @@ Scope {
             Row {
                 id: rightSide
                 anchors.right: parent.right
-                anchors.rightMargin: root.theme.barInset
+                anchors.rightMargin: Theme.barInset
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 0
 
-                BarButton {
-                    anchors.verticalCenter: parent.verticalCenter
-                    glyph: "勺"
-                    glyphFamily: tablerIcons.name
-                    label: stats.cpu
-                    progress: stats.cpuUsage
-                }
-                BarButton {
-                    anchors.verticalCenter: parent.verticalCenter
-                    glyph: ""
-                    glyphFamily: tablerIcons.name
-                    label: stats.gpu
-                    progress: stats.gpuUsage
-                }
-                BarButton {
-                    glyph: ""
-                    glyphFamily: tablerIcons.name
-                    label: stats.ram
-                    progress: stats.ramUsage
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-                BarButton {
-                    anchors.verticalCenter: parent.verticalCenter
-                    glyph: ""
-                    glyphFamily: tablerIcons.name
-                    label: stats.disk
-                    progress: stats.diskUsage
+                Repeater {
+                    model: [
+                        {
+                            glyph: "勺",
+                            label: stats.cpu,
+                            progress: stats.cpuUsage
+                        },
+                        {
+                            glyph: "",
+                            label: stats.gpu,
+                            progress: stats.gpuUsage
+                        },
+                        {
+                            glyph: "",
+                            label: stats.ram,
+                            progress: stats.ramUsage
+                        },
+                        {
+                            glyph: "",
+                            label: stats.disk,
+                            progress: stats.diskUsage
+                        }
+                    ]
+
+                    Rectangle {
+                        required property var modelData
+                        anchors.verticalCenter: parent.verticalCenter
+                        implicitWidth: statContent.implicitWidth + 12
+                        implicitHeight: 22
+                        color: "transparent"
+
+                        Row {
+                            id: statContent
+                            anchors.centerIn: parent
+                            spacing: Theme.spacing
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: modelData.glyph
+                                color: Theme.textPrimary
+                                font.family: tablerIcons.name
+                                font.pixelSize: 20
+                            }
+
+                            Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 4
+                                height: 16
+                                color: Theme.bgBorder
+
+                                Rectangle {
+                                    anchors.bottom: parent.bottom
+                                    width: parent.width
+                                    height: parent.height * Math.max(0, Math.min(1, modelData.progress))
+                                    color: Theme.accentPrimary
+                                }
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: modelData.label
+                                color: Theme.textPrimary
+                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.fontSize
+                            }
+                        }
+                    }
                 }
 
-                BarButton {
-                    id: visualizerButton
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 108
-                    onClicked: Quickshell.execDetached(["qs", "ipc", "call", "audio", "toggle"])
+                    implicitHeight: 22
+                    color: "transparent"
+
                     AudioVisualizer {
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 2
                     }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.execDetached(["qs", "ipc", "call", "audio", "toggle"])
+                    }
                 }
 
-                BarButton {
-                    id: soundButton
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    glyph: Pipewire.defaultAudioSink?.audio?.muted ? "" : ""
-                    glyphFamily: tablerIcons.name
-                    label: Math.round((Pipewire.defaultAudioSink?.audio?.volume || 0) * 100) + "%"
-                    onClicked: Quickshell.execDetached(["qs", "ipc", "call", "audio", "toggle"])
+                    implicitWidth: soundContent.implicitWidth + 12
+                    implicitHeight: 22
+                    color: "transparent"
+
+                    Row {
+                        id: soundContent
+                        anchors.centerIn: parent
+                        spacing: Theme.spacing
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: Pipewire.defaultAudioSink?.audio?.muted ? "" : ""
+                            color: Theme.textPrimary
+                            font.family: tablerIcons.name
+                            font.pixelSize: 20
+                        }
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: Math.round((Pipewire.defaultAudioSink?.audio?.volume || 0) * 100) + "%"
+                            color: Theme.textPrimary
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.fontSize
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.execDetached(["qs", "ipc", "call", "audio", "toggle"])
+                    }
                 }
 
-                BarButton {
-                    id: bluetoothButton
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    glyph: ""
-                    glyphFamily: tablerIcons.name
-                    glyphFontSize: 22
                     width: 26
-                    onClicked: Quickshell.execDetached(["qs", "ipc", "call", "bluetooth", "toggle"])
+                    implicitHeight: 22
+                    color: "transparent"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: ""
+                        color: Theme.textPrimary
+                        font.family: tablerIcons.name
+                        font.pixelSize: 22
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Quickshell.execDetached(["qs", "ipc", "call", "bluetooth", "toggle"])
+                    }
                 }
 
-                BarButton {
+                Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
-                    label: Qt.formatDateTime(clock.date, "MMM dd, yyyy\nhh:mm:ss AP")
-                    labelFontSize: 12
-                    lineHeight: 0.9
+                    implicitWidth: clockText.implicitWidth + 12
+                    implicitHeight: 22
+                    color: "transparent"
+
+                    Text {
+                        id: clockText
+                        anchors.centerIn: parent
+                        text: Qt.formatDateTime(clock.date, "MMM dd, yyyy\nhh:mm:ss AP")
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
+                        lineHeight: 0.8
+                    }
                 }
             }
         }

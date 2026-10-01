@@ -6,13 +6,12 @@ import "../theme"
 Item {
     id: root
 
-    property var theme: Theme
     implicitWidth: 100
     implicitHeight: 23
     readonly property int bandCount: 15
     property var targets: Array(bandCount).fill(0)
 
-    readonly property string configPath: root.theme.themedCavaConfig && root.theme.ready ? root.theme.themedCavaConfig : Quickshell.shellPath("bar/cava.conf")
+    readonly property string configPath: Theme.themedCavaConfig && Theme.ready ? Theme.themedCavaConfig : Quickshell.shellPath("bar/cava.conf")
 
     Process {
         id: capture
@@ -40,7 +39,7 @@ Item {
                 x: index * 6
                 width: 5
                 height: Math.max(2, level * 20)
-                color: root.theme.accentPrimary
+                color: Theme.accentPrimary
                 anchors.bottom: parent.bottom
             }
         }

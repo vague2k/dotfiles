@@ -6,13 +6,11 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../components"
 import "../theme"
 
 Scope {
     id: root
 
-    property var theme: Theme
     property int selectedIndex: 0
     property var places: []
 
@@ -32,21 +30,8 @@ Scope {
         id: filteredApps
         objectProp: "id"
         values: {
-            const all = [...DesktopEntries.applications.values];
-            const q = searchInput.text.trim().toLowerCase();
-            if (q === "")
-                return all.sort((a, b) => a.name.localeCompare(b.name));
-            return all.filter(d => (d.name && d.name.toLowerCase().includes(q)) || (d.genericName && d.genericName.toLowerCase().includes(q)) || (d.keywords && d.keywords.some(k => k.toLowerCase().includes(q))) || (d.categories && d.categories.some(c => c.toLowerCase().includes(q)))).sort((a, b) => {
-                const an = a.name.toLowerCase();
-                const bn = b.name.toLowerCase();
-                const aStarts = an.startsWith(q);
-                const bStarts = bn.startsWith(q);
-                if (aStarts && !bStarts)
-                    return -1;
-                if (!aStarts && bStarts)
-                    return 1;
-                return an.localeCompare(bn);
-            });
+            const query = searchInput.text.trim().toLowerCase();
+            return DesktopEntries.applications.values.filter(app => !query || (app.name + " " + app.genericName).toLowerCase().includes(query)).sort((a, b) => a.name.localeCompare(b.name));
         }
     }
 
@@ -128,11 +113,6 @@ Scope {
         MouseArea {
             anchors.fill: parent
             onClicked: launcherPanel.visible = false
-
-            Rectangle {
-                anchors.fill: parent
-                color: "transparent"
-            }
         }
 
         // launcher box
@@ -140,8 +120,8 @@ Scope {
             id: launcherBox
             width: 460
             height: 550
-            color: root.theme.bgBase
-            border.color: root.theme.bgBorder
+            color: Theme.bgBase
+            border.color: Theme.bgBorder
             border.width: 1
 
             anchors {
@@ -153,21 +133,21 @@ Scope {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: root.theme.sectionSpacing
+                anchors.margins: Theme.panelPadding
+                spacing: Theme.sectionSpacing
 
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: root.theme.sectionSpacing
+                    spacing: Theme.sectionSpacing
 
                     // App column
                     Rectangle {
                         id: appsColumn
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        color: root.theme.bgSurface
-                        border.color: root.theme.bgBorder
+                        color: Theme.bgSurface
+                        border.color: Theme.bgBorder
                         border.width: 1
 
                         ListView {
@@ -181,7 +161,7 @@ Scope {
                             highlightMoveDuration: 0
 
                             highlight: Rectangle {
-                                color: root.theme.bgSelected
+                                color: Theme.bgSelected
                                 visible: root.selectedIndex >= 0
                             }
 
@@ -194,44 +174,30 @@ Scope {
                                 Accessible.name: (modelData.name ?? "Application") + (modelData.genericName ? " - " + modelData.genericName : "")
 
                                 width: resultsList.width
-                                height: 24
+                                height: 22
                                 color: "transparent"
 
                                 RowLayout {
                                     anchors.fill: parent
                                     anchors.leftMargin: 8
                                     anchors.rightMargin: 8
-                                    spacing: root.theme.sectionSpacing
+                                    spacing: Theme.sectionSpacing
 
                                     // App icon
-                                    Item {
-                                        width: 18
-                                        height: 18
+                                    IconImage {
+                                        Layout.preferredWidth: 18
+                                        Layout.preferredHeight: 18
                                         Layout.alignment: Qt.AlignVCenter
-
-                                        IconImage {
-                                            anchors.fill: parent
-                                            source: Quickshell.iconPath(delegateRoot.modelData.icon ?? "", true)
-                                            visible: (delegateRoot.modelData.icon ?? "") !== ""
-                                        }
-
-                                        // Fallback icon
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: ""
-                                            color: root.theme.accentPrimary
-                                            font.pixelSize: 20
-                                            font.family: root.theme.fontFamily
-                                            visible: (delegateRoot.modelData.icon ?? "") === ""
-                                        }
+                                        source: Quickshell.iconPath(delegateRoot.modelData.icon ?? "", true)
+                                        visible: (delegateRoot.modelData.icon ?? "") !== ""
                                     }
 
                                     // App name
                                     Text {
                                         text: delegateRoot.modelData.name ?? ""
-                                        color: root.theme.textPrimary
-                                        font.pixelSize: root.theme.fontSize
-                                        font.family: root.theme.fontFamily
+                                        color: Theme.textPrimary
+                                        font.pixelSize: Theme.fontSize
+                                        font.family: Theme.fontFamily
                                         elide: Text.ElideRight
                                         Layout.fillWidth: true
                                     }
@@ -250,9 +216,9 @@ Scope {
                             Text {
                                 anchors.centerIn: parent
                                 text: "  No applications found"
-                                color: root.theme.textMuted
+                                color: Theme.textMuted
                                 font.pixelSize: 14
-                                font.family: root.theme.fontFamily
+                                font.family: Theme.fontFamily
                                 visible: resultsList.count === 0 && searchInput.text !== ""
                             }
                         }
@@ -263,8 +229,8 @@ Scope {
                         id: placesColumn
                         Layout.preferredWidth: 140
                         Layout.fillHeight: true
-                        color: root.theme.bgSurface
-                        border.color: root.theme.bgBorder
+                        color: Theme.bgSurface
+                        border.color: Theme.bgBorder
                         border.width: 1
 
                         ColumnLayout {
@@ -284,22 +250,22 @@ Scope {
                                     required property var modelData
 
                                     width: placesList.width
-                                    height: 24
-                                    color: placeMouse.containsMouse ? root.theme.bgHover : "transparent"
+                                    height: 22
+                                    color: placeMouse.containsMouse ? Theme.bgHover : "transparent"
 
                                     RowLayout {
                                         anchors.fill: parent
                                         anchors.leftMargin: 8
                                         anchors.rightMargin: 8
-                                        spacing: root.theme.sectionSpacing
+                                        spacing: Theme.sectionSpacing
 
                                         Text {
                                             Layout.fillWidth: true
                                             Layout.alignment: Qt.AlignVCenter
                                             text: placeDelegate.modelData.label ?? ""
-                                            color: root.theme.textPrimary
-                                            font.pixelSize: root.theme.fontSize
-                                            font.family: root.theme.fontFamily
+                                            color: Theme.textPrimary
+                                            font.pixelSize: Theme.fontSize
+                                            font.family: Theme.fontFamily
                                             elide: Text.ElideRight
                                         }
                                     }
@@ -318,7 +284,7 @@ Scope {
                             Rectangle {
                                 Layout.fillWidth: true
                                 implicitHeight: 1
-                                color: root.theme.bgBorder
+                                color: Theme.bgBorder
                             }
 
                             Repeater {
@@ -342,22 +308,22 @@ Scope {
                                     required property var modelData
 
                                     Layout.fillWidth: placesList.width
-                                    Layout.preferredHeight: 24
-                                    color: sessionMouse.containsMouse ? root.theme.bgHover : "transparent"
+                                    Layout.preferredHeight: 22
+                                    color: sessionMouse.containsMouse ? Theme.bgHover : "transparent"
 
                                     RowLayout {
                                         anchors.fill: parent
                                         anchors.leftMargin: 8
                                         anchors.rightMargin: 8
-                                        spacing: root.theme.sectionSpacing
+                                        spacing: Theme.sectionSpacing
 
                                         Text {
                                             Layout.fillWidth: true
                                             Layout.alignment: Qt.AlignVCenter
                                             text: sessionDelegate.modelData.label ?? ""
-                                            color: root.theme.textPrimary
-                                            font.pixelSize: root.theme.fontSize
-                                            font.family: root.theme.fontFamily
+                                            color: Theme.textPrimary
+                                            font.pixelSize: Theme.fontSize
+                                            font.family: Theme.fontFamily
                                             elide: Text.ElideRight
                                         }
                                     }
@@ -379,26 +345,26 @@ Scope {
                 Rectangle {
                     Layout.fillWidth: true
                     implicitHeight: 1
-                    color: root.theme.bgBorder
+                    color: Theme.bgBorder
                 }
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: root.theme.sectionSpacing
+                    spacing: Theme.sectionSpacing
 
                     TextField {
                         id: searchInput
-                        implicitHeight: 26
+                        implicitHeight: 22
                         Layout.fillWidth: true
                         leftPadding: 8
                         rightPadding: 8
                         placeholderText: "Search applications"
-                        color: root.theme.textPrimary
-                        placeholderTextColor: root.theme.textSecondary
-                        selectionColor: root.theme.accentPrimary
-                        selectedTextColor: root.theme.bgBase
-                        font.family: root.theme.fontFamily
-                        font.pixelSize: root.theme.fontSize
+                        color: Theme.textPrimary
+                        placeholderTextColor: Theme.textSecondary
+                        selectionColor: Theme.accentPrimary
+                        selectedTextColor: Theme.bgBase
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.fontSize
 
                         background: Rectangle {
                             color: Theme.bgSurfaceLow
@@ -411,7 +377,7 @@ Scope {
                         Keys.onEscapePressed: launcherPanel.visible = false
 
                         Keys.onPressed: event => {
-                            if (event.key === Qt.Key_Down) {
+                            if (event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
                                 event.accepted = true;
                                 root.selectedIndex = Math.min(root.selectedIndex + 1, resultsList.count - 1);
                                 resultsList.positionViewAtIndex(root.selectedIndex, ListView.Contain);
@@ -426,10 +392,6 @@ Scope {
                                     if (entry)
                                         root.launchApp(entry);
                                 }
-                            } else if (event.key === Qt.Key_Tab) {
-                                event.accepted = true;
-                                root.selectedIndex = Math.min(root.selectedIndex + 1, resultsList.count - 1);
-                                resultsList.positionViewAtIndex(root.selectedIndex, ListView.Contain);
                             }
                         }
                     }

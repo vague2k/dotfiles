@@ -39,6 +39,14 @@ hl.window_rule({
   center = true,
 })
 
+hl.window_rule({
+  name = "wowup-float",
+  match = { title = "WowUp.io" },
+  float = true,
+  size = { "(monitor_w*0.80)", "(monitor_h*0.80)" },
+  center = true,
+})
+
 -- World of Warcraft (opened from bnet under steam proton)
 --
 -- Static window rules are evaluated before the

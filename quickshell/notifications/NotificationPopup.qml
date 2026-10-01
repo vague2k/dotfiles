@@ -5,13 +5,44 @@ import Quickshell.Io
 import Quickshell.Services.Notifications
 import QtQuick
 import QtQuick.Layouts
-import "../components"
 import "../theme"
 
 Scope {
     id: root
-    property var theme: Theme
-    property string font: theme.fontFamily
+    readonly property var appGlyphs: [
+        {
+            match: "discord",
+            glyph: "󰙯"
+        },
+        {
+            match: "firefox",
+            glyph: "󰈹"
+        },
+        {
+            match: "spotify",
+            glyph: "󰓇"
+        },
+        {
+            match: "chrome",
+            glyph: ""
+        },
+        {
+            match: "telegram",
+            glyph: ""
+        },
+        {
+            match: "terminal",
+            glyph: ""
+        },
+        {
+            match: "kitty",
+            glyph: ""
+        },
+        {
+            match: "alacritty",
+            glyph: ""
+        }
+    ]
 
     IpcHandler {
         target: "notifications"
@@ -74,8 +105,8 @@ Scope {
                         Layout.fillWidth: true
                         Layout.preferredHeight: cardContent.implicitHeight + 24
                         radius: 0
-                        color: root.theme.bgSurfaceLow
-                        border.color: modelData.urgency === NotificationUrgency.Critical ? root.theme.urgencyCritical : modelData.urgency === NotificationUrgency.Low ? root.theme.urgencyLow : root.theme.bgBorder
+                        color: Theme.bgSurfaceLow
+                        border.color: modelData.urgency === NotificationUrgency.Critical ? Theme.urgencyCritical : modelData.urgency === NotificationUrgency.Low ? Theme.urgencyLow : Theme.bgBorder
                         border.width: 1
                         clip: true
 
@@ -104,7 +135,7 @@ Scope {
                             anchors.left: parent.left
                             anchors.leftMargin: 6
                             anchors.verticalCenter: parent.verticalCenter
-                            color: notifCard.modelData.urgency === NotificationUrgency.Critical ? root.theme.urgencyCritical : notifCard.modelData.urgency === NotificationUrgency.Low ? root.theme.urgencyLow : root.theme.urgencyNormal
+                            color: notifCard.modelData.urgency === NotificationUrgency.Critical ? Theme.urgencyCritical : notifCard.modelData.urgency === NotificationUrgency.Low ? Theme.urgencyLow : Theme.urgencyNormal
                         }
 
                         ColumnLayout {
@@ -127,7 +158,7 @@ Scope {
 
                                     IconImage {
                                         anchors.centerIn: parent
-                                        source: AppLookup.iconPath(notifCard.modelData.appIcon)
+                                        source: Quickshell.iconPath(notifCard.modelData.appIcon, true)
                                         implicitSize: 16
                                         visible: notifCard.modelData.appIcon !== ""
                                     }
@@ -136,34 +167,23 @@ Scope {
                                         anchors.centerIn: parent
                                         visible: notifCard.modelData.appIcon === ""
                                         text: {
-                                            const name = notifCard.modelData.appName.toLowerCase();
                                             if (notifCard.modelData.urgency === NotificationUrgency.Critical)
                                                 return "󰀦";
-                                            if (name.includes("discord"))
-                                                return "󰙯";
-                                            if (name.includes("firefox"))
-                                                return "󰈹";
-                                            if (name.includes("chrome"))
-                                                return "";
-                                            if (name.includes("telegram"))
-                                                return "";
-                                            if (name.includes("spotify"))
-                                                return "󰓇";
-                                            if (name.includes("terminal") || name.includes("kitty") || name.includes("alacritty"))
-                                                return "";
-                                            return "󰂚";
+                                            const name = notifCard.modelData.appName.toLowerCase();
+                                            const found = root.appGlyphs.find(item => name.includes(item.match));
+                                            return found ? found.glyph : "󰂚";
                                         }
-                                        color: notifCard.modelData.urgency === NotificationUrgency.Critical ? root.theme.urgencyCritical : root.theme.urgencyNormal
+                                        color: notifCard.modelData.urgency === NotificationUrgency.Critical ? Theme.urgencyCritical : Theme.urgencyNormal
                                         font.pixelSize: 14
-                                        font.family: root.font
+                                        font.family: Theme.fontFamily
                                     }
                                 }
 
                                 Text {
                                     text: notifCard.modelData.appName || "Notification"
-                                    color: root.theme.textSecondary
+                                    color: Theme.textSecondary
                                     font.pixelSize: 13
-                                    font.family: root.font
+                                    font.family: Theme.fontFamily
                                     Layout.alignment: Qt.AlignVCenter
                                 }
 
@@ -175,7 +195,7 @@ Scope {
                                     width: 20
                                     height: 20
                                     radius: 0
-                                    color: closeHover.containsMouse ? root.theme.bgSelected : "transparent"
+                                    color: closeHover.containsMouse ? Theme.bgSelected : "transparent"
                                     Layout.alignment: Qt.AlignVCenter
                                     Accessible.role: Accessible.Button
                                     Accessible.name: "Dismiss notification"
@@ -183,9 +203,9 @@ Scope {
                                     Text {
                                         anchors.centerIn: parent
                                         text: "󰅖"
-                                        color: closeHover.containsMouse ? root.theme.accentRed : root.theme.textMuted
+                                        color: closeHover.containsMouse ? Theme.accentRed : Theme.textMuted
                                         font.pixelSize: 12
-                                        font.family: root.font
+                                        font.family: Theme.fontFamily
                                     }
 
                                     MouseArea {
@@ -200,9 +220,9 @@ Scope {
 
                             Text {
                                 text: notifCard.modelData.summary
-                                color: root.theme.textPrimary
-                                font.pixelSize: root.theme.fontSize
-                                font.family: root.font
+                                color: Theme.textPrimary
+                                font.pixelSize: Theme.fontSize
+                                font.family: Theme.fontFamily
                                 font.bold: true
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
@@ -216,9 +236,9 @@ Scope {
 
                                 Text {
                                     text: notifCard.modelData.body
-                                    color: root.theme.textSecondary
+                                    color: Theme.textSecondary
                                     font.pixelSize: 10
-                                    font.family: root.font
+                                    font.family: Theme.fontFamily
                                     wrapMode: Text.Wrap
                                     maximumLineCount: 3
                                     elide: Text.ElideRight
@@ -260,8 +280,8 @@ Scope {
                                         Layout.preferredHeight: 26
                                         Layout.preferredWidth: actionText.width + 16
                                         radius: 0
-                                        color: actionHover.containsMouse ? root.theme.bgSelected : root.theme.bgInset
-                                        border.color: root.theme.bgBorder
+                                        color: actionHover.containsMouse ? Theme.bgSelected : Theme.bgInset
+                                        border.color: Theme.bgBorder
                                         border.width: 1
 
                                         Behavior on color {
@@ -277,9 +297,9 @@ Scope {
                                             id: actionText
                                             anchors.centerIn: parent
                                             text: actionBtn.modelData.text || ""
-                                            color: root.theme.accentPrimary
+                                            color: Theme.accentPrimary
                                             font.pixelSize: 11
-                                            font.family: root.font
+                                            font.family: Theme.fontFamily
                                         }
 
                                         MouseArea {
@@ -297,7 +317,7 @@ Scope {
                                 Layout.fillWidth: true
                                 height: 2
                                 radius: 0
-                                color: root.theme.bgBorder
+                                color: Theme.bgBorder
                                 Layout.topMargin: 2
                                 visible: notifCard.modelData.urgency !== NotificationUrgency.Critical
 
@@ -306,7 +326,7 @@ Scope {
                                     height: parent.height
                                     width: parent.width
                                     radius: 0
-                                    color: notifCard.modelData.urgency === NotificationUrgency.Critical ? root.theme.urgencyCritical : root.theme.urgencyNormal
+                                    color: notifCard.modelData.urgency === NotificationUrgency.Critical ? Theme.urgencyCritical : Theme.urgencyNormal
                                     opacity: 0.6
 
                                     SequentialAnimation {

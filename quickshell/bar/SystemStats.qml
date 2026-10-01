@@ -1,7 +1,8 @@
+import Quickshell
 import Quickshell.Io
 import QtQuick
 
-QtObject {
+Scope {
     id: root
 
     property string cpu: "--"
@@ -18,7 +19,8 @@ QtObject {
 
     readonly property real mebibyte: 1048576
 
-    property Timer refreshTimer: Timer {
+    Timer {
+        id: refreshTimer
         interval: 3000
         running: true
         repeat: true
@@ -31,7 +33,8 @@ QtObject {
         }
     }
 
-    property Process statsProcess: Process {
+    Process {
+        id: statsProcess
         command: ["sh", "-c", "cat /proc/stat /proc/meminfo; df -P /"]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -70,7 +73,8 @@ QtObject {
         }
     }
 
-    property Process gpuProcess: Process {
+    Process {
+        id: gpuProcess
         command: ["sh", "-c", "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"]
         stdout: StdioCollector {
             onStreamFinished: {
