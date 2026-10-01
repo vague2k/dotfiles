@@ -4,7 +4,7 @@ local programs = function()
     terminal = terminal,
     fileManager = "nautilus",
     menu = "qs ipc call launcher toggle",
-    browser = "brave",
+    browser = "brave --ozone-platform=x11",
   }
 end
 local programs = programs()
