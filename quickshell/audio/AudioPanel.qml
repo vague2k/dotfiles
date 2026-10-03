@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
@@ -10,8 +11,6 @@ import "../theme"
 
 Scope {
     id: root
-
-    property bool open: false
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
@@ -27,20 +26,27 @@ Scope {
         target: "audio"
 
         function toggle(): void {
-            root.open = !root.open;
+            audioPanel.visible = !audioPanel.visible;
         }
     }
 
     PanelWindow {
-        id: panel
-        visible: root.open
+        id: audioPanel
+        visible: false
         focusable: true
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         WlrLayershell.namespace: "quickshell-audio"
         exclusionMode: ExclusionMode.Ignore
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [audioPanel]
+            active: audioPanel.visible
+            onCleared: audioPanel.visible = false
+        }
 
         anchors {
             top: true
@@ -51,7 +57,7 @@ Scope {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: root.open = false
+            onClicked: audioPanel.visible = false
         }
 
         Rectangle {
@@ -74,7 +80,7 @@ Scope {
                 anchors.fill: parent
             }
 
-            Keys.onEscapePressed: root.open = false
+            Keys.onEscapePressed: audioPanel.visible = false
 
             ColumnLayout {
                 anchors.fill: parent
@@ -117,7 +123,7 @@ Scope {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: root.open = false
+                            onClicked: audioPanel.visible = false
                         }
                     }
                 }

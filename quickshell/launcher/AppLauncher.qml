@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
@@ -98,9 +99,16 @@ Scope {
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         WlrLayershell.namespace: "quickshell-launcher"
         exclusionMode: ExclusionMode.Ignore
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [launcherPanel]
+            active: launcherPanel.visible
+            onCleared: launcherPanel.visible = false
+        }
 
         anchors {
             top: true

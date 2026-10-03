@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
@@ -8,10 +9,6 @@ import "../theme"
 
 Scope {
     id: root
-
-    property bool open: false
-    onOpenChanged: if (!open && root.adapter)
-        root.adapter.discovering = false
 
     readonly property var adapter: Bluetooth.defaultAdapter
 
@@ -31,20 +28,29 @@ Scope {
         target: "bluetooth"
 
         function toggle(): void {
-            root.open = !root.open;
+            bluetoothPanel.visible = !bluetoothPanel.visible;
         }
     }
 
     PanelWindow {
-        id: panel
-        visible: root.open
+        id: bluetoothPanel
+        visible: false
+        onVisibleChanged: if (!visible && root.adapter)
+            root.adapter.discovering = false
         focusable: true
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         WlrLayershell.namespace: "quickshell-bluetooth"
         exclusionMode: ExclusionMode.Ignore
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [bluetoothPanel]
+            active: bluetoothPanel.visible
+            onCleared: bluetoothPanel.visible = false
+        }
 
         anchors {
             top: true
@@ -55,7 +61,7 @@ Scope {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: root.open = false
+            onClicked: bluetoothPanel.visible = false
         }
 
         Rectangle {
@@ -78,7 +84,7 @@ Scope {
                 anchors.fill: parent
             }
 
-            Keys.onEscapePressed: root.open = false
+            Keys.onEscapePressed: bluetoothPanel.visible = false
 
             ColumnLayout {
                 anchors.fill: parent
@@ -121,7 +127,7 @@ Scope {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: root.open = false
+                            onClicked: bluetoothPanel.visible = false
                         }
                     }
                 }

@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
@@ -8,12 +9,6 @@ import "../theme"
 
 Scope {
     id: root
-
-    property bool open: false
-    onOpenChanged: if (open) {
-        WallpaperService.rescan();
-        Qt.callLater(root.focusSearch);
-    }
 
     function focusSearch() {
         search.text = "";
@@ -48,20 +43,31 @@ Scope {
         target: "wallpaper"
 
         function toggle(): void {
-            root.open = !root.open;
+            wallpaperPanel.visible = !wallpaperPanel.visible;
         }
     }
 
     PanelWindow {
-        id: panel
-        visible: root.open
+        id: wallpaperPanel
+        visible: false
+        onVisibleChanged: if (visible) {
+            WallpaperService.rescan();
+            Qt.callLater(root.focusSearch);
+        }
         focusable: true
         color: "transparent"
 
         WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         WlrLayershell.namespace: "quickshell-wallpaper"
         exclusionMode: ExclusionMode.Ignore
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [wallpaperPanel]
+            active: wallpaperPanel.visible
+            onCleared: wallpaperPanel.visible = false
+        }
 
         anchors {
             top: true
@@ -72,10 +78,10 @@ Scope {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: root.open = false
+            onClicked: wallpaperPanel.visible = false
         }
 
-        Keys.onEscapePressed: root.open = false
+        Keys.onEscapePressed: wallpaperPanel.visible = false
 
         Rectangle {
             id: body
@@ -97,7 +103,7 @@ Scope {
                 anchors.fill: parent
             }
 
-            Keys.onEscapePressed: root.open = false
+            Keys.onEscapePressed: wallpaperPanel.visible = false
 
             ColumnLayout {
                 anchors.fill: parent
@@ -129,9 +135,9 @@ Scope {
                         border.color: activeFocus ? Theme.accentPrimary : Theme.bgBorderStrong
                         border.width: 1
 
-                        Keys.onReturnPressed: root.open = false
-                        Keys.onEnterPressed: root.open = false
-                        Keys.onSpacePressed: root.open = false
+                        Keys.onReturnPressed: wallpaperPanel.visible = false
+                        Keys.onEnterPressed: wallpaperPanel.visible = false
+                        Keys.onSpacePressed: wallpaperPanel.visible = false
 
                         Text {
                             anchors.centerIn: parent
@@ -146,7 +152,7 @@ Scope {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: root.open = false
+                            onClicked: wallpaperPanel.visible = false
                         }
                     }
                 }
@@ -154,7 +160,7 @@ Scope {
                 Timer {
                     interval: 4000
                     repeat: true
-                    running: root.open
+                    running: wallpaperPanel.visible
                     onTriggered: WallpaperService.rescan()
                 }
 
@@ -349,7 +355,7 @@ Scope {
                         else
                             search.forceActiveFocus();
                     }
-                    Keys.onEscapePressed: root.open = false
+                    Keys.onEscapePressed: wallpaperPanel.visible = false
                     Keys.onBacktabPressed: {
                         if (currentIndex > 0)
                             root.focusGrid(currentIndex - 1);
