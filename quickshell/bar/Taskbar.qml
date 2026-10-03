@@ -41,10 +41,12 @@ Row {
                     height: Theme.iconSize
                     source: Quickshell.iconPath(taskButton.entry?.icon || "", true)
                     fillMode: Image.PreserveAspectFit
+                    // No icon means no reserved space (and Row drops its spacing too)
+                    visible: status === Image.Ready
                 }
 
                 Text {
-                    width: parent.width - (taskIcon.width + parent.spacing)
+                    width: parent.width - (taskIcon.visible ? taskIcon.width + parent.spacing : 0)
                     anchors.verticalCenter: parent.verticalCenter
                     text: taskButton.modelData.title ? taskButton.modelData.title : (taskButton.entry?.name || taskButton.modelData.wayland?.appId || taskButton.modelData.lastIpcObject?.class || "App")
                     color: Theme.textPrimary
