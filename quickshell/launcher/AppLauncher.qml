@@ -51,6 +51,11 @@ Scope {
         launcherPanel.visible = false;
     }
 
+    function toggleGamingMode() {
+        launcherPanel.visible = false;
+        Quickshell.execDetached(["sh", "-c", "$HOME/.local/bin/gaming-mode"]);
+    }
+
     function runSession(action) {
         launcherPanel.visible = false;
         if (action === "logout")
@@ -288,10 +293,44 @@ Scope {
                                 }
                             }
 
+                            Rectangle {
+                                id: gamingRow
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 22
+                                color: gamingMouse.containsMouse ? Theme.bgHover : "transparent"
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 8
+                                    anchors.rightMargin: 8
+                                    spacing: Theme.sectionSpacing
+
+                                    Text {
+                                        Layout.fillWidth: true
+                                        Layout.alignment: Qt.AlignVCenter
+                                        text: "Gaming Mode"
+                                        color: Theme.textPrimary
+                                        font.pixelSize: Theme.fontSize
+                                        font.family: Theme.fontFamily
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: gamingMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.toggleGamingMode()
+                                }
+                            }
+
                             // separator
                             Rectangle {
                                 Layout.fillWidth: true
                                 implicitHeight: 1
+                                Layout.topMargin: Theme.spacing
+                                Layout.bottomMargin: Theme.spacing
                                 color: Theme.bgBorder
                             }
 

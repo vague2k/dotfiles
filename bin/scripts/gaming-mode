@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+
+# Sometimes I wanna game from bed on a whim, hence this script
+# this script assumes my 3rd monitor (my tv is disabled) which is usually is.
+#
+# Bed-mode for Steam Big Picture: enable the TV, route audio to it, open Big
+# Picture fullscreen there, then restore everything when it closes.
+
+# --- config ----------------------------------------------------------------
+TV_OUTPUT="HDMI-A-1"      # TV output, disabled in hypr/modules/monitors.lua
+TV_MODE="preferred"
+TV_POSITION="-3840x0"
+TV_SCALE="1"
+TV_WORKSPACE="gaming"     # named workspace, leaves your numbered ones alone
+# ---------------------------------------------------------------------------
+
+# Runtime state shared between the steps and the helpers.
+STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/gaming-mode"
+PIDFILE="$STATE_DIR/pid"
+PRIOR_PORTS=""
+PREVIOUS_SINK=""
+PREVIOUS_CARD=""
+PREVIOUS_PROFILE=""
+AUDIO_MESSAGE=""
+before_json="[]"
+
+main() {
+  mkdir -p "$STATE_DIR"
+
+  # Second run while active: signal the first to restore, then exit. This runs
+  # before the trap is installed, so the signaller does not clean up itself.
+  if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    kill -TERM "$(cat "$PIDFILE")" 2>/dev/null
+    exit 0
+  fi
+  printf '%s\n' "$$" > "$PIDFILE"
+  trap cleanup EXIT INT TERM
+
+  # 1. Snapshot live HDMI ports and the current default sink.
+  PRIOR_PORTS="$(available_hdmi_ports)"
+  PREVIOUS_SINK="$(pactl get-default-sink 2>/dev/null || true)"
+
+  # 2. Turn the TV on. disabled=false is required; the config rule for the TV
+  #    sets disabled=true.
+  hyprctl eval "hl.monitor({output=\"$TV_OUTPUT\", mode=\"$TV_MODE\", position=\"$TV_POSITION\", scale=$TV_SCALE, disabled=false})" >/dev/null 2>&1
+  pause 1
+
+  # 3. Route audio to the TV.
+  if route_audio_to_tv; then
+    AUDIO_MESSAGE="Audio routed to the TV."
+  else
+    AUDIO_MESSAGE="TV audio sink not found (TV off?). Staying on the Focusrite."
+  fi
+
+  # 4. Focus the TV on its own workspace.
+  hyprctl dispatch "hl.dsp.focus({monitor=\"$TV_OUTPUT\"})" >/dev/null 2>&1
+  hyprctl dispatch "hl.dsp.focus({workspace=\"name:$TV_WORKSPACE\"})" >/dev/null 2>&1
+  pause 0.3
+
+  # 5. Launch Steam Big Picture.
+  before_json="$(hyprctl clients -j 2>/dev/null | jq '[ .[] | select(.class|test("steam";"i")) | .address ]' 2>/dev/null)"
+  setsid steam "steam://open/bigpicture" >/dev/null 2>&1 < /dev/null &
+  disown 2>/dev/null || true
+
+  # 6. Find the Big Picture window: by title first, then fall back to the
+  #    newest new Steam window.
+  local deadline=$(( SECONDS + 30 ))
+  local title_window=""
+  while (( SECONDS < deadline )); do
+    title_window="$(big_picture_address)"
+    [[ -n "$title_window" ]] && break
+    pause 1
+  done
+
+  local fallback_window=""
+  [[ -z "$title_window" ]] && fallback_window="$(fallback_address)"
+
+  local big_picture_window="" watch_by_title=0
+  if [[ -n "$title_window" ]]; then
+    big_picture_window="$title_window"
+    watch_by_title=1
+  elif [[ -n "$fallback_window" ]]; then
+    big_picture_window="$fallback_window"
+  fi
+
+  if [[ -n "$big_picture_window" ]]; then
+    place_big_picture "$big_picture_window"
+    notify "Gaming mode on" "Big Picture on the TV. $AUDIO_MESSAGE"
+  else
+    notify -u critical "Gaming mode on" "Big Picture window not found. $AUDIO_MESSAGE"
+  fi
+
+  # 7. Wait for Big Picture to close; exiting runs the cleanup trap.
+  #    By title: re-place whenever Steam recreates the window. By address: until
+  #    it disappears. Neither matched: wait for a manual stop.
+  local current_address=""
+  while :; do
+    if (( watch_by_title )); then
+      current_address="$(big_picture_address)"
+      [[ -z "$current_address" ]] && break
+      if [[ "$current_address" != "$big_picture_window" ]]; then
+        big_picture_window="$current_address"
+        place_big_picture "$big_picture_window"
+      fi
+    elif [[ -n "$fallback_window" ]]; then
+      [[ -z "$(window_alive "$fallback_window")" ]] && break
+    fi
+    pause 2
+  done
+}
+
+# --- helpers ---------------------------------------------------------------
+
+notify() { notify-send -a "Gaming Mode" "$@" >/dev/null 2>&1 || true; }
+# Interruptible sleep, so a trapped TERM runs the trap immediately.
+pause() { sleep "$1" & wait $!; }
+
+cleanup() {
+  trap - EXIT INT TERM
+  # Audio before disabling the TV, so the sink still exists when we switch back.
+  [[ -n "$PREVIOUS_SINK" ]] && pactl set-default-sink "$PREVIOUS_SINK" >/dev/null 2>&1
+  [[ -n "$PREVIOUS_CARD" && -n "$PREVIOUS_PROFILE" ]] && \
+    pactl set-card-profile "$PREVIOUS_CARD" "$PREVIOUS_PROFILE" >/dev/null 2>&1
+  hyprctl eval "hl.monitor({output=\"$TV_OUTPUT\", disabled=true})" >/dev/null 2>&1
+  rm -f "$PIDFILE"
+  notify "Gaming mode off" "TV disabled, audio back to system default."
+  exit 0
+}
+
+# --- pulse helpers (pactl -f json + jq) ------------------------------------
+
+# Every (card, available HDMI port) pair, one per line.
+available_hdmi_ports() {
+  pactl -f json list cards 2>/dev/null | jq -r '
+    .[] | .name as $card | .ports | to_entries[]
+    | select(.key | test("^hdmi-output-[0-9]+$"))
+    | select(.value.availability == "available")
+    | "\($card)\t\(.key)"'
+}
+
+active_profile() {
+  pactl -f json list cards 2>/dev/null | jq -r --arg card "$1" '
+    .[] | select(.name == $card) | .active_profile'
+}
+
+# The hdmi-stereo profile that drives a given port.
+port_profile() {
+  pactl -f json list cards 2>/dev/null | jq -r --arg card "$1" --arg port "$2" '
+    .[] | select(.name == $card) | .ports[$port].profiles[]
+    | select(test("^output:hdmi-stereo(-extra[0-9]+)?$"))' | head -1
+}
+
+sink_exists() {
+  pactl -f json list sinks 2>/dev/null | jq -e --arg sink "$1" 'any(.[]; .name == $sink)' >/dev/null 2>&1
+}
+
+# The card keeps one HDMI profile active, so the TV sink only exists after we
+# switch to its port. That port is the one newly available since the snapshot.
+route_audio_to_tv() {
+  local deadline=$(( SECONDS + 15 ))
+  local card port profile base sink switched=0
+  while (( SECONDS < deadline )); do
+    if (( ! switched )); then
+      while IFS=$'\t' read -r card port; do
+        [[ -z "$card" ]] && continue
+        grep -qxF "$card"$'\t'"$port" <<< "$PRIOR_PORTS" && continue
+        profile="$(port_profile "$card" "$port")"
+        [[ -z "$profile" ]] && continue
+
+        PREVIOUS_CARD="$card"
+        PREVIOUS_PROFILE="$(active_profile "$card")"
+        base="${card#alsa_card.}"
+        sink="alsa_output.${base}.${profile#output:}"
+
+        pactl set-card-profile "$card" "$profile" >/dev/null 2>&1
+        switched=1
+        break
+      done < <(available_hdmi_ports)
+    fi
+
+    if (( switched )) && sink_exists "$sink"; then
+      pactl set-default-sink "$sink" >/dev/null 2>&1
+      return 0
+    fi
+    pause 0.25
+  done
+  return 1
+}
+
+# --- window helpers --------------------------------------------------------
+
+# Newest Steam window whose title matches Big Picture.
+big_picture_address() {
+  hyprctl clients -j 2>/dev/null | jq -r '
+    [ .[] | select((.class|test("steam";"i")) and (.title|test("big picture";"i"))) ]
+    | (.[-1].address) // empty' 2>/dev/null
+}
+
+# Newest Steam window not seen before launch, else the newest Steam window.
+fallback_address() {
+  hyprctl clients -j 2>/dev/null | jq -r --argjson before "${before_json:-[]}" '
+    [ .[] | select(.class|test("steam";"i")) ] as $steam
+    | [ $steam[] | select(.address as $address | ($before|index($address)) == null) ] as $new_windows
+    | ( ($new_windows|.[-1].address) // ($steam|.[-1].address) // empty )' 2>/dev/null
+}
+
+window_alive() {
+  hyprctl clients -j 2>/dev/null | jq -r --arg address "$1" '.[] | select(.address==$address) | .address' 2>/dev/null | head -1
+}
+
+place_big_picture() {
+  hyprctl dispatch "hl.dsp.window.move({workspace=\"name:$TV_WORKSPACE\", window=\"$1\"})" >/dev/null 2>&1
+  hyprctl dispatch "hl.dsp.focus({workspace=\"name:$TV_WORKSPACE\"})" >/dev/null 2>&1
+  hyprctl dispatch "hl.dsp.window.fullscreen({action=\"set\", window=\"$1\"})" >/dev/null 2>&1
+}
+
+main "$@"
