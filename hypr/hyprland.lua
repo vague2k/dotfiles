@@ -9,8 +9,8 @@ hl.env("HYPRCURSOR_SIZE", "24")
 
 hl.config({
   general = {
-    gaps_in = 5,
-    gaps_out = 10,
+    gaps_in = 4,
+    gaps_out = 8,
 
     border_size = 1,
 
@@ -50,7 +50,7 @@ hl.config({
 
     follow_mouse = 1,
 
-    sensitivity = -0.39, -- -1.0 - 1.0, 0 means no modification.
+    sensitivity = -0.35, -- -1.0 - 1.0, 0 means no modification.
     accel_profile = "flat",
   },
 

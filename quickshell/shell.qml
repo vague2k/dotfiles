@@ -7,6 +7,7 @@ import "audio"
 import "bluetooth"
 import "wallpaper"
 import "notifications"
+import "polkit"
 
 ShellRoot {
     PwObjectTracker {
@@ -24,4 +25,6 @@ ShellRoot {
     WallpaperManager {}
 
     NotificationPopup {}
+
+    PolkitPanel {}
 }
