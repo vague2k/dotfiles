@@ -45,6 +45,12 @@ return {
           files = {
             exclude = { ".node_modules*", ".DS_Store" },
             include = { ".git*", ".go*", ".config", ".local", ".cache" },
+            hidden = true,
+          },
+          grep = {
+            exclude = { ".node_modules*", ".DS_Store" },
+            include = { ".git*", ".go*", ".config", ".local", ".cache" },
+            hidden = true,
           },
           todo_comments = {
             exclude = { "*.ics" },
