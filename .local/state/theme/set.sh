@@ -8,7 +8,7 @@ scheme=${2:-m3-content}
 [ -f "$img" ] || { echo "set.sh: no such image: $img" >&2; exit 1; }
 
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-state="$HOME/.local/state/quickshell"
+state="$HOME/.local/state/theme"
 palette="$state/wallpaper-theme.json"
 
 command -v matugen >/dev/null 2>&1 || { echo "set.sh: matugen is not installed" >&2; exit 1; }

@@ -5,6 +5,7 @@ set -euo pipefail
 # resolve the repo root from the script's own location so it works from any clone
 DOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONF="${XDG_CONFIG_HOME:-$HOME/.config}"
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
 BIN="$HOME/.local/bin"
 
 mklink() {
@@ -33,7 +34,7 @@ echo "Symlinking dotfiles from $DOTDIR"
 echo
 
 
-mkdir -p "$CONF" "$BIN"
+mkdir -p "$CONF" "$BIN" "$STATE"
 
 echo "configs -> $CONF"
 for entry in "$DOTDIR/.config/"*; do
@@ -47,6 +48,13 @@ for script in "$DOTDIR/.local/bin/"*; do
     [ -f "$script" ] || continue # check if it's actually a file, otherwise skip
     chmod +x "$script"
     mklink "$script" "$BIN/$(basename "$script")"
+done
+
+echo
+echo "state -> $STATE"
+for entry in "$DOTDIR/.local/state/"*; do
+    [ -e "$entry" ] || continue # check if the path exists, otherwise skip
+    mklink "$entry" "$STATE/$(basename "$entry")"
 done
 
 echo

@@ -16,8 +16,8 @@ Singleton {
     readonly property bool ready: palette.bgBase !== undefined
     readonly property string themedCavaConfig: stateDirectory + "/cava.conf"
 
-    readonly property string stateDirectory: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/quickshell"
-    readonly property string themeScript: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/theme/set.sh"
+    readonly property string stateDirectory: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/theme"
+    readonly property string themeScript: stateDirectory + "/set.sh"
 
     readonly property var schemes: [
         {

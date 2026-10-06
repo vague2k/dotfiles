@@ -1,0 +1,37 @@
+[config]
+
+[templates.quickshell]
+input_path = '~/.local/state/theme/templates/quickshell.json'
+output_path = '~/.local/state/theme/wallpaper-theme.json'
+
+[templates.cava]
+input_path = '~/.local/state/theme/templates/cava.template'
+output_path = '~/.local/state/theme/cava.conf'
+
+# [templates.cava]
+# input_path = '~/.local/state/theme/templates/cava.template'
+# output_path = '~/.config/cava/cava.conf'
+
+[templates.ghostty]
+input_path = '~/.local/state/theme/templates/ghostty.template'
+output_path = '~/.config/ghostty/themes/theme'
+
+[templates.tmux]
+input_path = '~/.local/state/theme/templates/tmux.template'
+output_path = '~/.config/tmux/themes/theme.conf'
+
+[templates.gtk3]
+input_path = '~/.local/state/theme/templates/gtk.template'
+output_path = '~/.config/gtk-3.0/theme.css'
+
+[templates.gtk4]
+input_path = '~/.local/state/theme/templates/gtk.template'
+output_path = '~/.config/gtk-4.0/theme.css'
+
+[templates.qt5]
+input_path = '~/.local/state/theme/templates/qt.template'
+output_path = '~/.config/qt5ct/colors/theme.conf'
+
+[templates.qt6]
+input_path = '~/.local/state/theme/templates/qt.template'
+output_path = '~/.config/qt6ct/colors/theme.conf'
