@@ -17,6 +17,7 @@ Singleton {
     readonly property string themedCavaConfig: stateDirectory + "/cava.conf"
 
     readonly property string stateDirectory: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/quickshell"
+    readonly property string themeScript: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/theme/set.sh"
 
     readonly property var schemes: [
         {
@@ -58,7 +59,7 @@ Singleton {
             return;
         busy = true;
         error = "";
-        generate.exec(["sh", Quickshell.shellPath("theme/wallpaper-theme/set.sh"), path, value]);
+        generate.exec(["sh", root.themeScript, path, value]);
     }
 
     Process {
