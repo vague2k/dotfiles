@@ -5,6 +5,11 @@
 
 set -euo pipefail
 
+have_tty=false
+if { true < /dev/tty; } 2>/dev/null; then
+    have_tty=true
+fi
+
 if [ "$(uname -s)" = "Darwin" ]; then
     echo "macOS detected: this installer only supports arch based systems." >&2
     echo "Follow the manual install steps from the README using your package manager:" >&2
@@ -24,7 +29,7 @@ if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
     fi
 fi
 
-common_pkgs=(git github-cli zsh tmux neovim tree-sitter-cli fzf ripgrep lazygit eza zoxide glow jq opencode nodejs npm python python-pynvim go rust)
+common_pkgs=(git github-cli zsh unzip tmux neovim tree-sitter-cli fzf ripgrep lazygit eza zoxide glow jq opencode nodejs npm python python-pynvim go lua rust)
 
 # install on wsl only
 wsl_pkgs=(wslu)
@@ -39,6 +44,27 @@ is_wsl() {
     grep -qiE '(microsoft|wsl)' /proc/version 2>/dev/null
 }
 
+ask_yes_no() {
+    local answer=""
+    if [ "$have_tty" = true ]; then
+        printf '%s [y/N] ' "$1" >&2
+        read -r answer < /dev/tty || true
+    fi
+    case "$answer" in
+        [yY]*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+ask_value() {
+    local value=""
+    if [ "$have_tty" = true ]; then
+        printf '%s ' "$1" >&2
+        read -r value < /dev/tty || true
+    fi
+    printf '%s' "$value"
+}
+
 if [ "$(id -u)" -eq 0 ]; then
     echo "Run this as a regular user, not root (sudo is used where needed)." >&2
     exit 1
@@ -51,11 +77,6 @@ fi
 
 # only reachable when piped (curl ... | bash): ask where the dotfiles live
 if [ -z "$DOTDIR" ]; then
-    have_tty=false
-    if { true < /dev/tty; } 2>/dev/null; then
-        have_tty=true
-    fi
-
     while true; do
         answer=""
         if [ "$have_tty" = true ]; then
@@ -138,6 +159,49 @@ else
     git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$OMZ"
 fi
 sudo cp "$HOME/.config/zsh/.zshenv" /etc/zsh/zshenv
+
+echo
+echo "==> Optional setup"
+
+zsh_path="$(command -v zsh || true)"
+if [ -z "$zsh_path" ]; then
+    echo "  note: zsh not found, skipping the shell change" >&2
+elif [ "${SHELL:-}" = "$zsh_path" ]; then
+    echo "  ok  zsh is already the default shell"
+elif ask_yes_no "Change your default shell to zsh?"; then
+    chsh -s "$zsh_path" || echo "  note: could not change the shell, do it later with: chsh -s $zsh_path" >&2
+fi
+
+# git identity, used as the author on commits
+git_name="$(git config --global user.name || true)"
+if [ -n "$git_name" ]; then
+    echo "  ok  git user.name is set to $git_name"
+else
+    git_name="$(ask_value "Git author name (user.name)?")"
+    if [ -n "$git_name" ]; then
+        git config --global user.name "$git_name"
+        echo "  ok  git user.name set to $git_name"
+    fi
+fi
+
+git_email="$(git config --global user.email || true)"
+if [ -n "$git_email" ]; then
+    echo "  ok  git user.email is set to $git_email"
+else
+    git_email="$(ask_value "Git author email (user.email)?")"
+    if [ -n "$git_email" ]; then
+        git config --global user.email "$git_email"
+        echo "  ok  git user.email set to $git_email"
+    fi
+fi
+
+if ask_yes_no "Log in to the GitHub CLI (gh auth login)?"; then
+    gh auth login || echo "  note: gh auth login was skipped or failed, run it later to authenticate" >&2
+fi
+
+if ask_yes_no "Log in to opencode (opencode auth login)?"; then
+    opencode auth login || echo "  note: opencode auth login was skipped or failed, run it later to authenticate" >&2
+fi
 
 echo
 echo "Done."
