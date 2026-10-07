@@ -163,13 +163,13 @@ sudo cp "$HOME/.config/zsh/.zshenv" /etc/zsh/zshenv
 echo
 echo "==> Optional setup"
 
-zsh_path="$(command -v zsh || true)"
+zsh_path="/bin/zsh"
 if [ -z "$zsh_path" ]; then
     echo "  note: zsh not found, skipping the shell change" >&2
 elif [ "${SHELL:-}" = "$zsh_path" ]; then
     echo "  ok  zsh is already the default shell"
 elif ask_yes_no "Change your default shell to zsh?"; then
-    chsh -s "$zsh_path" || echo "  note: could not change the shell, do it later with: chsh -s $zsh_path" >&2
+    chsh -s "$zsh_path" < /dev/tty || echo "  note: could not change the shell, do it later with: chsh -s $zsh_path" >&2
 fi
 
 # git identity, used as the author on commits
