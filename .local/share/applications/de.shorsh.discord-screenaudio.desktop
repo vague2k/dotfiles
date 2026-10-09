@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=discord-screenaudio
+Exec=discord-screenaudio --notify-send
+Comment=A custom discord client that supports streaming with audio on Linux.
+Icon=de.shorsh.discord-screenaudio
+Categories=Network;InstantMessaging;
+Terminal=false

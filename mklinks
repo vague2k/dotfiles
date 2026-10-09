@@ -6,7 +6,31 @@ set -euo pipefail
 DOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONF="${XDG_CONFIG_HOME:-$HOME/.config}"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}"
+DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 BIN="$HOME/.local/bin"
+APPLICATIONS="$DATA/applications"
+
+# mirrors install.sh, which skips desktop-only packages on WSL (see README)
+is_wsl() {
+    if [ -n "${WSL_DISTRO_NAME:-}" ]; then
+        return 0
+    fi
+    grep -qiE '(microsoft|wsl)' /proc/version 2>/dev/null
+}
+
+# dotfiles under .config that only make sense with a desktop session
+desktop_only() {
+    case "$1" in
+        ghostty|hypr|quickshell|zathura) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+if is_wsl; then
+    WSL=true
+else
+    WSL=false
+fi
 
 mklink() {
     local target=$1
@@ -33,13 +57,22 @@ mklink() {
 echo "Symlinking dotfiles from $DOTDIR"
 echo
 
+if [ "$WSL" = true ]; then
+    echo "WSL detected: desktop-only entries will be skipped"
+    echo
+fi
 
 mkdir -p "$CONF" "$BIN" "$STATE"
 
 echo "configs -> $CONF"
 for entry in "$DOTDIR/.config/"*; do
     [ -e "$entry" ] || continue # check if the path exists, otherwise skip
-    mklink "$entry" "$CONF/$(basename "$entry")"
+    name="$(basename "$entry")"
+    if [ "$WSL" = true ] && desktop_only "$name"; then
+        echo "  skip     $name"
+        continue
+    fi
+    mklink "$entry" "$CONF/$name"
 done
 
 echo
@@ -56,6 +89,18 @@ for entry in "$DOTDIR/.local/state/"*; do
     [ -e "$entry" ] || continue # check if the path exists, otherwise skip
     mklink "$entry" "$STATE/$(basename "$entry")"
 done
+
+echo
+echo "applications -> $APPLICATIONS"
+if [ "$WSL" = true ]; then
+    echo "  skip     applications (desktop only)"
+else
+    mkdir -p "$APPLICATIONS"
+    for entry in "$DOTDIR/.local/share/applications/"*; do
+        [ -e "$entry" ] || continue # check if the path exists, otherwise skip
+        mklink "$entry" "$APPLICATIONS/$(basename "$entry")"
+    done
+fi
 
 echo
 echo "Done."
