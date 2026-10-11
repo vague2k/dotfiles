@@ -8,10 +8,6 @@ output_path = '~/.local/state/theme/wallpaper-theme.json'
 input_path = '~/.local/state/theme/templates/cava.template'
 output_path = '~/.local/state/theme/cava.conf'
 
-# [templates.cava]
-# input_path = '~/.local/state/theme/templates/cava.template'
-# output_path = '~/.config/cava/cava.conf'
-
 [templates.ghostty]
 input_path = '~/.local/state/theme/templates/ghostty.template'
 output_path = '~/.config/ghostty/themes/theme'
@@ -20,13 +16,15 @@ output_path = '~/.config/ghostty/themes/theme'
 input_path = '~/.local/state/theme/templates/tmux.template'
 output_path = '~/.config/tmux/themes/theme.conf'
 
+# the theme dir is symlinked to ~/.local/share/themes/Vague by mklinks, so
+# regenerating the palette restyles the installed theme in place
 [templates.gtk3]
-input_path = '~/.local/state/theme/templates/gtk.template'
-output_path = '~/.config/gtk-3.0/theme.css'
+input_path = '~/.local/state/theme/templates/gtk3.template'
+output_path = '~/.local/share/themes/Vague/gtk-3.0/vars.css'
 
 [templates.gtk4]
-input_path = '~/.local/state/theme/templates/gtk.template'
-output_path = '~/.config/gtk-4.0/theme.css'
+input_path = '~/.local/state/theme/templates/gtk4.template'
+output_path = '~/.local/share/themes/Vague/gtk-4.0/vars.css'
 
 [templates.qt5]
 input_path = '~/.local/state/theme/templates/qt.template'

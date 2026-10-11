@@ -1,0 +1,468 @@
+/* Vague widget styles, GTK3.
+ *
+ * Same look as the GTK4 file (flat fills, 1px borders, square corners, panel
+ * hover/active ladder), but GTK3 has no custom properties so colors are
+ * @define-color names from vars.css. Keep the two files in step when editing. */
+
+window,
+.background {
+    background-color: @vague_base;
+    color: @vague_text;
+}
+
+headerbar,
+.titlebar {
+    background-color: @vague_surface;
+    color: @vague_text;
+    border-bottom: 1px solid @vague_border;
+    box-shadow: none;
+    min-height: 30px;
+}
+
+headerbar:backdrop,
+.titlebar:backdrop {
+    color: @vague_text_muted;
+}
+
+button {
+    background-color: @vague_surface;
+    color: @vague_text;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 2px 6px;
+    min-height: 18px;
+    transition: background-color 100ms ease, border-color 100ms ease;
+}
+
+/* kill Adwaita's top highlight and any leftover rounding, the panels are flat */
+toolbar,
+.toolbar {
+    background-color: @vague_surface;
+    background-image: none;
+    box-shadow: none;
+    border-color: @vague_border;
+}
+
+toolbar button,
+.toolbar button,
+headerbar button {
+    box-shadow: none;
+    border-radius: 0;
+}
+
+button.circular,
+button.pill,
+.linked>button,
+.linked>entry,
+spinbutton button {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+button:hover {
+    background-color: @vague_hover;
+    border-color: @vague_border_strong;
+}
+
+button:active,
+button:checked {
+    background-color: @vague_selected;
+    border-color: @vague_accent;
+}
+
+button:focus {
+    border-color: @vague_accent;
+    outline: none;
+}
+
+button:disabled {
+    color: @vague_text_muted;
+    border-color: @vague_border;
+}
+
+button.flat {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+button.flat:hover {
+    background-color: @vague_hover;
+    border-color: @vague_border;
+}
+
+button.flat:active {
+    background-color: @vague_selected;
+}
+
+button.suggested-action {
+    background-color: @vague_accent;
+    color: @vague_on_accent;
+    border-color: @vague_accent;
+}
+
+button.destructive-action {
+    background-color: @vague_red;
+    color: @vague_on_red;
+    border-color: @vague_red;
+}
+
+button.link {
+    background-color: transparent;
+    border-color: transparent;
+    color: @vague_accent;
+}
+
+button.titlebutton {
+    background-color: transparent;
+    border-color: transparent;
+    padding: 4px;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+button.titlebutton:hover {
+    background-color: @vague_accent;
+    color: @vague_base;
+    border-color: @vague_accent;
+}
+
+button.titlebutton.close:hover {
+    background-color: @vague_red;
+    color: @vague_on_red;
+    border-color: @vague_red;
+}
+
+entry,
+spinbutton {
+    background-color: @vague_inset;
+    color: @vague_text;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    box-shadow: none;
+    caret-color: @vague_accent;
+    padding: 2px 6px;
+    min-height: 18px;
+}
+
+/* the spin button is the frame, its entry fills it, so drop the inner border
+ * and padding that made the counter look lopsided on the x axis */
+spinbutton {
+    padding: 0;
+}
+
+spinbutton entry,
+spinbutton>entry {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 6px;
+}
+
+spinbutton button {
+    background-color: transparent;
+    border: none;
+    border-left: 1px solid @vague_border;
+    min-width: 22px;
+}
+
+spinbutton button:hover {
+    background-color: @vague_hover;
+}
+
+/* gap between the indicator and its label, the panels never crowd them */
+checkbutton>check,
+checkbutton>radio,
+radiobutton>radio,
+menuitem check,
+menuitem radio {
+    margin-right: 8px;
+}
+
+entry:focus,
+spinbutton:focus {
+    border-color: @vague_accent;
+}
+
+entry:disabled {
+    color: @vague_text_muted;
+}
+
+entry selection,
+selection {
+    background-color: @vague_accent;
+    color: @vague_on_accent;
+}
+
+scale {
+    padding: 6px;
+}
+
+scale trough {
+    background-color: @vague_inset;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    min-height: 6px;
+    min-width: 6px;
+}
+
+scale highlight {
+    background-color: @vague_accent;
+    border-radius: 0;
+}
+
+scale slider {
+    background-color: @vague_accent;
+    border: 1px solid @vague_border_strong;
+    border-radius: 0;
+    box-shadow: none;
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scale slider:hover {
+    background-color: @vague_text;
+}
+
+scale:disabled highlight {
+    background-color: @vague_border_strong;
+}
+
+switch {
+    background-color: @vague_inset;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    box-shadow: none;
+    min-width: 36px;
+    min-height: 18px;
+}
+
+switch:checked {
+    background-color: @vague_accent;
+    border-color: @vague_accent;
+}
+
+switch slider {
+    background-color: @vague_text;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+switch:checked slider {
+    background-color: @vague_on_accent;
+}
+
+check,
+radio {
+    background-color: @vague_inset;
+    color: @vague_text;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    box-shadow: none;
+    min-width: 14px;
+    min-height: 14px;
+}
+
+check:checked,
+check:indeterminate,
+radio:checked {
+    background-color: @vague_accent;
+    color: @vague_on_accent;
+    border-color: @vague_accent;
+}
+
+radio {
+    border-radius: 100%;
+}
+
+list,
+listview,
+view {
+    background-color: @vague_surface_low;
+    color: @vague_text;
+}
+
+row:hover {
+    background-color: @vague_hover;
+}
+
+row:selected,
+row:selected:hover {
+    background-color: @vague_selected;
+    color: @vague_text;
+}
+
+row:selected:focus {
+    border-color: @vague_accent;
+}
+
+menu,
+.popover,
+popover {
+    background-color: @vague_surface;
+    color: @vague_text;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+menuitem {
+    border-radius: 0;
+    padding: 4px 8px;
+}
+
+menuitem:hover {
+    background-color: @vague_hover;
+}
+
+notebook>header {
+    background-color: @vague_surface;
+    border-color: @vague_border;
+}
+
+notebook>header tab {
+    border: 1px solid transparent;
+    border-radius: 0;
+    padding: 4px 10px;
+    color: @vague_text_dim;
+}
+
+notebook>header tab:hover {
+    background-color: @vague_hover;
+}
+
+notebook>header tab:checked {
+    background-color: @vague_base;
+    border-color: @vague_border;
+    color: @vague_text;
+}
+
+scrollbar {
+    background-color: transparent;
+    border: none;
+}
+
+scrollbar trough {
+    background-color: @vague_inset;
+    border-radius: 0;
+}
+
+scrollbar slider {
+    background-color: @vague_border_strong;
+    border: none;
+    border-radius: 0;
+    min-width: 8px;
+    min-height: 8px;
+}
+
+scrollbar slider:hover {
+    background-color: @vague_accent;
+}
+
+separator {
+    background-color: @vague_border;
+    min-width: 1px;
+    min-height: 1px;
+}
+
+progressbar trough,
+levelbar trough {
+    background-color: @vague_inset;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+    min-height: 6px;
+}
+
+progressbar progress,
+levelbar block.filled {
+    background-color: @vague_accent;
+    border-radius: 0;
+}
+
+frame>border {
+    border: 1px solid @vague_border;
+    border-radius: 0;
+}
+
+treeview.view {
+    background-color: @vague_inset;
+    color: @vague_text;
+    border-color: @vague_border;
+}
+
+/* GTK3 file views have no hover highlight by default and the selection is the
+ * accent, which reads too loud here. Match GTK4: hover steps to bg_hover, and
+ * selected rows use the muted bg_selected instead of the accent. */
+treeview.view>*:hover,
+iconview>*:hover {
+    background-color: @vague_hover;
+}
+
+treeview.view:selected,
+treeview.view:selected:focus {
+    background-color: @vague_selected;
+    color: @vague_text;
+}
+
+/* selected rows still take an accent edge so the active row is obvious */
+treeview.view:selected:focus {
+    border-color: @vague_accent;
+}
+
+/* Thunar zeroes GTK's own selection background and paints focused or
+ * unfocused rows itself from theme_selected_bg_color. That color is now the
+ * muted surface too, but keep this here so any CSS-drawn selection matches. */
+.standard-view .view:selected,
+.standard-view .view:selected:focus {
+    background-color: @vague_selected;
+    color: @vague_text;
+    outline: none;
+}
+
+treeview.view header button {
+    background-color: @vague_surface;
+    border-radius: 0;
+}
+
+.sidebar,
+placessidebar {
+    background-color: @vague_surface;
+    border-color: @vague_border;
+}
+
+tooltip {
+    background-color: @vague_surface;
+    color: @vague_text;
+    border: 1px solid @vague_border;
+    border-radius: 0;
+}
+
+.dim-label {
+    color: @vague_text_muted;
+}
+
+link,
+button.link {
+    color: @vague_accent;
+}
+
+calendar {
+    background-color: @vague_surface;
+    border-color: @vague_border;
+}
+
+calendar:selected {
+    background-color: @vague_accent;
+    color: @vague_on_accent;
+}
+
+/* belt and suspenders: nothing keeps a rounded corner */
+combobox,
+combobox>box>button,
+infobar>revealer>box {
+    border-radius: 0;
+}

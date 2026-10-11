@@ -103,4 +103,16 @@ else
 fi
 
 echo
+echo "themes -> $DATA/themes"
+if [ "$WSL" = true ]; then
+    echo "  skip     themes (desktop only)"
+else
+    mkdir -p "$DATA/themes"
+    for entry in "$DOTDIR/.local/share/themes/"*; do
+        [ -e "$entry" ] || continue # check if the path exists, otherwise skip
+        mklink "$entry" "$DATA/themes/$(basename "$entry")"
+    done
+fi
+
+echo
 echo "Done."

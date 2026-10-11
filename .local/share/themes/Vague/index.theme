@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Vague
+Comment=Flat, bordered theme modelled on the Quickshell panels
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Vague
+MetacityTheme=Vague
+IconTheme=Papirus-Dark
+CursorTheme=default
