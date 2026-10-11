@@ -33,24 +33,25 @@ hl.window_rule({
 -- Battle.net launcher (opened from steam)
 hl.window_rule({
   name = "battlenet-float",
-  match = { title = "Battle.net" },
+  match = { title = "(?i).*(battle.net|wowup).*" },
   float = true,
   size = { "(monitor_w*0.75)", "(monitor_h*0.80)" },
   center = true,
 })
 
+-- Bluetooth manager (blueman) opens floating
 hl.window_rule({
-  name = "wowup-float",
-  match = { title = "WowUp.io" },
+  name = "blueman-float",
+  match = { title = "(?i).*(bluetooth|blueman).*" },
+  size = { "(monitor_w*0.3)", "(monitor_h*0.5)" },
   float = true,
-  size = { "(monitor_w*0.80)", "(monitor_h*0.80)" },
   center = true,
 })
 
--- World of Warcraft (opened from bnet under steam proton)
+-- World of Warcraft related rule
 --
--- Static window rules are evaluated before the
--- window exists, so this uses an event + dispatch instead.
+-- For the game window itself... static window rules are evaluated
+-- before the window exists, so this uses an event + dispatch instead.
 -- See https://wiki.hypr.land/Configuring/Basics/Window-Rules/
 hl.on("window.open", function(window)
   if window == nil then return end
