@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Wayland
 import QtQuick
 import "../theme"
 
@@ -8,6 +9,7 @@ Row {
 
     property var monitor
     property int maxWidth: 800
+    property var hoveredButton: null
     // Order tabs by workspace id (address breaks a tie so windows on the same workspace keep their order instead of shuffling when the model updates)
     readonly property var windows: Hyprland.toplevels.values.filter(window => window.monitor?.name === monitor?.name && window.workspace?.id > 0).sort((a, b) => a.workspace.id - b.workspace.id || (a.address < b.address ? -1 : a.address > b.address ? 1 : 0))
     readonly property int tabWidth: Math.min(220, Math.max(0, Math.floor((maxWidth - Math.max(0, windows.length - 1) * spacing) / Math.max(1, windows.length))))
@@ -61,6 +63,12 @@ Row {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
+                onContainsMouseChanged: {
+                    if (containsMouse)
+                        root.hoveredButton = taskButton;
+                    else if (root.hoveredButton === taskButton)
+                        root.hoveredButton = null;
+                }
                 onClicked: {
                     if (modelData.activated && modelData.wayland)
                         modelData.wayland.minimized = true;
@@ -69,6 +77,67 @@ Row {
                     else
                         Hyprland.dispatch("focuswindow address:" + modelData.address);
                 }
+            }
+
+            // A window can close while its button is hovered; drop the stale ref.
+            Component.onDestruction: {
+                if (root.hoveredButton === taskButton)
+                    root.hoveredButton = null;
+            }
+        }
+    }
+
+    // window preview when hovering on an app in the taskbar
+    PanelWindow {
+        id: preview
+
+        readonly property string monitorName: root.monitor ? root.monitor.name : ""
+        readonly property var previewWindow: root.hoveredButton ? root.hoveredButton.modelData : null
+        readonly property real centerX: root.hoveredButton ? root.hoveredButton.mapToItem(null, 0, 0).x + root.hoveredButton.width / 2 : 0
+
+        screen: Quickshell.screens.find(s => s.name === monitorName)
+        visible: previewWindow !== null && screen !== null && screen.name === monitorName
+        color: "transparent"
+        focusable: false
+        implicitHeight: card.height + card.anchors.bottomMargin
+
+        anchors {
+            bottom: true
+            left: true
+            right: true
+        }
+
+        margins {
+            bottom: 32
+        }
+
+        exclusionMode: ExclusionMode.Ignore
+        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+        Rectangle {
+            id: card
+
+            readonly property int padding: 4
+
+            width: 288
+            height: 162
+
+            // keep the card centered on the hovered button, clamped to the screen.
+            x: Math.max(0, Math.min(preview.width - width, preview.centerX - width / 2))
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 4
+
+            color: Theme.bgBase
+            border.color: Theme.bgBorder
+            border.width: 1
+
+            ScreencopyView {
+                anchors.fill: parent
+                anchors.margins: card.padding
+                captureSource: preview.previewWindow ? preview.previewWindow.wayland : null
+                live: true
+                paintCursor: false
             }
         }
     }

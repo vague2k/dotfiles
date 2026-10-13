@@ -1,0 +1,644 @@
+/* Vague widget styles, GTK4.
+ *
+ * The look copies the Quickshell panels: flat fills, 1px borders, square
+ * corners, and hover/active states that step up the surface container ladder.
+ * Colors come from vars.css as --vague-* custom properties. Nothing here sets
+ * a literal color, so re-running matugen restyles every widget. */
+
+/* Each widget below follows the same state recipe the panels use:
+ *   idle   -> bg-surface  (or transparent for flat controls)
+ *   hover  -> bg-hover
+ *   active -> bg-selected with an accent border
+ *   focus  -> accent border */
+
+window,
+.background {
+    background-color: var(--vague-bg-base);
+    color: var(--vague-text);
+}
+
+/* Adwaita paints several controls with gradient images; drop them so the flat
+ * fills below actually show */
+button,
+entry,
+spinbutton,
+switch,
+check,
+radio,
+headerbar,
+popover,
+menu,
+notebook>header tab,
+scale trough,
+scale slider,
+progressbar trough,
+progressbar progress {
+    background-image: none;
+}
+
+headerbar,
+.titlebar {
+    background-color: var(--vague-bg-surface);
+    color: var(--vague-text);
+    border-bottom: var(--vague-border-width) solid var(--vague-border);
+    box-shadow: none;
+    min-height: 30px;
+}
+
+headerbar:backdrop {
+    color: var(--vague-text-muted);
+}
+
+/* buttons */
+button {
+    background-color: var(--vague-bg-surface);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    padding: 2px 6px;
+    min-height: 18px;
+    transition: background-color 100ms ease, border-color 100ms ease;
+}
+
+/* kill Adwaita's top highlight and any leftover rounding, the panels are flat */
+toolbar,
+.toolbar {
+    background-color: var(--vague-bg-surface);
+    background-image: none;
+    box-shadow: none;
+    border-color: var(--vague-border);
+}
+
+toolbar button,
+.toolbar button,
+headerbar button,
+button.circular,
+button.pill,
+.linked>button,
+.linked>entry {
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+}
+
+button:hover {
+    background-color: var(--vague-bg-hover);
+    border-color: var(--vague-border-strong);
+}
+
+button:active,
+button:checked {
+    background-color: var(--vague-bg-selected);
+    border-color: var(--vague-accent);
+}
+
+button:focus-visible,
+button:focus-within {
+    border-color: var(--vague-accent);
+    box-shadow: none;
+    outline: none;
+}
+
+button:disabled {
+    color: var(--vague-text-muted);
+    border-color: var(--vague-border);
+}
+
+button.flat {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+button.flat:hover {
+    background-color: var(--vague-bg-hover);
+    border-color: var(--vague-border);
+}
+
+button.flat:active {
+    background-color: var(--vague-bg-selected);
+}
+
+button.suggested-action {
+    background-color: var(--vague-accent);
+    color: var(--vague-on-accent);
+    border-color: var(--vague-accent);
+}
+
+button.suggested-action:hover {
+    background-color: var(--vague-accent);
+    border-color: var(--vague-border-strong);
+}
+
+button.destructive-action {
+    background-color: var(--vague-red);
+    color: var(--vague-on-red);
+    border-color: var(--vague-red);
+}
+
+button.destructive-action:hover {
+    border-color: var(--vague-border-strong);
+}
+
+button.link {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--vague-accent);
+}
+
+/* window controls: quiet until hovered, close goes red like the panel × */
+button.titlebutton {
+    background-color: transparent;
+    border-color: transparent;
+    padding: 4px;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+button.titlebutton:hover {
+    background-color: var(--vague-accent);
+    color: var(--vague-bg-base);
+    border-color: var(--vague-accent);
+}
+
+button.titlebutton.close:hover {
+    background-color: var(--vague-red);
+    color: var(--vague-on-red);
+    border-color: var(--vague-red);
+}
+
+/* libadwaita window controls paint a ring or disc on the icon image and keep
+ * their own rounding; flatten them so the top-right buttons match the theme */
+windowcontrols > button {
+    background-color: transparent;
+    border: none;
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+}
+
+windowcontrols > button > image {
+    background-color: transparent;
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    padding: 0;
+}
+
+windowcontrols > button:hover > image {
+    background-color: var(--vague-bg-hover);
+    color: var(--vague-text);
+}
+
+windowcontrols > button:active > image {
+    background-color: var(--vague-bg-selected);
+}
+
+windowcontrols > button.close:hover > image {
+    background-color: var(--vague-red);
+    color: var(--vague-on-red);
+}
+
+/* entries and text fields read as insets, like the panel selects */
+entry,
+spinbutton {
+    background-color: var(--vague-bg-inset);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    caret-color: var(--vague-accent);
+    padding: 2px 6px;
+    min-height: 18px;
+}
+
+/* the spin button is the frame, its entry fills it, so drop the inner border
+ * and padding that made the counter look lopsided on the x axis */
+spinbutton {
+    padding: 0;
+}
+
+spinbutton>entry,
+spinbutton entry {
+    background-color: transparent;
+    border: none;
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    padding: 0 6px;
+}
+
+spinbutton>button {
+    background-color: transparent;
+    border: none;
+    border-left: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    min-width: 22px;
+}
+
+spinbutton>button:hover {
+    background-color: var(--vague-bg-hover);
+}
+
+entry:focus,
+entry:focus-within,
+spinbutton:focus-within {
+    border-color: var(--vague-accent);
+}
+
+entry:disabled {
+    color: var(--vague-text-muted);
+}
+
+entry selection,
+selection {
+    background-color: var(--vague-accent);
+    color: var(--vague-on-accent);
+}
+
+entry placeholder,
+entry>text>placeholder {
+    color: var(--vague-text-muted);
+}
+
+/* gap between the indicator and its label, the panels never crowd them */
+checkbutton>check,
+checkbutton>radio,
+checkbutton.radio>check,
+menuitem check,
+menuitem radio {
+    margin-right: 8px;
+}
+
+/* sliders: inset trough, accent fill, accent handle */
+scale {
+    padding: 6px;
+}
+
+scale trough {
+    background-color: var(--vague-bg-inset);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    min-height: 6px;
+    min-width: 6px;
+}
+
+scale highlight {
+    background-color: var(--vague-accent);
+    border-radius: var(--vague-radius);
+}
+
+scale slider {
+    background-color: var(--vague-accent);
+    border: var(--vague-border-width) solid var(--vague-border-strong);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    margin: 0;
+    min-width: 12px;
+    min-height: 12px;
+}
+
+scale trough {
+    margin: 0;
+}
+
+scale slider:hover {
+    background-color: var(--vague-text);
+}
+
+scale:disabled highlight {
+    background-color: var(--vague-border-strong);
+}
+
+/* switches */
+switch {
+    background-color: var(--vague-bg-inset);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    min-width: 36px;
+    min-height: 18px;
+}
+
+switch:checked {
+    background-color: var(--vague-accent);
+    border-color: var(--vague-accent);
+}
+
+switch>slider {
+    background-color: var(--vague-text);
+    border: none;
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+switch:checked>slider {
+    background-color: var(--vague-on-accent);
+}
+
+/* checks and radios */
+check,
+radio {
+    background-color: var(--vague-bg-inset);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+    min-width: 14px;
+    min-height: 14px;
+}
+
+check:checked,
+check:indeterminate,
+radio:checked {
+    background-color: var(--vague-accent);
+    color: var(--vague-on-accent);
+    border-color: var(--vague-accent);
+}
+
+check:disabled,
+radio:disabled {
+    color: var(--vague-text-muted);
+}
+
+radio,
+check.radio,
+checkbutton.radio>check {
+    border-radius: 100%;
+}
+
+/* lists and rows */
+listview,
+list,
+columnview,
+gridview {
+    background-color: var(--vague-bg-surface-low);
+}
+
+row {
+    border-radius: var(--vague-radius);
+}
+
+row:hover {
+    background-color: var(--vague-bg-hover);
+}
+
+row:selected,
+row:selected:hover {
+    background-color: var(--vague-bg-selected);
+    color: var(--vague-text);
+}
+
+row:selected:focus {
+    border-color: var(--vague-accent);
+}
+
+/* popovers and menus mirror the panel cards */
+popover,
+popover.background,
+menu {
+    background-color: var(--vague-bg-surface);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+}
+
+popover>contents {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+menuitem,
+modelbutton {
+    border-radius: var(--vague-radius);
+    padding: 4px 8px;
+}
+
+menuitem:hover,
+modelbutton:hover {
+    background-color: var(--vague-bg-hover);
+}
+
+menuitem:selected,
+modelbutton:selected {
+    background-color: var(--vague-bg-selected);
+}
+
+/* notebook tabs */
+notebook>header {
+    background-color: var(--vague-bg-surface);
+    border-color: var(--vague-border);
+}
+
+notebook>header tab {
+    border: var(--vague-border-width) solid transparent;
+    border-radius: var(--vague-radius);
+    padding: 4px 10px;
+    color: var(--vague-text-dim);
+}
+
+notebook>header tab:hover {
+    background-color: var(--vague-bg-hover);
+}
+
+notebook>header tab:checked {
+    background-color: var(--vague-bg-base);
+    border-color: var(--vague-border);
+    color: var(--vague-text);
+}
+
+/* Adwaita draws the checked-tab indicator as a blue inset box-shadow; drop it
+ * and use the accent as a bottom border instead */
+notebook > header > tabs > tab:checked,
+notebook > header.top > tabs > tab:checked,
+notebook > header.bottom > tabs > tab:checked,
+notebook > header.left > tabs > tab:checked,
+notebook > header.right > tabs > tab:checked {
+    box-shadow: none;
+}
+
+notebook > header.top > tabs > tab:checked {
+    border-bottom-color: var(--vague-accent);
+}
+
+/* Adwaita's keyboard-focus outline on a checked tab outranks the global focus
+ * reset and shows a blue ring; match its specificity to remove it */
+notebook:focus:focus-visible > header > tabs > tab:checked,
+notebook > header > tabs > tab:checked:focus-visible {
+    outline: none;
+}
+
+/* Adwaita hardcodes the notebook page background to a neutral grey. Use the
+ * window color so a tabbed page matches the rest of the window. */
+notebook>stack:not(:only-child) {
+    background-color: var(--vague-bg-base);
+}
+
+/* scrollbars: thin, square, accent on hover */
+scrollbar {
+    background-color: transparent;
+    border: none;
+}
+
+scrollbar trough {
+    background-color: var(--vague-bg-inset);
+    border-radius: var(--vague-radius);
+}
+
+scrollbar slider {
+    background-color: var(--vague-border-strong);
+    border-radius: var(--vague-radius);
+    min-width: 8px;
+    min-height: 8px;
+    border: none;
+}
+
+scrollbar slider:hover {
+    background-color: var(--vague-accent);
+}
+
+separator {
+    background-color: var(--vague-border);
+    min-width: 1px;
+    min-height: 1px;
+}
+
+/* progress and level meters */
+progressbar trough,
+levelbar trough {
+    background-color: var(--vague-bg-inset);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    min-height: 6px;
+}
+
+progressbar progress {
+    background-color: var(--vague-accent);
+    border-radius: var(--vague-radius);
+}
+
+levelbar block.filled {
+    background-color: var(--vague-accent);
+    border-color: var(--vague-accent);
+    border-radius: var(--vague-radius);
+}
+
+/* frames, cards, trees, sidebars */
+frame>border {
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+}
+
+.card {
+    background-color: var(--vague-bg-surface);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+}
+
+treeview.view {
+    background-color: var(--vague-bg-inset);
+    color: var(--vague-text);
+    border-color: var(--vague-border);
+}
+
+treeview.view > *:hover,
+iconview > *:hover {
+    background-color: var(--vague-bg-hover);
+}
+
+treeview.view:selected,
+treeview.view:selected:focus {
+    background-color: var(--vague-bg-selected);
+    color: var(--vague-text);
+}
+
+treeview.view:selected:focus {
+    border-color: var(--vague-accent);
+}
+
+treeview.view header button {
+    background-color: var(--vague-bg-surface);
+    border-radius: var(--vague-radius);
+}
+
+.navigation-sidebar,
+placessidebar,
+.sidebar {
+    background-color: var(--vague-bg-surface);
+    border-color: var(--vague-border);
+}
+
+/* dialogs, about windows */
+dialog,
+dialog.background,
+window.dialog {
+    background-color: var(--vague-bg-base);
+}
+
+/* misc */
+tooltip,
+tooltip.background {
+    background-color: var(--vague-bg-surface);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+}
+
+.dim-label {
+    color: var(--vague-text-muted);
+}
+
+link,
+button.link {
+    color: var(--vague-accent);
+}
+
+calendar {
+    background-color: var(--vague-bg-surface);
+    border-color: var(--vague-border);
+}
+
+calendar:selected {
+    background-color: var(--vague-accent);
+    color: var(--vague-on-accent);
+}
+
+.osd,
+.app-notification,
+toast {
+    background-color: var(--vague-bg-surface);
+    color: var(--vague-text);
+    border: var(--vague-border-width) solid var(--vague-border);
+    border-radius: var(--vague-radius);
+    box-shadow: none;
+}
+
+infobar>revealer>box {
+    background-color: var(--vague-bg-surface);
+    border-bottom: var(--vague-border-width) solid var(--vague-border);
+}
+
+.linked>button,
+.linked>entry {
+    border-radius: var(--vague-radius);
+}
+
+/* no focus glow rings anywhere, the accent border is the focus cue */
+*:focus {
+    outline: none;
+}
+
+/* belt and suspenders: nothing in libadwaita keeps a rounded corner */
+searchbar,
+dropdown,
+dropdown>button,
+combobox,
+combobox>box>button,
+calendar,
+.osd,
+.app-notification,
+toast,
+infobar>revealer>box {
+    border-radius: var(--vague-radius);
+}
