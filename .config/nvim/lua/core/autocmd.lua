@@ -2,8 +2,8 @@
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({
-      higroup = "@boolean",
-      timeout = 150,
+      higroup = "MiniStatusLineModeInsert",
+      timeout = 100,
     })
   end,
 })
